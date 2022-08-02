@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const ReqUser = new mongoose.Schema(
+const AsrUser = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -9,19 +9,6 @@ const ReqUser = new mongoose.Schema(
     lastName: {
       type: String,
       required: true
-    },
-    role: {
-      type: String,
-      required: true,
-      enum: [
-             'hr', 
-             'it', 
-             'legal', 
-             'manufacturing', 
-             'marketing', 
-             'ops', 
-             'procurement'
-            ]
     },
     email: {
       type: String,
@@ -33,16 +20,15 @@ const ReqUser = new mongoose.Schema(
       required: true,
       minlength: [12, 'Password must be at least 12 characters long']
     },
-    isManager: {
+    isAdmin: {
       type: Boolean,
       required: true,
       default: false
-    },
-    manager: ObjectId
+    }
   },
   {
     timestamps: true
   }
 )
 
-module.exports = mongoose.model("reqUser", ReqUser)
+module.exports = mongoose.model("asrUser", AsrUser)

@@ -13,7 +13,15 @@ const User = new mongoose.Schema(
     role: {
       type: String,
       required: true,
-      // enum: [''] //TODO: define: roles here, return error if role not selected
+      enum: [
+             'hr', 
+             'it', 
+             'legal', 
+             'manufacturing', 
+             'marketing', 
+             'ops', 
+             'procurement'
+            ]
     },
     email: {
       type: String,

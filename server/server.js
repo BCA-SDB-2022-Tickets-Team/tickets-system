@@ -1,16 +1,17 @@
-require("dotenv").config()
+require("dotenv").config();
 
-const express = require("express"),
-    app = express(),
-    mongoose = require("mongoose"),
-    cors = require("cors"),
-    PORT = process.env.PORT
-    CONNECT = process.env.CONNECT,
-    
-mongoose.connect(`${CONNECT}`, {
+const 
+  express = require("express"),
+  app = express(),
+  mongoose = require("mongoose"),
+  cors = require("cors"),
+  PORT = process.env.PORT;
+  CONNECT = process.env.CONNECT
+
+  mongoose.connect(`${CONNECT}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-})
+  });
 
 const db = mongoose.connection;
 

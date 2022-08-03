@@ -76,6 +76,50 @@ router
     }
   });
 
+router
+  .route("/login")
+  .post(async (req, res, next) => {
+    const { email, password } = req.body
+    try {
+      if(!email || !password) {
+        throw new Error("both email & password are required")
+      } else {
+        const user = await User.findOne({email})
+        if(!user){
+          throw new Error("no user with that email can be found")
+        } else {
+          const verifyPW = await bcrypt.compare(password, user.password)
+          if(!verifyPW){
+            const badPW = new Error("incorrect password!")
+            badPW.status = 403
+            throw badPW
+          } else {
+            const token = jwt.sign({
+              _id: user._id,
+              email: user.email,
+              isManager: user.isManager
+            }, SECRET_KEY, {
+              expiresIn: KEY_EXPIRATION
+            })
+            res.status(200).json({
+              status: "logged in",
+              token
+            })
+            //TODO: create token, send accecpted response w/ token
+          }
+        }
+      }
+    } catch (error) {
+      if(error.status){
+        res.status(error.status).json({
+          status: error.message
+        })
+      } else {
+        next(error)
+      }
+    }
+  })
+
 router.use((err, req, res, next) => {
   res.status(500).json({
     status: err.message,

@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "7c95e602-b531-41b6-b751-583a3628de19",
+		"name": "Pharma-Capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13560387"
+	},
+	"item": [
+		{
+			"name": "asr",
+			"item": [
+				{
+					"name": "asr-new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"isAdmin\" : true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/asr/create-user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"asr",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "asr-login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/asr/login",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"asr",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "asr-update-user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/asr/create-user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"asr",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "req",
+			"item": [
+				{
+					"name": "req-new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"role\": \"hr\",\n    \"isManager\" : true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/req/create-user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"req",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "req-update-user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/asr/create-user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"asr",
+								"create-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "req-login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4000/api/asr/login",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"asr",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

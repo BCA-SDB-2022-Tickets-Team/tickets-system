@@ -2,8 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/asr_users_schema");
 const SALT = process.env.SALT || 10;
-/* jwt = require("jsonwebtoken"),
-  SECRET_KEY = process.env.SECRET_KEY */
+const jwt = require("jsonwebtoken")
+const SECRET_KEY = process.env.SECRET_KEY
+const KEY_EXPIRATION = process.env.KEY_EXPIRATION
 
 router
   .route("/create-user")
@@ -59,7 +60,52 @@ router
     }
   });
 
+router
+  .route("/login")
+  .post(async (req, res, next) => {
+    const { email, password } = req.body
+    try {
+      if(!email || !password) {
+        throw new Error("both email & password are required")
+      } else {
+        const user = await User.findOne({email})
+        if(!user){
+          throw new Error("no user with that email can be found")
+        } else {
+          const verifyPW = await bcrypt.compare(password, user.password)
+          if(!verifyPW){
+            const badPW = new Error("incorrect password!")
+            badPW.status = 403
+            throw badPW
+          } else {
+            const token = jwt.sign({
+              _id: user._id,
+              email: user.email,
+              isAdmin: user.isAdmin
+            }, SECRET_KEY, {
+              expiresIn: KEY_EXPIRATION
+            })
+            res.status(200).json({
+              status: "logged in",
+              token
+            })
+            //TODO: create token, send accecpted response w/ token
+          }
+        }
+      }
+    } catch (error) {
+      if(error.status){
+        res.status(error.status).json({
+          status: error.message
+        })
+      } else {
+        next(error)
+      }
+    }
+  })
+
 router.use((err, req, res, next) => {
+  console.log(err)
   res.status(500).json({
     status: err.message,
   });

@@ -1,6 +1,4 @@
 require("dotenv").config();
-const asrAuth = require('./controllers/asr-auth')
-
 const 
   express = require("express"),
   app = express(),
@@ -14,11 +12,17 @@ const
     useUnifiedTopology: true,
   });
 const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection-error"))
 
-db.on("error", console.error.bind(console, "connection-error"));
+const asrAuth = require('./controllers/asr-auth')
+const reqAuth = require('./controllers/req-auth')
+
 app.use(cors())
 app.use(express.json())
+
 app.use('/api/asr', asrAuth)
+app.use('/api/req', reqAuth)
+
 app.listen(PORT, () => {
   try {
     console.log(`Server running on ${PORT}`);

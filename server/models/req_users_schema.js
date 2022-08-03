@@ -38,7 +38,10 @@ const ReqUser = new mongoose.Schema(
       required: true,
       default: false
     },
-    manager: ObjectId
+    manager: {
+      type: mongoose.ObjectId,
+      required: false
+    }
   },
   {
     timestamps: true

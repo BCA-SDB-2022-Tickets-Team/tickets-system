@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css';
-import LoginREQ from './components/Login/LoginREQ';
+import Login from './components/Login/Login';
 
 function App() {
 
@@ -28,7 +28,7 @@ function App() {
       <nav>
         <button onClick={logout}>Logout</button>
       </nav>
-      <LoginREQ updateLocalStorage={updateLocalStorage} />
+      <Login updateLocalStorage={updateLocalStorage} />
     </>
   );
 }

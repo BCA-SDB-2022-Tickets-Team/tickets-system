@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Login.css'
 
-function LoginREQ() {
+function Login() {
 
     // useState variables for username and password
     const [email, setEmail] = useState("")
@@ -66,4 +66,4 @@ function LoginREQ() {
     )
 }
 
-export default LoginREQ
+export default Login

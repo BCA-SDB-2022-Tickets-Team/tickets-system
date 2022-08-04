@@ -2,12 +2,21 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/req_users_schema");
 const SALT = process.env.SALT || 10;
+const jwt = require("jsonwebtoken")
+const SECRET_KEY = process.env.SECRET_KEY
+const KEY_EXPIRATION = process.env.KEY_EXPIRATION
+const session = require('../middlewares/session')
 /* jwt = require("jsonwebtoken"),
   SECRET_KEY = process.env.SECRET_KEY */
 
 router
   .route("/create-user")
-  .post(async (req, res, next) => {
+  .post([session], async (req, res, next) => {
+    if (!req.user.isManager){
+      res.status(403).json({
+        status: 'Forbidden'
+      })
+    } else {
     const { firstName, lastName, email, role, password } = req.body;
     try {
       if (
@@ -42,6 +51,7 @@ router
     } catch (err) {
       next(err);
     }
+  }
   })
   .put(async (req, res, next) => {
     const { email } = req.body;

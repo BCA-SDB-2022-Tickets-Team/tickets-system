@@ -5,10 +5,16 @@ const SALT = process.env.SALT || 10;
 const jwt = require("jsonwebtoken")
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
+const session = require('../middlewares/session')
 
 router
   .route("/create-user")
-  .post(async (req, res, next) => {
+  .post([session], async (req, res, next) => {
+    if (!req.user.isAdmin){
+    res.status(403).json({
+      status : 'Forbidden'
+    })
+    } else {
     const { firstName, lastName, email, password } = req.body;
     try {
       if (!firstName || !lastName || !email || !password) {
@@ -31,6 +37,7 @@ router
     } catch (err) {
       next(err);
     }
+  }
   })
   .put(async (req, res, next) => {
     const { email } = req.body;

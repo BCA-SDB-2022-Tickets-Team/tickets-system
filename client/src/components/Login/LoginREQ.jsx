@@ -1,25 +1,35 @@
 import React, { useState } from 'react'
+import { createDispatchHook } from 'react-redux'
 import './Login.css'
 
-function Login() {
-    // useState variables fro username and password
+function LoginREQ() {
+    // useState variables for username and password
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [show, setShow] = useState(false)
 
-    /* const handleSubmit = e => {
+   async function handleSubmit(e) {
         e.preventDefault()
+    const payload = JSON.stringify({
+        email: email,
+        password: password
+    })
+    try {
+     const res = await fetch("http://localhost/api/req/login", payload)
+     if (!res.ok) {
+        throw new Error(res.JSON.status)
+        setShow(!show);
+    
+      const messageStyle = {
+        display: show ? "inline" : "none",
+      };
+     }
+     const resData = await res.JSON()
+     //resData.token =
+    } catch(err) {
 
-        fetch("http://localhost:4000/api/auth/login", {
-            method: "POST",
-            body: JSON.stringify(requestBody),
-            headers: new Headers({
-                "Content-Type": "application/json"
-            })
-        })
-            .then(res => res.json())
-            .then(data => { props.updateLocalStorage(data.token); console.log(data) })
-            .catch(err => console.log(err))
-    } */
+    }}
+
 
     return (
         <div>
@@ -33,6 +43,7 @@ function Login() {
                         onChange={e => setEmail(e.target.value)}
                     />
                 </div>
+        
 
                 <div className="password">
                     <label htmlFor="password">Password:</label>
@@ -43,10 +54,11 @@ function Login() {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-                <button type="submit" >Login</button> {/*onClick={handleSubmit}*/}
+                <button type="submit">Login</button> {/*onClick={handleSubmit}*/}
+                <div style={messageStyle}>Invalid Credentials!</div>
             </form>
         </div>
     )
 }
 
-export default Login
+export default LoginREQ

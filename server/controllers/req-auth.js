@@ -130,6 +130,19 @@ router
     }
   })
 
+router.route('/test').get([session], (req, res) => {
+  if(req.user){
+    res.status(200).json({
+      status: "huzzah",
+      user: req.user
+    })
+  } else {
+    res.status(500).json({
+      status: "boooooo"
+    })
+  }
+})
+
 router.use((err, req, res, next) => {
   res.status(500).json({
     status: err.message,

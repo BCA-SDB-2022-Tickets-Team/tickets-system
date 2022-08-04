@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Login.css'
 
-function Login() {
+function Login(props) {
 
     // useState variables for username and password
     const [email, setEmail] = useState("")
@@ -11,8 +11,8 @@ function Login() {
     const [display, setDisplay] = useState({ display: "none" })
 
     async function handleSubmit(e) {
-
         e.preventDefault()
+        console.log('handle submit fired')
 
         const payload = JSON.stringify({
             email: email,
@@ -20,25 +20,47 @@ function Login() {
         })
 
         try {
-            const res = await fetch("http://localhost/api/req/login", payload)
+            const res = await fetch("http://localhost:4000/api/req/login", {
+                method: "POST",
+                body: payload,
+                headers: new Headers({
+                    "Content-Type": "application/json"
+                })
+            })
 
             if (!res.ok) {
+                console.log(`oh no bad login!`)
                 setDisplay({ display: "inline" }) // Show invalid credentials message
                 throw new Error(res.JSON.status)
+            } else {
+                console.log('yay! good login!')
+                const resData = await res.json()
+                props.updateLocalStorage(resData.token)
+                // ? example of authenticated request to the server
+                // const testRes = await fetch("http://localhost:4000/api/req/test", {
+                //     method: "GET",
+                //     headers: new Headers({
+                //         "Content-Type": "application/json",
+                //         "Authorization": `Bearer ${localStorage.getItem('token')}`
+                //     })
+                // })
+                // if(!testRes.ok){
+                //     if(testRes.status === 403){
+                //        //user does not have sufficident permissions, redirect to either login page or home 
+                //     }
+                // } else {
+                //     console.log('authenticated request!')
+                // }
             }
-
-            const resData = await res.JSON()
-            //resData.token =
-
         } catch (err) {
-
+            console.log(`error: ${err}`)
         }
     }
 
 
     return (
         <div>
-            <form className="formWrapper" action="">
+            <form className="formWrapper" action="" onSubmit={handleSubmit}>
                 <div className="email">
                     <label htmlFor="email">Username:</label>
                     <input
@@ -59,7 +81,7 @@ function Login() {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-                <button onClick={handleSubmit} type="submit">Login</button>
+                <button type="submit">Login</button>
                 <div style={display}>Invalid Credentials!</div>
             </form>
         </div>

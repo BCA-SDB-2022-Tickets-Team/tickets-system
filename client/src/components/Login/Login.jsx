@@ -3,7 +3,7 @@ import './Login.css'
 
 function Login() {
     // useState variables fro username and password
-    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     /* const handleSubmit = e => {
@@ -24,13 +24,13 @@ function Login() {
     return (
         <div>
             <form className="formWrapper" action="">
-                <div className="username">
-                    <label htmlFor="username">Username:</label>
+                <div className="email">
+                    <label htmlFor="email">Username:</label>
                     <input
                         type="text"
-                        id="username"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
+                        id="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                     />
                 </div>
 

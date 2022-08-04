@@ -26,7 +26,7 @@ function App() {
   return (
     <> 
       <nav>
-        <div onClick={logout}>Logout</div>
+        <button onClick={logout}>Logout</button>
       </nav>
       <LoginREQ updateLocalStorage={updateLocalStorage} />
     </>

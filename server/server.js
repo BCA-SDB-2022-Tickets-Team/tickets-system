@@ -16,12 +16,14 @@ db.on("error", console.error.bind(console, "connection-error"))
 
 const asrAuth = require('./controllers/asr-auth')
 const reqAuth = require('./controllers/req-auth')
+const ticket = require('./controllers/ticket')
 
 app.use(cors())
 app.use(express.json())
 
 app.use('/api/asr', asrAuth)
 app.use('/api/req', reqAuth)
+app.use('/api/ticket', ticket)
 
 app.listen(PORT, () => {
   try {

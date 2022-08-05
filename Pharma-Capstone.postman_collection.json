@@ -78,11 +78,21 @@
 						{
 							"name": "new user",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTczMjY0OCwiZXhwIjoxNjU5ODE5MDQ4fQ.soU3Rd2gHCONOrb3EGx3g5-DtD9HhCYPtnQi_KeVp7A",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"isAdmin\" : true\n}",
+									"raw": "{\n    \"firstName\" : \"Douglas\",\n    \"lastName\" : \"Schatz\",\n    \"email\" : \"dingo@home.com\",\n    \"password\" : \"ohdear\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -111,7 +121,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
+									"raw": "{\n    \"firstName\" : \"Douglass\",\n    \"email\" : \"dingo@home.com\"\n    \n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -142,7 +152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\"\n}",
+							"raw": "{\n    \"email\" : \"indeed@home.com\",\n    \"password\" : \"ohdear\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

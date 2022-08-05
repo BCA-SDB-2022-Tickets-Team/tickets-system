@@ -1,45 +1,142 @@
 {
 	"info": {
-		"_postman_id": "7c95e602-b531-41b6-b751-583a3628de19",
+		"_postman_id": "a6c202d8-603b-4f5f-a8a2-4ff375e1da08",
 		"name": "Pharma-Capstone",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "13560387"
 	},
 	"item": [
 		{
-			"name": "asr",
+			"name": "user",
 			"item": [
 				{
-					"name": "asr-new user",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"isAdmin\" : true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "req",
+					"item": [
+						{
+							"name": "req-new user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"role\": \"hr\",\n    \"isManager\" : true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/user/req",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"user",
+										"req"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "localhost:4000/api/asr/create-user",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"asr",
-								"create-user"
-							]
+						{
+							"name": "req-update-user",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/user/req",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"user",
+										"req"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "asr-login",
+					"name": "asr",
+					"item": [
+						{
+							"name": "new user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"isAdmin\" : true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/user/asr",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"user",
+										"asr"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-user",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/user/asr",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"user",
+										"asr"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -53,135 +150,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:4000/api/asr/login",
+							"raw": "localhost:4000/api/user/login",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
 								"api",
-								"asr",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "asr-update-user",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/asr/create-user",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"asr",
-								"create-user"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "req",
-			"item": [
-				{
-					"name": "req-new user",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\" : \"Ryan\",\n    \"lastName\" : \"Collins\",\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\",\n    \"role\": \"hr\",\n    \"isManager\" : true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/req/create-user",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"req",
-								"create-user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "req-update-user",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\" : \"Creosote\",\n    \"email\" : \"go@home.com\"\n    \n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/asr/create-user",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"asr",
-								"create-user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "req-login",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\" : \"go@home.com\",\n    \"password\" : \"ohdear\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/asr/login",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"asr",
+								"user",
 								"login"
 							]
 						}

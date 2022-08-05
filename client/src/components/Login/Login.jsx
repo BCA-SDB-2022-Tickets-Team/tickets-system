@@ -20,7 +20,7 @@ function Login(props) {
         })
 
         try {
-            const res = await fetch("http://localhost:4000/api/req/login", {
+            const res = await fetch("http://localhost:4000/api/user/login", {
                 method: "POST",
                 body: payload,
                 headers: new Headers({

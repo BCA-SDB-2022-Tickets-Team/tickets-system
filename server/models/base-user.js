@@ -28,14 +28,15 @@ const baseUser = new mongoose.Schema(
     collection: "users",
     timestamps: true,
     // this allows us to quickly and easily tell whether a found user is req or asr
+    // ? example: " { __type: "reqUser" } "
     discriminatorKey: "__type"
   }
 );
 
 const User = mongoose.model("User", baseUser);
 
-// fields unique to req user
 // extends base user schema
+// adds fields unique to req user
 const reqUser = User.discriminator(
   "reqUser",
   new mongoose.Schema(
@@ -66,8 +67,8 @@ const reqUser = User.discriminator(
   )
 );
 
-// fields unique to asr user
 // extends base user schema
+// adds fields unique to asr user
 const asrUser = User.discriminator(
   "asrUser",
   new mongoose.Schema(

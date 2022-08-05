@@ -82,4 +82,6 @@ router
   }
 })
 
+//TODO: bring in error handling middleware? Or possibly spin that off into it's own middleware file and add it to server.js?
+
 module.exports = router

@@ -12,7 +12,6 @@ const session = async(req, res, next)=>{
             const payload = authToken ? jwt.verify(authToken, SECRET_KEY) : undefined
             if (payload){
                 let sessionUser = await User.findOne({_id : payload._id})
-                
                 if (sessionUser){
                     // add found user to request object for verification at controller handlers
                     req.user = sessionUser
@@ -23,7 +22,6 @@ const session = async(req, res, next)=>{
                         status : 'User not found'
                     })
                 }
-                
             } else {
                 res.status(401).json({
                    status: 'Invalid token' 

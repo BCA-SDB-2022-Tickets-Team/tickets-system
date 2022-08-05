@@ -13,8 +13,13 @@ const dataSchema = require('./ticket_data_schema')
  * when we scale this to include multiple companies, we will need either a database or 
  * a model within the assessor DB to track schemas.
  */
+// todo : write function that produces schema object
+  // takes field to be added, data type, and whether it's required
+  // calls Ticket.discriminator custom field, object made of specified params
+  // returns new discriminator model that extends Ticket
+  // redeclare Ticket as new model
 
-const Ticket = mongoose.Schema(
+let Ticket = mongoose.Schema(
   {
     requestor: {
       type: ObjectId,

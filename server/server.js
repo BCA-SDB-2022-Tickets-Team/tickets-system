@@ -6,22 +6,22 @@ const
   cors = require("cors"),
   PORT = process.env.PORT;
   CONNECT = process.env.CONNECT
-
+// start database connection setup
   mongoose.connect(`${CONNECT}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection-error"))
-
-const asrAuth = require('./controllers/asr-auth')
-const reqAuth = require('./controllers/req-auth')
+// end database connection setup
+const userAuth = require('./controllers/auth')
 
 app.use(cors())
 app.use(express.json())
 
-app.use('/api/asr', asrAuth)
-app.use('/api/req', reqAuth)
+// auth middleware for login, create, modify users
+app.use('/api/user', userAuth)
+
 
 app.listen(PORT, () => {
   try {

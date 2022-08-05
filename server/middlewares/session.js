@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const SECRET_KEY = process.env.SECRET_KEY
-const reqUser = require('../models/req_users_schema')
-const asrUser = require('../models/asr_users_schema.js')
+const {User, asrUser, reqUser} = require('../models/base-user')
+
 
 const session = async(req, res, next)=>{
     try{
@@ -11,11 +11,12 @@ const session = async(req, res, next)=>{
             const authToken = req.headers.authorization.includes('Bearer') ? req.headers.authorization.split(' ')[1] : req.headers.authorization
             const payload = authToken ? jwt.verify(authToken, SECRET_KEY) : undefined
             if (payload){
-                const User = req.path.includes('asr') ? asrUser : reqUser
                 let sessionUser = await User.findOne({_id : payload._id})
                 
                 if (sessionUser){
+                    // add found user to request object for verification at controller handlers
                     req.user = sessionUser
+                    // pass modified req obj to next handler
                     next()
                 } else {
                     res.status(400).json({
@@ -35,6 +36,7 @@ const session = async(req, res, next)=>{
         }
     } catch(error){
         if (error instanceof jwt.TokenExpiredError){
+            // inform user if error comes from expired token
             res.status(406).json({
                 status: 'Token has expired'
             })

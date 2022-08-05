@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+// schema for data object in ticket schema
+// just makes the ticket schema a little shorter/easier to follow
 const Data = new mongoose.Schema(
   {
     dataSensitivity: {

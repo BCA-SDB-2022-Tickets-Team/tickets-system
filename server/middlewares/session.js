@@ -11,8 +11,9 @@ const session = async(req, res, next)=>{
             const authToken = req.headers.authorization.includes('Bearer') ? req.headers.authorization.split(' ')[1] : req.headers.authorization
             const payload = authToken ? jwt.verify(authToken, SECRET_KEY) : undefined
             if (payload){
-                const User = req.path.includes('asr') ? asrUser : reqUser
-                let sessionUser = await User.findOne({_id : payload._id})
+                console.log(payload)
+                //const User = req.path.includes('asr') ? asrUser : reqUser
+                let sessionUser = await reqUser.findOne({_id : payload._id})
                 
                 if (sessionUser){
                     req.user = sessionUser

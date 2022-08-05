@@ -13,21 +13,6 @@ function TicketView() {
     const [completedFilter, setCompletedFilter] = useState(false)
 
 
-    const [render, setRender] = useState(true);
-    const [ticketData, setTicketData] = useState([])
-
-
-    useEffect(() => {
-        async function getTicketData() {
-            let res = await fetch(
-                `http://localhost:4000/api/tickets/${ticketStatus}`
-            );
-            let data = await res.json();
-            setTicketData(data);
-        }
-        getTicketData();
-    }, [render]);
-
     // Update checkbox status function (ref: https://medium.com/programming-essentials/how-to-manage-a-checkbox-with-react-hooks-f8c3d973eeca)
     function toggle(value) {
         return !value;

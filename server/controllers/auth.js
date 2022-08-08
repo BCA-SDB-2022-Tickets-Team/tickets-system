@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
+const mongoose = require("mongoose")
 
 // create/modify/delete assessor user
 router
@@ -43,36 +44,61 @@ router
       }
     }
   })
-  .put(async (req, res, next) => {
-    const { email } = req.body;
+  .put([session], async (req, res, next) => {
     try {
-      let userToModify = await asrUser.findOne({ email: email });
-      if (!userToModify) {
-        throw new Error("no user with that email exists");
+      if(!req.user.isAdmin){
+        throw new Error('user is not a super admin')
       } else {
-        // loop through request body
-        for (field in req.body) {
-          // only update fields that exist in the request
-          if (field === "password") {
-            userToModify[field] = bcrypt.hashSync(
-              req.body[field],
-              parseInt(SALT)
-            );
-          } else {
-            userToModify[field] = req.body[field];
+        const { _id } = req.body;
+        let userToModify = await asrUser.findOne({ _id });
+        if (!userToModify) {
+          throw new Error("no user with that ID exists");
+        } else {
+          // loop through request body
+          for (field in req.body) {
+            // only update fields that exist in the request
+            if (field === "password") {
+              userToModify[field] = bcrypt.hashSync(
+                req.body[field],
+                parseInt(SALT)
+              );
+            } else {
+              userToModify[field] = req.body[field];
+            }
           }
+          await userToModify.save();
+          res.status(202).json({
+            status: "user updated",
+            userToModify,
+          });
         }
-        await userToModify.save();
-        res.status(202).json({
-          status: "user updated",
-          userToModify,
-        });
       }
     } catch (err) {
       // pass error to error-handling middleware at the bottom
       next(err);
     }
-  });
+  })
+  .delete([session], async (req,res,next) => {
+    try {
+      if(!req.user.isAdmin){
+        throw new Error("user must be an admin")
+      } else {
+        const { _id } = req.body
+        let userToDelete = await asrUser.findById(_id);
+        if(!userToDelete){
+          throw new Error("could not find a user with that ID")
+        } else {
+          //TODO: front-end should include deletion validation (IE: "are you sure you want to delete this user? This action is not reverisble")
+          await userToDelete.delete()
+          res.status(200).json({
+            status: "user has been deleted"
+          })
+        }
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
 
 // create/modify/delete requestor user
 router
@@ -118,38 +144,49 @@ router
       }
     }
   })
-  .put(async (req, res, next) => {
-    const { email } = req.body;
+  .put([session], async (req, res, next) => {
     try {
-      let userToModify = await reqUser.findOne({ email: email });
-      if (!userToModify) {
-        throw new Error("no user with that email exists");
+      const { _id } = req.body;
+      if(!req.user.isManager){
+        throw new Error('User is not a manager')
       } else {
-        // loop through req body
-        for (field in req.body) {
-          // only update fields included in req body
-          if (field === "password") {
-            userToModify[field] = bcrypt.hashSync(
-              req.body[field],
-              parseInt(SALT)
-            );
-          } else {
-            userToModify[field] = req.body[field];
+        let userToModify = await reqUser.findOne({ _id });
+        if (!userToModify) {
+          throw new Error("no user with that ID exists");
+        } else {
+          // loop through req body
+          for (field in req.body) {
+            // only update fields included in req body
+            if (field === "password") {
+              userToModify[field] = bcrypt.hashSync(
+                req.body[field],
+                parseInt(SALT)
+              );
+            } else {
+              userToModify[field] = req.body[field];
+            }
           }
-        }
-        try {
-          await userToModify.save();
-          res.status(202).json({
-            status: "user updated",
-            userToModify,
-          });
-        } catch (error) {
-          const missingData = Object.keys(error.errors);
-          throw new Error(
-            `user could not be updated because: you are missing the following data: ${[
-              ...missingData,
-            ]}`
-          );
+          try {
+            await userToModify.save();
+            res.status(202).json({
+              status: "user updated",
+              userToModify,
+            });
+          } catch (error) {
+            //if the error is a validation error, change the error message to include the missing fields
+            if(error instanceof mongoose.Error.ValidationError || error instanceof mongoose.Error.ValidatorError) {
+              const missingData = Object.keys(error.errors);
+              throw new Error(
+                `user could not be updated because: you are missing the following data: ${[
+                  ...missingData,
+                ]}`
+              );
+            } else {
+              // generic error
+              // TODO: research how mongoose constructs error to create better error handling message
+              throw new Error(`something went wrong while updating user`)
+            }
+          }
         }
       }
     } catch (err) {
@@ -157,7 +194,28 @@ router
       
       next(err);
     }
-  });
+  })
+  .delete([session], async (req, res, next) => {
+    try {
+      if(!req.user.isManager){
+        throw new Error("user must be a manager")
+      } else {
+        const { _id } = req.body
+        let userToDelete = await reqUser.findOne({ _id });
+        if(!userToDelete){
+          throw new Error("could not find a user with that ID")
+        } else {
+          //TODO: front-end should include deletion validation (IE: "are you sure you want to delete this user? This action is not reverisble")
+          await userToDelete.delete()
+          res.status(200).json({
+            status: "user has been deleted"
+          })
+        }
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
 
 // login for assessor and requestor users
 router.route("/login").post(async (req, res, next) => {

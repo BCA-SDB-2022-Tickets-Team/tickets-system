@@ -32,24 +32,26 @@ let Ticket = mongoose.Schema(
     overallRisk: {
       type: String,
       required: false,
-      enum: ['low', 'medium', 'high']
+      default: '',
+      enum: ['', 'low', 'medium', 'high']
     },
     businessRisk: {
       type: String,
       required: false,
-      enum: ['low', 'medium', 'high']
+      default: '',
+      enum: ['', 'low', 'medium', 'high']
     },
     status: {
       type: String,
       required: false,
-      default: 'new request',
+      default: 'new-request',
       enum: [
-              'new request', 
-              'questionaire sent', 
-              'requestor review',
-              'director review',
-              'on hold - vendor',
-              'in progress',
+              'new-request', 
+              'questionaire-sent', 
+              'requestor-review',
+              'director-review',
+              'on-hold-vendor',
+              'in-progress',
               'completed'  
             ]
     },
@@ -63,16 +65,20 @@ let Ticket = mongoose.Schema(
     },
     projectManager: {
       type: String,
+      default: null,
       required: false
     },
     buisnessContact: {
       type: String,
+      default: null,
       required: false
     },
     department: {
       type: String,
+      default: '',
       required: false,
       enum: [
+        '',
         'hr', 
         'it', 
         'legal', 
@@ -84,10 +90,12 @@ let Ticket = mongoose.Schema(
     },
     dataSensitivity: {
       type: String,
+      default: '',
       required: false,
     },
     dataDescription: {
       type: String,
+      default: '',
       required: false
     }, 
     dataRegulation: {
@@ -103,6 +111,7 @@ let Ticket = mongoose.Schema(
     },
     vendorService: {
       type: String,
+      default: '',
       required: false,
     },
     customCodeRequired: {
@@ -120,23 +129,27 @@ let Ticket = mongoose.Schema(
     },
     systemLevelAccess: {
       type: String,
+      default: '',
       required: false,
-      default: 'N/A'
     },
     platform: {
       type: String,
+      default: '',
       required: false,
     },
     dataAccess: {
       type: String,
+      default: '',
       required: false
     },
     needMFA: {
       type: Boolean,
-      required: false,
+      default: false,
+      required: false
     },
     encryption: {
       type: Boolean,
+      default: false,
       required: false
     },
     assessor: {
@@ -145,6 +158,7 @@ let Ticket = mongoose.Schema(
     },
     notes: {
       type: String,
+      default: '',
       required: false
     },
     timeline: {

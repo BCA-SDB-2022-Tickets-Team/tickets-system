@@ -4,8 +4,10 @@ const Ticket = require("../models/ticket_schema")
 const jwt = require("jsonwebtoken")
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
-const session = require('../middlewares/session')
+const session = require('../middlewares/session');
 
+
+//  Create a new ticket
 router
   .route("/create-ticket")
   .post([session], async (req, res, next) => {
@@ -19,10 +21,10 @@ router
     } = req.body;
     try {
       if (
-          !department || 
-          !vendorName || 
+          !department ||
+          !vendorName ||
           !projectDescription ||
-          !timeline 
+          !timeline
         ) {
         throw new Error("Insufficient data");
       } else {
@@ -50,8 +52,53 @@ router
     }
   }
   )
+  
+  // Get all tickets
+  router
+  .route("/all-tickets")
+  .get([session], async (req, res, next) => { 
+    try {
+      let allTickets = await Ticket.find({});
+      res.status(200).json({
+        allTickets,
+      });
+    } catch(err) {
+      next(err);
+    }
+  })
 
-router
+  // Get all tickets by the status filters set (passed through as queries in url)
+    router
+    .route("/status-filter")
+    .get([session], async (req, res, next) => { 
+      try {
+        let statuses = req.query.status
+        let newRequestTickets = await Ticket.find({status: { $in: statuses}});
+        res.status(200).json({
+          newRequestTickets,
+        });
+      } catch(err) {
+        next(err);
+      }
+    })
+
+  // Get one ticket using ticketid as query in url
+  router
+  .route("/")
+  .get([session], async (req, res) => { 
+    try {
+      const ticketid = req.query.ticketid;
+      let ticket = await Ticket.find({_id: ticketid});
+      res.status(200).json({
+        ticket,
+      });
+    } catch(err) {
+      next(err);
+    }
+  })
+
+
+/* router
   .route("/modify-ticket")
   .put([session], async (req, res, next) => {
     const { ticketID } = req.body;
@@ -80,8 +127,6 @@ router
   } catch (err) {
     next(err);
   }
-})
-
-//TODO: bring in error handling middleware? Or possibly spin that off into it's own middleware file and add it to server.js?
+}) */
 
 module.exports = router

@@ -85,7 +85,7 @@ router
     }
   })
 
-  // Get one ticket using ticketid as param
+  // Get one ticket using ticket id as param
   router
   .route("/:id")
   .get([session], async (req, res, next) => { 
@@ -108,32 +108,63 @@ router
     // Find ticket by document ID passed as parameter
     const { id } = req.params;
     try {
-      let ticketToModify = await Ticket.findOne({ _id: id });
-      
-      // Error if no ticket with that ID found
-      if (!ticketToModify) {
-        throw new Error("no ticket with that id exists");
-      } 
-      else {
-        // loop through request body and only update fields that exist in the request
-        for (field in req.body) {
-            ticketToModify[field] = req.body[field];
-          }
-        }
-        // Save updates to ticket document
-        await ticketToModify.save();
-        res.status(202).json({
-          status: "ticket updated",
-          ticketToModify,
+      if (req.user._type === "reqUser") {
+        res.status(403).json({
+          status: "Forbidden. Requesters cannot modify tickets.",
         });
-      
+      } else {
+        let ticketToModify = await Ticket.findOne({ _id: id });
+        
+        // Error if no ticket with that ID found
+        if (!ticketToModify) {
+          throw new Error("no ticket with that id exists");
+        } 
+        else {
+          // loop through request body and only update fields that exist in the request
+          for (field in req.body) {
+              ticketToModify[field] = req.body[field];
+            }
+          }
+          // Save updates to ticket document
+          await ticketToModify.save();
+          res.status(202).json({
+            status: "ticket updated",
+            ticketToModify,
+          });
+      }
     } catch (err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
     }
   });
 
-  //TODO: Delete ticket
+  router
+  .route('/delete/:id')
+  .post([session], async (req, res, next) => {
+    let { id } = req.params
+    try {
+      // Only admins can delete tickets
+      if (!req.user.isAdmin) {
+        res.status(403).json({
+          status: "Forbidden. Only admins can delete tickets.",
+        });
+      } else {
+          let ticketToDelete = await Ticket.findOne({ _id: id })
+          // Error if no ticket with that ID found
+          if (!ticketToDelete) {
+            throw new Error("no ticket with that id exists");
+          } else {
+            // Delete the ticket by id
+            await Ticket.deleteOne({ _id: id })
+            res.redirect('/') //! This results in message: Cannot GET '/' but removing causes it to hang
+          }
+      } 
+    } catch(err) {
+      next(err);
+    }
+  })
+
+
   //TODO: Permission control for editing tickets/fields within tickets & deleting tickets
 
 // Universal error handler

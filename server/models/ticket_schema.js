@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const dataSchema = require('./ticket_data_schema')
 
 /**
  * ? for custom fields, we will make use of Mongoose's discriminator function:
@@ -65,12 +64,12 @@ let Ticket = mongoose.Schema(
     },
     projectManager: {
       type: String,
-      default: null,
+      default: '',
       required: false
     },
     buisnessContact: {
       type: String,
-      default: null,
+      default: '',
       required: false
     },
     department: {

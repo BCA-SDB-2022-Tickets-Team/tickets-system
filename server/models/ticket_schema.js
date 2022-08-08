@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const dataSchema = require('./ticket_data_schema')
 
 /**
  * ? for custom fields, we will make use of Mongoose's discriminator function:
@@ -180,4 +179,16 @@ let Ticket = mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model('ticket', Ticket)
+const updateSchema = function(field){
+  const newSchema = Ticket.add(field)
+  Ticket = newSchema
+}
+
+const makeModel = function(){
+  return mongoose.model('ticket', Ticket)
+}
+
+module.exports = {
+  makeModel,
+  updateSchema
+}

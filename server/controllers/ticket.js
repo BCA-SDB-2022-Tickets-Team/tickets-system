@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const Ticket = require("../models/ticket_schema")
+const TicketSchemaObject = require("../models/ticket_schema")
 const jwt = require("jsonwebtoken")
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
@@ -26,6 +26,7 @@ router
         ) {
         throw new Error("Insufficient data");
       } else {
+        let Ticket = TicketSchemaObject.makeModel()
         const newTicket = new Ticket({
           requestor: req.user._id, 
           vendorName,
@@ -41,7 +42,9 @@ router
             newTicket,
           });
         } catch (error) {
+          console.log(Ticket.schema)
           const missingData = Object.keys(error.errors)
+          
           throw new Error(`you are missing the following data: ${[...missingData]}`)
         }
     }
@@ -57,7 +60,7 @@ router
     const { ticketID } = req.body;
     
     try {
-    
+      let Ticket = TicketSchemaObject.makeModel()
       let ticketModify = await Ticket.findOne({ ticketID: ticketID });
     
       if (!ticketModify){  

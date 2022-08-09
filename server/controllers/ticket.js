@@ -17,8 +17,21 @@ router
       vendorName, 
       projectDescription, 
       projectManager, 
+      buisnessContact,
       department,
-      timeline 
+      dataSensitivity,
+      dataDescription,
+      dataRegulation,
+      phi,
+      vendorService,
+      customCodeRequired,
+      integrations,
+      systemLevelAccess,
+      platform,
+      dataAccess,
+      needMFA,
+      encryption,
+      attachments
     } = req.body;
     try {
       if (
@@ -33,9 +46,22 @@ router
           requestor: req.user._id, 
           vendorName,
           projectDescription,
-          projectManager: req.user.manager,
+          projectManager, 
+          buisnessContact,
           department,
-          timeline
+          dataSensitivity,
+          dataDescription,
+          dataRegulation,
+          phi,
+          vendorService,
+          customCodeRequired,
+          integrations,
+          systemLevelAccess,
+          platform,
+          dataAccess,
+          needMFA,
+          encryption,
+          attachments
         });
         try {
           await newTicket.save();
@@ -59,7 +85,7 @@ router
   .route("/all")
   .get([session], async (req, res, next) => { 
     try {
-      // Restrict reqUser non-manager all tickets view to only be within their department
+      // Restrict req user non-manager all tickets view to only show tickets created by that req user
       if (req.user.__type === "reqUser" && !req.user.isManager) {
         let allTickets = await Ticket.find({requestor: req.user._id});
         res.status(200).json({
@@ -88,7 +114,7 @@ router
         if (req.user.__type === "reqUser" && statuses.includes("in-progress")) {
           // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
           statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
-          // Restrict req user non-manager filtered tickets view to only be within their department
+          // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
           if (!req.user.isManager) {
             let tickets = await Ticket.find({status: { $in: statuses}, requestor: req.user._id});
             res.status(200).json({
@@ -113,7 +139,7 @@ router
           if (req.user.__type === "reqUser" && statusArray.includes("in-progress")) {
             // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
             statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
-            // Restrict req user non-manager filtered tickets view to only be within their department
+            // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
             if (!req.user.isManager) {
               let tickets = await Ticket.find({status: { $in: statusArray}, requestor: req.user._id});
               res.status(200).json({
@@ -172,9 +198,10 @@ router
           dataAccess,
           needMFA,
           encryption,
-          timeline,
-          dueDate,
-          warningDate
+          assessor,
+          attachments,
+          questionnaireSent,
+          questionnaireRec
          } = ticket
         res.status(200).json({
           requestor,
@@ -199,9 +226,10 @@ router
           dataAccess,
           needMFA,
           encryption,
-          timeline,
-          dueDate,
-          warningDate
+          assessor,
+          attachments,
+          questionnaireSent,
+          questionnaireRec
         });
       } else {
       res.status(200).json({

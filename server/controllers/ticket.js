@@ -90,20 +90,20 @@ router
           statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
           // Restrict req user non-manager filtered tickets view to only be within their department
           if (!req.user.isManager) {
-            let newRequestTickets = await Ticket.find({status: { $in: statuses}, department: req.user.role});
+            let tickets = await Ticket.find({status: { $in: statuses}, department: req.user.role});
             res.status(200).json({
-            newRequestTickets,
+            tickets,
           });
           } else {
-            let newRequestTickets = await Ticket.find({status: { $in: statuses}});
+            let tickets = await Ticket.find({status: { $in: statuses}});
             res.status(200).json({
-            newRequestTickets,
+            tickets,
           });
           }
         } else {
-        let newRequestTickets = await Ticket.find({status: { $in: statuses}});
-        res.status(200).json({
-          newRequestTickets,
+          let tickets = await Ticket.find({status: { $in: statuses}});
+          res.status(200).json({
+          tickets,
         });
         }   
       // If only one status selected, statuses is a string instead of an array-like object, so need to convert to an array first so can add additional statuses for reqUsers
@@ -115,20 +115,20 @@ router
             statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
             // Restrict req user non-manager filtered tickets view to only be within their department
             if (!req.user.isManager) {
-              let newRequestTickets = await Ticket.find({status: { $in: statusArray}, department: req.user.role});
+              let tickets = await Ticket.find({status: { $in: statusArray}, department: req.user.role});
               res.status(200).json({
-              newRequestTickets,
+              tickets,
               });
             } else {
-              let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
+              let tickets = await Ticket.find({status: { $in: statusArray}});
               res.status(200).json({
-              newRequestTickets,
+              tickets,
               });
             }
           } else {
-            let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
+            let tickets = await Ticket.find({status: { $in: statusArray}});
             res.status(200).json({
-            newRequestTickets,
+            tickets,
           });
           }      
       }

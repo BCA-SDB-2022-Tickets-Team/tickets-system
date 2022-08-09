@@ -6,6 +6,7 @@ const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
 const session = require('../middlewares/session');
 
+//TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
 
 //  Create a new ticket
 router
@@ -252,9 +253,6 @@ router
       next(err);
     }
   })
-
-
-  //TODO: Permission control for editing tickets/fields within tickets & deleting tickets
 
 // Universal error handler
 // Any error thrown above goes through this

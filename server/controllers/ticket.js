@@ -75,10 +75,40 @@ router
   .get([session], async (req, res, next) => { 
     try {
       let statuses = req.query.status
-      let newRequestTickets = await Ticket.find({status: { $in: statuses}});
-      res.status(200).json({
-        newRequestTickets,
-      });
+      //! I think there should be a way to simplify this code that handles the req.query (statuses). Statuses is a string when only one query, but an array-like object when there is more than one query. In order to simplify status filters for reqUsers, if statuses is a string, it needs to be converted to an array first. Revisit this in code review and discuss.
+      // If more than one status selected, statuses is an array-like object.
+      if (typeof statuses !== "string") {
+        // Req users will only see "new request", "in-progress", "requestor review", and "completed" status filters on the front-end so when they select "in-progress", need to also grab: "questionaire-sent", "director-review", "on-hold-vendor" statuses. This code is repeated below with changes for handling when statuses starts as a string.
+        if (req.user.__type === "reqUser" && statuses.includes("in-progress")) {
+          statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
+          console.log(statuses)
+          let newRequestTickets = await Ticket.find({status: { $in: statuses}});
+          res.status(200).json({
+          newRequestTickets,
+        });
+        } else {
+        let newRequestTickets = await Ticket.find({status: { $in: statuses}});
+        res.status(200).json({
+          newRequestTickets,
+        });
+        }   
+      // If only one status selected, statuses is a string instead of an array-like object, so need to convert to an array first so can add additional statuses for reqUsers
+      } else {
+        let statusArray = [];
+        statusArray.push(statuses)
+          if (req.user.__type === "reqUser" && statusArray.includes("in-progress")) {
+            statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
+            let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
+            res.status(200).json({
+            newRequestTickets,
+          });
+          } else {
+          let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
+          res.status(200).json({
+            newRequestTickets,
+          });
+          }      
+      }
     } catch(err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
@@ -92,15 +122,74 @@ router
     try {
       const { id } = req.params;
       let ticket = await Ticket.find({_id: id});
+      // If a reqUser, limit the fields returned
+      if (req.user.__type === "reqUser") {
+        ticket = ticket[0]
+        console.log(ticket)
+        let { 
+          requestor,
+          vendorName,
+          overallRisk,
+          businessRisk,
+          status,
+          dateCompleted,
+          projectDescription,
+          projectManager,
+          buisnessContact,
+          department,
+          dataSensitivity,
+          dataDescription,
+          dataRegulation,
+          phi,
+          vendorService,
+          customCodeRequired,
+          integrations,
+          systemLevelAccess,
+          platform,
+          dataAccess,
+          needMFA,
+          encryption,
+          timeline,
+          dueDate,
+          warningDate
+         } = ticket
+        res.status(200).json({
+          requestor,
+          vendorName,
+          overallRisk,
+          businessRisk,
+          status,
+          dateCompleted,
+          projectDescription,
+          projectManager,
+          buisnessContact,
+          department,
+          dataSensitivity,
+          dataDescription,
+          dataRegulation,
+          phi,
+          vendorService,
+          customCodeRequired,
+          integrations,
+          systemLevelAccess,
+          platform,
+          dataAccess,
+          needMFA,
+          encryption,
+          timeline,
+          dueDate,
+          warningDate
+        });
+      } else {
       res.status(200).json({
         ticket,
       });
+      }
     } catch(err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
     }
   })
-
 
   router
   .route("/modify/:id")
@@ -108,7 +197,7 @@ router
     // Find ticket by document ID passed as parameter
     const { id } = req.params;
     try {
-      if (req.user._type === "reqUser") {
+      if (req.user.__type === "reqUser") {
         res.status(403).json({
           status: "Forbidden. Requesters cannot modify tickets.",
         });

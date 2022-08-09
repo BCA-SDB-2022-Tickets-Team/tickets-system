@@ -61,7 +61,7 @@ router
     try {
       // Restrict reqUser non-manager all tickets view to only be within their department
       if (req.user.__type === "reqUser" && !req.user.isManager) {
-        let allTickets = await Ticket.find({department: req.user.role});
+        let allTickets = await Ticket.find({requestor: req.user._id});
         res.status(200).json({
           allTickets,
         });
@@ -90,7 +90,7 @@ router
           statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
           // Restrict req user non-manager filtered tickets view to only be within their department
           if (!req.user.isManager) {
-            let tickets = await Ticket.find({status: { $in: statuses}, department: req.user.role});
+            let tickets = await Ticket.find({status: { $in: statuses}, requestor: req.user._id});
             res.status(200).json({
             tickets,
           });
@@ -115,7 +115,7 @@ router
             statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
             // Restrict req user non-manager filtered tickets view to only be within their department
             if (!req.user.isManager) {
-              let tickets = await Ticket.find({status: { $in: statusArray}, department: req.user.role});
+              let tickets = await Ticket.find({status: { $in: statusArray}, requestor: req.user._id});
               res.status(200).json({
               tickets,
               });

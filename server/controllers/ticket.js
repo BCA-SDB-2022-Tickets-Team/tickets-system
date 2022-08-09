@@ -47,23 +47,30 @@ router
           const missingData = Object.keys(error.errors)
           throw new Error(`you are missing the following data: ${[...missingData]}`)
         }
-    }
+      }
     } catch (err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
     }
-  }
-  )
+  })
   
   // Get all tickets
   router
   .route("/all")
   .get([session], async (req, res, next) => { 
     try {
-      let allTickets = await Ticket.find({});
-      res.status(200).json({
-        allTickets,
-      });
+      // Restrict reqUser non-manager all tickets view to only be within their department
+      if (req.user.__type === "reqUser" && !req.user.isManager) {
+        let allTickets = await Ticket.find({department: req.user.role});
+        res.status(200).json({
+          allTickets,
+        });
+      } else {
+        let allTickets = await Ticket.find({});
+        res.status(200).json({
+          allTickets,
+        });
+      }
     } catch(err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
@@ -76,17 +83,23 @@ router
   .get([session], async (req, res, next) => { 
     try {
       let statuses = req.query.status
-      //! I think there should be a way to simplify this code that handles the req.query (statuses). Statuses is a string when only one query, but an array-like object when there is more than one query. In order to simplify status filters for reqUsers, if statuses is a string, it needs to be converted to an array first. Revisit this in code review and discuss.
       // If more than one status selected, statuses is an array-like object.
       if (typeof statuses !== "string") {
-        // Req users will only see "new request", "in-progress", "requestor review", and "completed" status filters on the front-end so when they select "in-progress", need to also grab: "questionaire-sent", "director-review", "on-hold-vendor" statuses. This code is repeated below with changes for handling when statuses starts as a string.
         if (req.user.__type === "reqUser" && statuses.includes("in-progress")) {
+          // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
           statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
-          console.log(statuses)
-          let newRequestTickets = await Ticket.find({status: { $in: statuses}});
-          res.status(200).json({
-          newRequestTickets,
-        });
+          // Restrict req user non-manager filtered tickets view to only be within their department
+          if (!req.user.isManager) {
+            let newRequestTickets = await Ticket.find({status: { $in: statuses}, department: req.user.role});
+            res.status(200).json({
+            newRequestTickets,
+          });
+          } else {
+            let newRequestTickets = await Ticket.find({status: { $in: statuses}});
+            res.status(200).json({
+            newRequestTickets,
+          });
+          }
         } else {
         let newRequestTickets = await Ticket.find({status: { $in: statuses}});
         res.status(200).json({
@@ -98,14 +111,23 @@ router
         let statusArray = [];
         statusArray.push(statuses)
           if (req.user.__type === "reqUser" && statusArray.includes("in-progress")) {
+            // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
             statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
+            // Restrict req user non-manager filtered tickets view to only be within their department
+            if (!req.user.isManager) {
+              let newRequestTickets = await Ticket.find({status: { $in: statusArray}, department: req.user.role});
+              res.status(200).json({
+              newRequestTickets,
+              });
+            } else {
+              let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
+              res.status(200).json({
+              newRequestTickets,
+              });
+            }
+          } else {
             let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
             res.status(200).json({
-            newRequestTickets,
-          });
-          } else {
-          let newRequestTickets = await Ticket.find({status: { $in: statusArray}});
-          res.status(200).json({
             newRequestTickets,
           });
           }      

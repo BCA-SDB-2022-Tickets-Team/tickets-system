@@ -27,14 +27,14 @@ router
         throw new Error("Insufficient data");
       } else {
         let Ticket = TicketSchemaObject.makeModel()
-        console.log(`ticket schema is currently: `, Ticket.schema)
+        // console.log(`ticket schema is currently: `, Ticket.schema)
         const newTicket = new Ticket({
           requestor: req.user._id, 
           vendorName,
           projectDescription,
           projectManager: req.user.manager,
           department,
-          timeline
+          timeline,
         });
         try {
           await newTicket.save();
@@ -43,7 +43,6 @@ router
             newTicket,
           });
         } catch (error) {
-          console.log(Ticket.schema)
           const missingData = Object.keys(error.errors)
           
           throw new Error(`you are missing the following data: ${[...missingData]}`)

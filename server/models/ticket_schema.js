@@ -184,22 +184,20 @@ async function runAtStartup(){
   const allCustomFields = await custom_fields_schema.find()
 
   if(allCustomFields.length > 0){
-
-    const schemaToAppendTo = new mongoose.Schema()
     for(field of allCustomFields){
       const schemaFromField = new mongoose.Schema()
       
-      let schemaType = schemaFromField.path(field.name, field.fieldType, {
-        
-      })
-      // schemaFromField.path(fild.name).required =  
-      console.log(schemaType instanceof mongoose.SchemaType) 
-      schemaToAppendTo.add(schemaFromField)
+      schemaFromField.path(field.name, field.fieldType)
+      const newSchema = schemaFromField.path(field.name)
+      // console.log(schemaFromField)
+      // console.log(newSchema instanceof mongoose.SchemaType)
+      Ticket.add(schemaFromField)
+      Ticket.path(field.name).required(field.isRequired ? true : false)
+      //TODO: make default values and enums work
+      // if(field.defeaultVal){
+      //   Ticket.path(field.name).default(field.defeaultVal)
+      // }
     }
-    let newestSchema = Ticket.add(schemaToAppendTo)
-    Ticket = newestSchema
-    // console.clear()
-    // console.log(mongoose.SchemaTypes)
   } else {
     return;
   }

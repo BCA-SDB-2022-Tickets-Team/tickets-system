@@ -15,14 +15,14 @@ router.route('/add-custom-field')
       } else {
         //TODO: type-check object coming from front-end
         if(req.body.field){
-          console.log(`req body obj`, req.body)
+          // console.log(`req body obj`, req.body)
           const newField = new fieldsSchema({
             name: req.body.field.name,
             fieldType: req.body.field.fieldType,
-            required: req.body.field.fieldType,
-            defaultVal: req.body.field.fieldType,
+            isRequired: req.body.field.isRequired,
+            defaultVal: req.body.field.defaultVal,
           })
-          console.log(newField)
+          // console.log(newField)
           newField.save()
             .then(newField => {
               const schemaObj = new Object()

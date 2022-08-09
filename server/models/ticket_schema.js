@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose'),
+      custom_fields_schema = require('./custom_fields_schema')
 
 /**
  * ? for custom fields, we will make use of Mongoose's discriminator function:
@@ -178,6 +179,32 @@ let Ticket = mongoose.Schema(
     timestamps: true
   }
 )
+
+async function runAtStartup(){
+  const allCustomFields = await custom_fields_schema.find()
+
+  if(allCustomFields.length > 0){
+
+    const schemaToAppendTo = new mongoose.Schema()
+    for(field of allCustomFields){
+      const schemaFromField = new mongoose.Schema()
+      
+      let schemaType = schemaFromField.path(field.name, field.fieldType, {
+        
+      })
+      // schemaFromField.path(fild.name).required =  
+      console.log(schemaType instanceof mongoose.SchemaType) 
+      schemaToAppendTo.add(schemaFromField)
+    }
+    let newestSchema = Ticket.add(schemaToAppendTo)
+    Ticket = newestSchema
+    // console.clear()
+    // console.log(mongoose.SchemaTypes)
+  } else {
+    return;
+  }
+}
+runAtStartup()
 
 const updateSchema = function(field){
   const newSchema = Ticket.add(field)

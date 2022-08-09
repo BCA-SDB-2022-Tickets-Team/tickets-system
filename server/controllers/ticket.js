@@ -27,6 +27,7 @@ router
         throw new Error("Insufficient data");
       } else {
         let Ticket = TicketSchemaObject.makeModel()
+        console.log(`ticket schema is currently: `, Ticket.schema)
         const newTicket = new Ticket({
           requestor: req.user._id, 
           vendorName,

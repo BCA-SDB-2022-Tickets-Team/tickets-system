@@ -1,24 +1,6 @@
 const mongoose = require('mongoose'),
       custom_fields_schema = require('./custom_fields_schema')
 
-/**
- * ? for custom fields, we will make use of Mongoose's discriminator function:
- * https://mongoosejs.com/docs/discriminators.html
- * 
- * in server.js, we will have a variable that holds the current ticket schema
- * when a super admin adds a custom field, we will use model.discriminator to
- * create a new schema, then overwrite the global variable in server.js so that all 
- * new requests use the new schema
- * 
- * when we scale this to include multiple companies, we will need either a database or 
- * a model within the assessor DB to track schemas.
- */
-// todo : write function that produces schema object
-  // takes field to be added, data type, and whether it's required
-  // calls Ticket.discriminator custom field, object made of specified params
-  // returns new discriminator model that extends Ticket
-  // redeclare Ticket as new model
-
 let Ticket = mongoose.Schema(
   {
     requestor: {
@@ -180,6 +162,16 @@ let Ticket = mongoose.Schema(
   }
 )
 
+/**
+ * an async function that will only run when server.js is 
+ * restarted. It queries the custom_fields collection and
+ * returns every custom field created for this deployment.
+ * Then it converts those documents into Schemas and
+ * appends them to defeult the Ticket schema. Finally,
+ * it sets the Tickets variable to the "new" schema.
+ * 
+ * @returns void
+ */
 async function runAtStartup(){
   const allCustomFields = await custom_fields_schema.find()
 
@@ -188,11 +180,11 @@ async function runAtStartup(){
       const schemaFromField = new mongoose.Schema()
       
       schemaFromField.path(field.name, field.fieldType)
-      const newSchema = schemaFromField.path(field.name)
-      // console.log(schemaFromField)
-      // console.log(newSchema instanceof mongoose.SchemaType)
       Ticket.add(schemaFromField)
+      const ticketSchemaType = Ticket.path(field.name)
+
       Ticket.path(field.name).required(field.isRequired ? true : false)
+      Ticket.path(field.name).options
       //TODO: make default values and enums work
       // if(field.defeaultVal){
       //   Ticket.path(field.name).default(field.defeaultVal)

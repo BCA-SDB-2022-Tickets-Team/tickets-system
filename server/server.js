@@ -16,13 +16,16 @@ db.on("error", console.error.bind(console, "connection-error"))
 // end database connection setup
 const userAuth = require('./controllers/auth')
 const ticket = require('./controllers/ticket')
-
+const customField = require('./controllers/customfields')
 app.use(cors())
 app.use(express.json())
 
 // auth middleware for login, create, modify users
 app.use('/api/user', userAuth)
 app.use('/api/ticket', ticket)
+app.use("/api/fields", customField)
+
+
 
 app.listen(PORT, () => {
   try {

@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const Ticket = require("../models/ticket_schema")
+
 const jwt = require("jsonwebtoken")
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
 const session = require('../middlewares/session');
+const {makeModel} = require("../models/ticket_schema")
 
 
 //  Create a new ticket
@@ -28,6 +29,7 @@ router
         ) {
         throw new Error("Insufficient data");
       } else {
+        const Ticket = makeModel()
         const newTicket = new Ticket({
           requestor: req.user._id, 
           vendorName,
@@ -59,6 +61,7 @@ router
   .route("/all")
   .get([session], async (req, res, next) => { 
     try {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({});
       res.status(200).json({
         allTickets,
@@ -75,6 +78,7 @@ router
   .get([session], async (req, res, next) => { 
     try {
       let statuses = req.query.status
+      const Ticket = makeModel()
       let newRequestTickets = await Ticket.find({status: { $in: statuses}});
       res.status(200).json({
         newRequestTickets,
@@ -91,6 +95,7 @@ router
   .get([session], async (req, res, next) => { 
     try {
       const { id } = req.params;
+      const Ticket = makeModel()
       let ticket = await Ticket.find({_id: id});
       res.status(200).json({
         ticket,
@@ -113,6 +118,7 @@ router
           status: "Forbidden. Requesters cannot modify tickets.",
         });
       } else {
+        const Ticket = makeModel()
         let ticketToModify = await Ticket.findOne({ _id: id });
         
         // Error if no ticket with that ID found
@@ -149,6 +155,7 @@ router
           status: "Forbidden. Only admins can delete tickets.",
         });
       } else {
+        const Ticket = makeModel()
           let ticketToDelete = await Ticket.findOne({ _id: id })
           // Error if no ticket with that ID found
           if (!ticketToDelete) {

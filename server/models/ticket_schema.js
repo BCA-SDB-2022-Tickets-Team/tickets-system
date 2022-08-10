@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const CustomFieldsSchema =require('./custom_fields_schema')
 
 /**
  * ? for custom fields, we will make use of Mongoose's discriminator function:
@@ -192,5 +193,23 @@ let Ticket = mongoose.Schema(
     timestamps: true
   }
 )
+const UpdateSchema = function(field){
+  const SchemaFromField = new mongoose.Schema()
+  SchemaFromField.path(field.name,field.fieldType)
+  Ticket.add(SchemaFromField)
+  Ticket.path(field.name).required(field.isRequired ?true:false)
+}
+async function runAtStartUp(){
+  const allCustomFields = await CustomFieldsSchema.find()
+  if (allCustomFields.length > 0){
+    for(field of allCustomFields){
+      UpdateSchema(field)
+    }
+  }else{return} 
+ 
+} runAtStartUp()
+const makeModel = function(){
+  return mongoose.model('ticket',Ticket)
+}
 
-module.exports = mongoose.model('ticket', Ticket)
+module.exports = {UpdateSchema, makeModel}

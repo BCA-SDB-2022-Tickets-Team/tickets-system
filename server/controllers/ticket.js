@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const Ticket = require("../models/ticket_schema")
+
 const jwt = require("jsonwebtoken")
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
 const session = require('../middlewares/session');
+const {makeModel} = require("../models/ticket_schema")
 
 //TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
 
@@ -42,6 +43,7 @@ router
         ) {
         throw new Error("Insufficient data");
       } else {
+        const Ticket = makeModel()
         const newTicket = new Ticket({
           requestor: req.user._id, 
           vendorName,
@@ -170,6 +172,7 @@ router
   .get([session], async (req, res, next) => { 
     try {
       const { id } = req.params;
+      const Ticket = makeModel()
       let ticket = await Ticket.find({_id: id});
       // If a reqUser, limit the fields returned
       if (req.user.__type === "reqUser") {
@@ -253,6 +256,7 @@ router
           status: "Forbidden. Requesters cannot modify tickets.",
         });
       } else {
+        const Ticket = makeModel()
         let ticketToModify = await Ticket.findOne({ _id: id });
         
         // Error if no ticket with that ID found
@@ -289,6 +293,7 @@ router
           status: "Forbidden. Only admins can delete tickets.",
         });
       } else {
+        const Ticket = makeModel()
           let ticketToDelete = await Ticket.findOne({ _id: id })
           // Error if no ticket with that ID found
           if (!ticketToDelete) {

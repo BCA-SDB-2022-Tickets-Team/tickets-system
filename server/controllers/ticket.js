@@ -296,7 +296,9 @@ router
           } else {
             // Delete the ticket by id
             await Ticket.deleteOne({ _id: id })
-            res.redirect('/') //! This results in message: Cannot GET '/' but removing causes it to hang
+            res.status(200).json({
+              status: `ticket number ${id} was successfully deleted`
+            })
           }
       } 
     } catch(err) {

@@ -73,16 +73,6 @@
 						{
 							"name": "delete user",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNmE4ZWNhNmJmN2JhZTZjN2U2MDAiLCJlbWFpbCI6Im5vQGhvbWUuY29tIiwiaWF0IjoxNjU5OTcwMTQ3LCJleHAiOjE2NjAwNTY1NDd9.Gdf72mOpRkieKFXARRSioo9VUG99g9TAH7LcnH5ULL0",
-											"type": "string"
-										}
-									]
-								},
 								"method": "DELETE",
 								"header": [],
 								"body": {
@@ -110,7 +100,30 @@
 							"response": []
 						}
 					],
-					"description": "/api/user/req"
+					"description": "/api/user/req",
+					"auth": {
+						"type": "bearer"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
 				},
 				{
 					"name": "asr",
@@ -118,16 +131,6 @@
 						{
 							"name": "asr: new user",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTczMjY0OCwiZXhwIjoxNjU5ODE5MDQ4fQ.soU3Rd2gHCONOrb3EGx3g5-DtD9HhCYPtnQi_KeVp7A",
-											"type": "string"
-										}
-									]
-								},
 								"method": "POST",
 								"header": [],
 								"body": {
@@ -186,16 +189,6 @@
 						{
 							"name": "delete user",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTk2ODY1OSwiZXhwIjoxNjYwMDU1MDU5fQ.wDNptrMWg5vQHyVtRTmPjd9qOjt1QZTbiO5wwialSOs",
-											"type": "string"
-										}
-									]
-								},
 								"method": "DELETE",
 								"header": [],
 								"body": {
@@ -222,6 +215,29 @@
 							},
 							"response": []
 						}
+					],
+					"auth": {
+						"type": "bearer"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
 					]
 				}
 			],
@@ -231,424 +247,329 @@
 			"name": "tickets",
 			"item": [
 				{
-					"name": "new ticket",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNmE4ZWNhNmJmN2JhZTZjN2U2MDAiLCJlbWFpbCI6Im5vQGhvbWUuY29tIiwiaWF0IjoxNjU5OTc5MTE3LCJleHAiOjE2NjAwNjU1MTd9.IgvecSL5FGRY79APW3NtqBshySofTm2g84okmZOj6tM",
-									"type": "string"
+					"name": "req",
+					"item": [
+						{
+							"name": "all-tickets-reqUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/all",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"all"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"vendorName\": \"blah\", \n    \"projectDescription\": \"balhblah\", \n    \"department\": \"hr\",\n    \"timeline\": \"standard\",\n    \"test\": \"stringfdsafdsa\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "status-filter-reqUser",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"[in-progress, new-request]\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/ticket/status-filter/",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"status-filter",
+										""
+									]
 								}
+							},
+							"response": []
+						},
+						{
+							"name": "status-filter-reqUser-isManager",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/status-filter/?status=in-progress&status=new-request",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"status-filter",
+										""
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "in-progress"
+										},
+										{
+											"key": "status",
+											"value": "new-request"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "one-ticket-reqUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/62f1127cf429047eb5c802a6",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"62f1127cf429047eb5c802a6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-ticket",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n    \"vendorName\":\"Vendor 11 Service Name\",\n    \"projectDescription\": \"This is a description of project 11\", \n    \"projectManager\": \"Lucy May\", \n    \"department\": \"it\", \n    \"timeline\": \"standard\"\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/ticket/create",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY2MDE2NDE1OCwiZXhwIjoxNjYwMjUwNTU4fQ.JYp22O1zPZPEw8m54kd9iS6IQJaLZzLxtD8Jh1sL3yk",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
 							}
 						},
-						"url": {
-							"raw": "localhost:4000/api/ticket/create-ticket",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"create-ticket"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "create-ticket",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVhYzU0NzRjZTk4MGIwNjY3MzQxYjUiLCJlbWFpbCI6ImdvQGhvbWUuY29tIiwiaWF0IjoxNjYwMTU3MjE5LCJleHAiOjE2NjAyNDM2MTl9.VqRmtpK-AKDep7fdZeJGNGF6KO0zURw5lCeMdB_N2-I",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{ \n    \"vendorName\":\"Vendor 11 Service Name\",\n    \"projectDescription\": \"This is a description of project 11\", \n    \"projectManager\": \"Lucy May\", \n    \"department\": \"it\", \n    \"timeline\": \"standard\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
 							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/ticket/create",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"create"
-							]
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "add-custom-field",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY2MDE1Njc2NSwiZXhwIjoxNjYwMjQzMTY1fQ._-eAHElBP6q8ulLB1PJTIuBaduavIQ8NCzyeArllNYo",
-									"type": "string"
+					"name": "asr",
+					"item": [
+						{
+							"name": "add-custom-field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"field\": {\n        \"name\": \"test three\",\n        \"fieldType\": \"string\",\n        \"isRequired\": true\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/fields/add-custom-field",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"fields",
+										"add-custom-field"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": " {\n        \"name\": \"test\",\n        \"fieldType\": \"string\",\n        \"isRequired\": true\n    }\n",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "all-tickets-asrUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/all",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"all"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "http://localhost:4000/api/fields/add-custom-field",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"fields",
-								"add-custom-field"
-							]
+						{
+							"name": "status-filter-asrUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/status-filter/?status=in-progress",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"status-filter",
+										""
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "in-progress"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "one-ticket-asrUser-isAdmin",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:4000/api/ticket/62f1127cf429047eb5c802a6",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"62f1127cf429047eb5c802a6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-ticket-asrUser",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \n    \"vendorName\":\"Updated Ticket Vendor Namey Name\",\n    \"overallRisk\": \"low\",\n    \"businessRisk\": \"high\",\n    \"status\": \"on-hold-vendor\",\n    \"dateCompleted\": \"2022-07-08T14:02:20.454+00:00\",\n    \"projectDescription\": \"Updated project description\",\n    \"projectManager\": \"New Manager\",\n    \"businessContact\": \"Vendor B Contact\",\n    \"department\": \"ops\",\n    \"dataSensitivity\": \"Not sensitive\",\n    \"dataDescription\": \"Data desc.\",\n    \"dataRegulation\":\"none\",\n    \"phi\": true,\n    \"vendorService\": \"Type of service\",\n    \"customCodeRequired\": true,\n    \"submittedToSecurity\": \"2022-07-08T14:02:20.454+00:00\",\n    \"integrations\": true,\n    \"systemLevelAccess\": \"Yes, needed.\",\n    \"platform\": \"Platform\",\n    \"dataAccess\": \"Data access\",\n    \"needMFA\": true,\n    \"encryption\": true,\n    \"assesor\": \"62ed82ba58b007511c656ced\",\n    \"notes\": \"notes, notes, notes\",\n    \"timeline\": \"expedite\",\n    \"attachments\": \"1\",\n    \"dueDate\": \"2022-10-08T14:02:20.454+00:00\",\n    \"warningDate\": \"2022-09-20T14:02:20.454+00:00\",\n    \"questionnaireSent\": \"2022-05-01T14:02:20.454+00:00\",\n    \"questionnaireRec\": \"2022-05-10T14:02:20.454+00:00\"\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:4000/api/ticket/modify/62f1127cf429047eb5c802a6",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"modify",
+										"62f1127cf429047eb5c802a6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-isAdmin",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:4000/api/ticket/delete/62f28db02680397e73b99ea6",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"ticket",
+										"delete",
+										"62f28db02680397e73b99ea6"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "all-tickets-reqUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmYyNjRjYTY5ZjIwNWZlMWEyOWUyNjEiLCJlbWFpbCI6Imx1Y3lAaG9tZS5jb20iLCJpYXQiOjE2NjAwNjYwMDEsImV4cCI6MTY2MDE1MjQwMX0.NWrwbZU0HdXE-WdfC7PHCzvDwVvKZxXwGcS0Y0aTvr8",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/all",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "all-tickets-asrUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTk2NjAwMSwiZXhwIjoxNjYwMDUyNDAxfQ.AkAE7Q1Ggin947yh7pcebxIYHDUzCdD_MM6_U7ZoUJA",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/all",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "status-filter-reqUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmYyNjRjYTY5ZjIwNWZlMWEyOWUyNjEiLCJlbWFpbCI6Imx1Y3lAaG9tZS5jb20iLCJpYXQiOjE2NjAwNjYwMDEsImV4cCI6MTY2MDE1MjQwMX0.NWrwbZU0HdXE-WdfC7PHCzvDwVvKZxXwGcS0Y0aTvr8",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/status-filter/?status=in-progress",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"status-filter",
-								""
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "in-progress"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "status-filter-reqUser-isManager",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmYyYjM4MWM5NGQ3ZmZkNTEyOGQ5NDciLCJlbWFpbCI6InJlcW1hbmFnZXJAaG9tZS5jb20iLCJpYXQiOjE2NjAwNzI4ODEsImV4cCI6MTY2MDE1OTI4MX0.Iu4dCnd2kD5tAOnGwx1k_F-jiRhmyYc0IZwHTFJGDGU",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/status-filter/?status=in-progress",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"status-filter",
-								""
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "in-progress"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "status-filter-asrUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY2MDA3Mjk1MywiZXhwIjoxNjYwMTU5MzUzfQ.DfGnq73u7bXzD5g2h9Maii5csA_ImBEQWUmI-LA-0dw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/status-filter/?status=in-progress",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"status-filter",
-								""
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "in-progress"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "one-ticket-asrUser-isAdmin",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTk2NjAwMSwiZXhwIjoxNjYwMDUyNDAxfQ.AkAE7Q1Ggin947yh7pcebxIYHDUzCdD_MM6_U7ZoUJA",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/62f1127cf429047eb5c802a6",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"62f1127cf429047eb5c802a6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "one-ticket-reqUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmYyNjRjYTY5ZjIwNWZlMWEyOWUyNjEiLCJlbWFpbCI6Imx1Y3lAaG9tZS5jb20iLCJpYXQiOjE2NjAwNTI3OTAsImV4cCI6MTY2MDEzOTE5MH0.mkZmgl7mPJigXRhCaJgMFkPujTZ171ZAe6Y4GBCaz-k",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/62f1127cf429047eb5c802a6",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"62f1127cf429047eb5c802a6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update-ticket-asrUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkNjc1MWQyYmRmNDIzZjIzMjdjODkiLCJlbWFpbCI6ImluZGVlZEBob21lLmNvbSIsImlhdCI6MTY1OTk2NjAwMSwiZXhwIjoxNjYwMDUyNDAxfQ.AkAE7Q1Ggin947yh7pcebxIYHDUzCdD_MM6_U7ZoUJA",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{ \n    \"vendorName\":\"Updated Ticket Vendor Namey Name\",\n    \"overallRisk\": \"low\",\n    \"businessRisk\": \"high\",\n    \"status\": \"on-hold-vendor\",\n    \"dateCompleted\": \"2022-07-08T14:02:20.454+00:00\",\n    \"projectDescription\": \"Updated project description\",\n    \"projectManager\": \"New Manager\",\n    \"businessContact\": \"Vendor B Contact\",\n    \"department\": \"ops\",\n    \"dataSensitivity\": \"Not sensitive\",\n    \"dataDescription\": \"Data desc.\",\n    \"dataRegulation\":\"none\",\n    \"phi\": true,\n    \"vendorService\": \"Type of service\",\n    \"customCodeRequired\": true,\n    \"submittedToSecurity\": \"2022-07-08T14:02:20.454+00:00\",\n    \"integrations\": true,\n    \"systemLevelAccess\": \"Yes, needed.\",\n    \"platform\": \"Platform\",\n    \"dataAccess\": \"Data access\",\n    \"needMFA\": true,\n    \"encryption\": true,\n    \"assesor\": \"62ed82ba58b007511c656ced\",\n    \"notes\": \"notes, notes, notes\",\n    \"timeline\": \"expedite\",\n    \"attachments\": \"1\",\n    \"dueDate\": \"2022-10-08T14:02:20.454+00:00\",\n    \"warningDate\": \"2022-09-20T14:02:20.454+00:00\",\n    \"questionnaireSent\": \"2022-05-01T14:02:20.454+00:00\",\n    \"questionnaireRec\": \"2022-05-10T14:02:20.454+00:00\"\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:4000/api/ticket/modify/62f1127cf429047eb5c802a6",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"modify",
-								"62f1127cf429047eb5c802a6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete-isAdmin",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmVkODJiYTU4YjAwNzUxMWM2NTZjZWQiLCJlbWFpbCI6InRvb3RAaG9tZS5jb20iLCJpYXQiOjE2NjAxNjE5OTUsImV4cCI6MTY2MDI0ODM5NX0.d9uJZ8RhQjtfotUP3nTtlCHwXWq6oS5bStgs3anUfcw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "localhost:4000/api/ticket/delete/62f26eba67ec6601d5c66763",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"ticket",
-								"delete",
-								"62f26eba67ec6601d5c66763"
-							]
-						}
-					},
-					"response": []
+					]
 				}
 			]
 		},

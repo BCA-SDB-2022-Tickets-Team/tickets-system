@@ -165,6 +165,24 @@ router
       next(err);
     }
   })
+  router
+.route('/model')
+.get((req, res)=>{
+  console.log('hello')
+  const TicketSchema = makeModel()
+  const Ticket = TicketSchema.schema.paths
+  let toReturn = []
+  for (tick in Ticket){
+    toReturn.push({
+      name: tick,
+      type: Ticket[tick].instance,
+      required: Ticket[tick].isRequired
+    })
+  }
+  res.send(toReturn)
+//   let response = Ticket.eachPath()
+// res.send(response)
+})
 
   // Get one ticket using ticket id as param
   router
@@ -310,6 +328,8 @@ router
       next(err);
     }
   })
+
+
 
 // Universal error handler
 // Any error thrown above goes through this

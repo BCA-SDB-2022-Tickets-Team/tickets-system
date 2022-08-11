@@ -12,12 +12,15 @@ router
   .route("/create")
   .post([session], async (req, res, next) => {
     try {
+      // Only req users and isAdmin asr users can make new tickets
       if (req.user.__type === "asrUser" && !req.user.isAdmin) {
         res.status(403).json({
           status: "Forbidden. Only requestors and admins can create tickets.",
         });
       } else {
+        // Create Ticket from most recent paths (including all custom fields)
         const Ticket = makeModel()
+        // Check path field names against array of should-not-include fields and remove as needed
         const allTicketFields = Object.keys(Ticket.schema.paths)
         const notTheseFields = ['_id','__v','createdAt','updatedAt','overallRisk','businessRisk','status','dateCompleted','submittedToSecurity','assessor','notes','timeline','dueDate','warningDate','questionnaireSent','questionnaireRec']
         function removeFields() {
@@ -29,38 +32,23 @@ router
           }
         }
         removeFields()
-
-        console.log(allTicketFields)
-
+        // Get field names from the request and create a new Ticket, adding in the submitter's ID
         const bodyFields = Object.keys(req.body)
-        //console.log(bodyFields)
         const newTicket = new Ticket({
           requestor: req.user._id
         })
         for (field of allTicketFields) {
-          //console.log(`field is ${field}\n body.fields includes ${bodyFields.includes(field)}`)
           if(bodyFields.includes(field)) {
-            //console.log(field)
             newTicket[field] = req.body[field]
           }
         }
-        console.log(newTicket)
-        
-        /* if (
-          !department ||
-          !vendorName ||
-          !projectDescription
-        ) {
-        throw new Error("Insufficient data");
-        } else { */
-          await newTicket.save();
-              res.status(201).json({
-                status: "ticket created",
-                newTicket,
-              });
-
+        // Save the newly created ticket
+        await newTicket.save();
+            res.status(201).json({
+              status: "ticket created",
+              newTicket,
+            });
         }
-      //}
     } catch (err) {
       // Pass error to error-handling middleware at the bottom
       next(err);

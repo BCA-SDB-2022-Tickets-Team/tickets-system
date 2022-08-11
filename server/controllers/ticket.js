@@ -1,81 +1,66 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { ConnectionClosedEvent } = require("mongodb");
 const SECRET_KEY = process.env.SECRET_KEY
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION
 const session = require('../middlewares/session');
 const {makeModel} = require("../models/ticket_schema")
 
-//TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
-
 //  Create a new ticket
 router
   .route("/create")
   .post([session], async (req, res, next) => {
-    const { 
-      requestor, 
-      vendorName, 
-      projectDescription, 
-      projectManager, 
-      buisnessContact,
-      department,
-      dataSensitivity,
-      dataDescription,
-      dataRegulation,
-      phi,
-      vendorService,
-      customCodeRequired,
-      integrations,
-      systemLevelAccess,
-      platform,
-      dataAccess,
-      needMFA,
-      encryption,
-      attachments
-    } = req.body;
     try {
-      if (
-          !department ||
-          !vendorName ||
-          !projectDescription ||
-          !timeline
-        ) {
-        throw new Error("Insufficient data");
+      if (req.user.__type === "asrUser" && !req.user.isAdmin) {
+        res.status(403).json({
+          status: "Forbidden. Only requestors and admins can create tickets.",
+        });
       } else {
         const Ticket = makeModel()
-        const newTicket = new Ticket({
-          requestor: req.user._id, 
-          vendorName,
-          projectDescription,
-          projectManager, 
-          buisnessContact,
-          department,
-          dataSensitivity,
-          dataDescription,
-          dataRegulation,
-          phi,
-          vendorService,
-          customCodeRequired,
-          integrations,
-          systemLevelAccess,
-          platform,
-          dataAccess,
-          needMFA,
-          encryption,
-          attachments
-        });
-        try {
-          await newTicket.save();
-          res.status(201).json({
-            status: "ticket created",
-            newTicket,
-          });
-        } catch (error) {
-          const missingData = Object.keys(error.errors)
-          throw new Error(`you are missing the following data: ${[...missingData]}`)
+        const allTicketFields = Object.keys(Ticket.schema.paths)
+        const notTheseFields = ['_id','__v','createdAt','updatedAt','overallRisk','businessRisk','status','dateCompleted','submittedToSecurity','assessor','notes','timeline','dueDate','warningDate','questionnaireSent','questionnaireRec']
+        function removeFields() {
+          for (i = 0; i < allTicketFields.length; i++) {
+            let fieldName = allTicketFields.pop()
+            if (!notTheseFields.includes(fieldName)) {
+              allTicketFields.unshift(fieldName)
+            }
+          }
         }
-      }
+        removeFields()
+
+        console.log(allTicketFields)
+
+        const bodyFields = Object.keys(req.body)
+        //console.log(bodyFields)
+        const newTicket = new Ticket({
+          requestor: req.user._id
+        })
+        for (field of allTicketFields) {
+          //console.log(`field is ${field}\n body.fields includes ${bodyFields.includes(field)}`)
+          if(bodyFields.includes(field)) {
+            //console.log(field)
+            newTicket[field] = req.body[field]
+          }
+        }
+        console.log(newTicket)
+        
+        /* if (
+          !department ||
+          !vendorName ||
+          !projectDescription
+        ) {
+        throw new Error("Insufficient data");
+        } else { */
+          await newTicket.save();
+              res.status(201).json({
+                status: "ticket created",
+                newTicket,
+              });
+
+        }
+      //}
     } catch (err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
@@ -109,57 +94,32 @@ router
   router
   .route("/status-filter")
   .get([session], async (req, res, next) => { 
+    const { status } = req.body
+    statusArray = status.split(",")
     try {
-      let statuses = req.query.status
-      // If more than one status selected, statuses is an array-like object.
-      if (typeof statuses !== "string") {
-        if (req.user.__type === "reqUser" && statuses.includes("in-progress")) {
-          // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
-          statuses.push("questionaire-sent", "director-review", "on-hold-vendor")
+      const Ticket = makeModel()
+        if (req.user.__type === 'reqUser' && statusArray.includes('in-progress')) {
+          // For all req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
+          statusArray.push('questionaire-sent', 'director-review', 'on-hold-vendor')
           // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
           if (!req.user.isManager) {
-            let tickets = await Ticket.find({status: { $in: statuses}, requestor: req.user._id});
+            let tickets = await Ticket.find({status: { $in: statusArray}, requestor: req.user._id});
             res.status(200).json({
             tickets,
           });
-          } else {
-            let tickets = await Ticket.find({status: { $in: statuses}});
-            res.status(200).json({
-            tickets,
-          });
-          }
-        } else {
-          let tickets = await Ticket.find({status: { $in: statuses}});
-          res.status(200).json({
-          tickets,
-        });
-        }   
-      // If only one status selected, statuses is a string instead of an array-like object, so need to convert to an array first so can add additional statuses for reqUsers
-      } else {
-        let statusArray = [];
-        statusArray.push(statuses)
-          if (req.user.__type === "reqUser" && statusArray.includes("in-progress")) {
-            // For req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
-            statusArray.push("questionaire-sent", "director-review", "on-hold-vendor")
-            // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
-            if (!req.user.isManager) {
-              let tickets = await Ticket.find({status: { $in: statusArray}, requestor: req.user._id});
-              res.status(200).json({
-              tickets,
-              });
-            } else {
-              let tickets = await Ticket.find({status: { $in: statusArray}});
-              res.status(200).json({
-              tickets,
-              });
-            }
           } else {
             let tickets = await Ticket.find({status: { $in: statusArray}});
             res.status(200).json({
             tickets,
           });
-          }      
-      }
+          }
+        } else {
+          // Asr 
+          let tickets = await Ticket.find({status: { $in: statusArray}});
+          res.status(200).json({
+          tickets,
+        });
+        }
     } catch(err) {
       // Pass error to error-handling middleware at the bottom
       next(err);
@@ -257,11 +217,11 @@ router
         });
       } else {
         const Ticket = makeModel()
-        let ticketToModify = await Ticket.findOne({ _id: id });
+        const ticketToModify = await Ticket.findOne({ _id: id });
         
         // Error if no ticket with that ID found
         if (!ticketToModify) {
-          throw new Error("no ticket with that id exists");
+          throw new Error("No ticket with that id exists.");
         } 
         else {
           // loop through request body and only update fields that exist in the request

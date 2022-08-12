@@ -15,18 +15,18 @@ router.route("/add-custom-field")
                     name: req.body.name,
                     fieldType: req.body.fieldType,
                     isRequired: req.body.isRequired,
-                    defaultValue: req.body.defaultValue
+                    defaultValue: req.body.defaultValue,
+                    reqOrAsr: req.body.reqOrAsr
 
                 })
                 newField.save()
                     .then(newField=>{
-UpdateSchema(newField)
-return newField
+                        UpdateSchema(newField)
+                        return newField
                     }).then((newField)=>{
                         res.status(200).json({
                             status: "successfully added custom field",
                             newField
-                    
                         })
 
                     })
@@ -36,7 +36,7 @@ return newField
             }
         }
     } catch (error) {
-       console.log("error") 
+       console.log(error) 
        res.status(500).json({
            status: "adding custom field failed",
            message: error

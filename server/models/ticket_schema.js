@@ -1,25 +1,7 @@
 const mongoose = require('mongoose')
 const CustomFieldsSchema =require('./custom_fields_schema')
 
-/**
- * ? for custom fields, we will make use of Mongoose's discriminator function:
- * https://mongoosejs.com/docs/discriminators.html
- * 
- * in server.js, we will have a variable that holds the current ticket schema
- * when a super admin adds a custom field, we will use model.discriminator to
- * create a new schema, then overwrite the global variable in server.js so that all 
- * new requests use the new schema
- * 
- * when we scale this to include multiple companies, we will need either a database or 
- * a model within the assessor DB to track schemas.
- */
-// todo : write function that produces schema object
-  // takes field to be added, data type, and whether it's required
-  // calls Ticket.discriminator custom field, object made of specified params
-  // returns new discriminator model that extends Ticket
-  // redeclare Ticket as new model
-
-let Ticket = mongoose.Schema(
+let reqTicket = new mongoose.Schema(
   {
     requestor: {
       type: mongoose.ObjectId,
@@ -28,36 +10,6 @@ let Ticket = mongoose.Schema(
     vendorName: {
       type: String,
       required: true
-    },
-    overallRisk: {
-      type: String,
-      required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
-    },
-    businessRisk: {
-      type: String,
-      required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
-    },
-    status: {
-      type: String,
-      required: false,
-      default: 'new-request',
-      enum: [
-              'new-request', 
-              'questionaire-sent', 
-              'requestor-review',
-              'director-review',
-              'on-hold-vendor',
-              'in-progress',
-              'completed'  
-            ]
-    },
-    dateCompleted: {
-      type: Date,
-      required: false,
     },
     projectDescription: {
       type: String,
@@ -152,25 +104,48 @@ let Ticket = mongoose.Schema(
       default: false,
       required: false
     },
-    assessor: {
-      type: mongoose.ObjectId,
-      required: false,
-    },
-    notes: {
-      type: String,
-      default: '',
-      required: false
-    },
-    timeline: {
-      type: String,
-      required: false,
-      default: 'standard',
-      enum: ['standard', 'expedite']
-    },
     attachments: {
       type: Number,
       required: false,
       default: 0
+    },
+  }
+)
+
+const asrTicket = new mongoose.Schema({
+    assessor: {
+      type: mongoose.ObjectId,
+      required: false,
+    },
+    overallRisk: {
+      type: String,
+      required: false,
+      default: '',
+      enum: ['', 'low', 'medium', 'high']
+    },
+    businessRisk: {
+      type: String,
+      required: false,
+      default: '',
+      enum: ['', 'low', 'medium', 'high']
+    },
+    status: {
+      type: String,
+      required: false,
+      default: 'new-request',
+      enum: [
+              'new-request', 
+              'questionaire-sent', 
+              'requestor-review',
+              'director-review',
+              'on-hold-vendor',
+              'in-progress',
+              'completed'  
+            ]
+    },
+    dateCompleted: {
+      type: Date,
+      required: false,
     },
     dueDate: {
       type: Date,
@@ -187,29 +162,50 @@ let Ticket = mongoose.Schema(
     questionnaireRec: {
       type: Date, 
       required: false
-    }
-  },
-  {
-    timestamps: true
-  }
-)
+    },
+    notes: {
+      type: String,
+      default: '',
+      required: false
+    },
+    timeline: {
+      type: String,
+      required: false,
+      default: 'standard',
+      enum: ['standard', 'expedite']
+    },
+})
+
+let Ticket = new mongoose.Schema()
+
 const UpdateSchema = function(field){
   const SchemaFromField = new mongoose.Schema()
   SchemaFromField.path(field.name,field.fieldType)
-  Ticket.add(SchemaFromField)
-  Ticket.path(field.name).required(field.isRequired ?true:false)
+  let schemaToAddTo = field.reqOrAsr === "req" ? reqTicket : asrTicket
+  schemaToAddTo.add(SchemaFromField)
+  schemaToAddTo.path(field.name).required(field.isRequired ? true:false)
 }
+
 async function runAtStartUp(){
   const allCustomFields = await CustomFieldsSchema.find()
   if (allCustomFields.length > 0){
     for(field of allCustomFields){
       UpdateSchema(field)
     }
-  }else{return} 
- 
+  }
+  Ticket.add(reqTicket)
+  Ticket.add(asrTicket)
+  return;
 } runAtStartUp()
+
 const makeModel = function(){
   return mongoose.model('ticket',Ticket)
 }
 
-module.exports = {UpdateSchema, makeModel}
+const makeAsrModel = function() {
+  console.log(mongoose.modelNames())
+  let ticketModel = makeModel()
+  return ticketModel.discriminator('asrTicket', asrTicket)
+}
+
+module.exports = {UpdateSchema, makeModel, makeAsrModel}

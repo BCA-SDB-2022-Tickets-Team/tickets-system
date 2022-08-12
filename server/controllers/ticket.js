@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
-const { makeModel } = require("../models/ticket_schema");
+const { makeModel, makeAsrModel } = require("../models/ticket_schema");
 
 //TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
 
@@ -215,13 +215,17 @@ router.route("/modify/:id").put([session], async (req, res, next) => {
       });
     } else {
       const Ticket = makeModel();
-      let ticketToModify = await Ticket.findOne({ _id: id });
-
+      let ticketToModify = await Ticket.findOne({ _id: id, __type:'' });
+      // console.log(ticketToModify)
       // Error if no ticket with that ID found
       if (!ticketToModify) {
         throw new Error("no ticket with that id exists");
       } else {
         // loop through request body and only update fields that exist in the request
+        const AsrTicket = makeAsrModel()
+        // let asrtick = await AsrTicket.findOne({_id: id, __type: ''})
+        console.log(AsrTicket.discriminators)
+
         for (field in req.body) {
           ticketToModify[field] = req.body[field];
         }

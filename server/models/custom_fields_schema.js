@@ -20,6 +20,12 @@ let customFields = new mongoose.Schema({
     defaultValue: {
         type: String,
         required: false
+    },
+    reqOrAsr:{
+        type:String,
+        required: true,
+        default: "req",
+        enum: ['req', 'asr']
     }
 })
 

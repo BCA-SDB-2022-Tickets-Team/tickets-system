@@ -5,16 +5,26 @@ import Login from './components/Login/Login';
 function App() {
 
   const [ sessionToken, setSessionToken ] = useState(undefined)
+  const [ sessionRole, setSessionRole ] = useState(undefined)
 
+  //todo: ask Paul / Matt why we do this, and why we aren't just polling localStorage instead of passing sessionToken/sessionRole as a prop...
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setSessionToken(localStorage.getItem("token"))
     }
+    if(localStorage.getItem("role")){
+      setSessionRole(localStorage.getItem("role"))
+    }
   })
 
-  const updateLocalStorage = newToken => {
+  const updateLocalStorageToken = newToken => {
     localStorage.setItem("token", newToken)
     setSessionToken(newToken)
+  }
+
+  const updateLocalStorageRole = newRoleId => {
+    localStorage.setItem("role", newRoleId)
+    setSessionRole(newRoleId)
   }
 
   // Logout functionality
@@ -28,7 +38,10 @@ function App() {
       <nav>
         <button onClick={logout}>Logout</button>
       </nav>
-      <Login updateLocalStorage={updateLocalStorage} />
+      <Login 
+        updateLocalStorageToken={updateLocalStorageToken}
+        updateLocalStorageRole={updateLocalStorageRole} 
+      />
     </>
   );
 }

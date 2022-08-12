@@ -38,8 +38,7 @@ router
       if (
           !department ||
           !vendorName ||
-          !projectDescription ||
-          !timeline
+          !projectDescription
         ) {
         throw new Error("Insufficient data");
       } else {
@@ -66,6 +65,7 @@ router
           attachments
         });
         try {
+          console.log(newTicket)
           await newTicket.save();
           res.status(201).json({
             status: "ticket created",

@@ -35,7 +35,8 @@ function Login(props) {
             } else {
                 console.log('yay! good login!')
                 const resData = await res.json()
-                props.updateLocalStorage(resData.token)
+                props.updateLocalStorageToken(resData.token)
+                props.updateLocalStorageRole(resData.userRole)
                 // ? example of authenticated request to the server
                 // const testRes = await fetch("http://localhost:4000/api/req/test", {
                 //     method: "GET",

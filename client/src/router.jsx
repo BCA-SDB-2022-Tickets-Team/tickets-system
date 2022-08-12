@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Login from './components/Login/Login';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import {CreateUser} from './components/CU/createuser';
 
 function Router() {
     const [ sessionToken, setSessionToken ] = useState(undefined)
@@ -22,6 +23,7 @@ function Router() {
   return (
    <Routes >
        <Route path="/" element={<Login updateLocalStorage={updateLocalStorage} />}/>
+       <Route path="/createUser" element={<CreateUser />}/>
            
        
    </Routes>

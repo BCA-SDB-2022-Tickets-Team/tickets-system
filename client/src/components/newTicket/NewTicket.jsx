@@ -3,28 +3,47 @@ import "./newTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
-  
-  
+  let newTicketBody = {}
+
   useEffect(() => {
     async function getData() {
-      let res = await fetch("http://localhost:4000/api/ticket/model");
+      let res = await fetch("http://localhost:4000/api/ticket/req/model");
       let data = await res.json();
-      console.log(data);
       setAllData(data);
     }
     getData();
   }, []);
-  // function handleChange(e){
-  //   e.target.name = e.target.value
-  //   console.log(e.target.name)
-  // }
+
   function handleSubmit(e) {
     e.preventDefault()
-    console.log('here')
-    console.log(e.target.elements)
+    e.target.reset(); // TODO: change this so redirected instead of just form reset
 
+    console.log(newTicketBody)
+
+    fetch('http://localhost:4000/api/ticket/create',
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
+        },
+        method: "POST",
+        body: JSON.stringify({
+          newTicketBody
+        }),
+      })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json()
+        } else {
+          console.log('ticket created')
+        }
+      })
+
+      .catch((error) => {
+        console.log(error)
+      })
   }
-  console.log(allData);
+
   return (
     <div>
       <h2>new</h2>
@@ -32,21 +51,25 @@ function NewTicket() {
         {allData.map((field) => {
           return (
             <label
-            key={field.name}>
+              key={field.name}
+              htmlFor={field.name}>
               {field.name}
+
               <input
-              
                 type={
                   field.type === "String" || field.type === "Number"
                     ? "text"
                     : "checkbox"
                 }
+                onChange={e => {
+                  newTicketBody[field.name] = e.target.value
+                }}
               />
             </label>
           );
         })}
-        <input type="submit" 
-        
+        <input type="submit"
+
         />
       </form>
     </div>

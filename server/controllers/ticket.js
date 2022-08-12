@@ -7,8 +7,6 @@ const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
 const { makeModel, makeAsrModel } = require("../models/ticket_schema");
 
-//TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
-
 //  Create a new ticket
 router.route("/create").post([session], async (req, res, next) => {
   try {
@@ -20,13 +18,13 @@ router.route("/create").post([session], async (req, res, next) => {
     } else {
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
-      const bodyFields = Object.keys(req.body);
+      const bodyFields = Object.keys(req.body.newTicketBody);
       const newTicket = new Ticket({
         requestor: req.user._id,
       });
       for (field of bodyFields) {
         if (bodyFields.includes(field)) {
-          newTicket[field] = req.body[field];
+          newTicket[field] = req.body.newTicketBody[field];
         }
       }
       // Save the newly created ticket
@@ -103,7 +101,7 @@ router.route("/status-filter").get([session], async (req, res, next) => {
     next(err);
   }
 });
-router.route("/model").get((req, res) => {
+router.route("/req/model").get((req, res) => {
   const fieldsToSend = [
     "vendorName",
     "projectDescription",

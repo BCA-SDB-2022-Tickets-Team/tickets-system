@@ -5,8 +5,8 @@ import Login from './components/Login/Login';
 import NewTicket from './components/newTicket/NewTicket'
 
 function Router() {
-    const [ sessionToken, setSessionToken ] = useState(undefined)
-    const [ sessionRole, setSessionRole ] = useState(undefined)
+  const [sessionToken, setSessionToken] = useState(undefined)
+  const [sessionRole, setSessionRole] = useState(undefined)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -27,13 +27,13 @@ function Router() {
 
   // Logout functionality
   return (
-   <Routes >
-       <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />}/>
-       <Route path="/createUser" element={<CreateUser />}/>
-       <Route path="/new-ticket" element={<NewTicket />} />
-           
-       
-   </Routes>
+    <Routes >
+      <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />} />
+      <Route path="/createUser" element={<CreateUser />} />
+      <Route path="/newticket" element={<NewTicket />} />
+
+
+    </Routes>
   )
 }
 

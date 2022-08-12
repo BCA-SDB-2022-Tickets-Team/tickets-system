@@ -7,7 +7,7 @@ let reqTicket = new mongoose.Schema(
       type: mongoose.ObjectId,
       required: true
     },
-    vendorName: {
+    'Vendor Name': {
       type: String,
       required: true
     },
@@ -184,6 +184,7 @@ const UpdateSchema = function(field){
   let schemaToAddTo = field.reqOrAsr === "req" ? reqTicket : asrTicket
   schemaToAddTo.add(SchemaFromField)
   schemaToAddTo.path(field.name).required(field.isRequired ? true:false)
+  mergeIntoTicket()
 }
 
 async function runAtStartUp(){
@@ -193,19 +194,35 @@ async function runAtStartUp(){
       UpdateSchema(field)
     }
   }
-  Ticket.add(reqTicket)
-  Ticket.add(asrTicket)
+  mergeIntoTicket()
   return;
 } runAtStartUp()
+
+function mergeIntoTicket(){
+    Ticket.add(reqTicket)
+    Ticket.add(asrTicket)
+}
 
 const makeModel = function(){
   return mongoose.model('ticket',Ticket)
 }
 
-const makeAsrModel = function() {
-  console.log(mongoose.modelNames())
-  let ticketModel = makeModel()
-  return ticketModel.discriminator('asrTicket', asrTicket)
+async function getRequiredReqSchema(){
+  let requiredPaths = []
+  await reqTicket.eachPath((name, type) => {
+    //todo: more filtering once we finalize required values
+    let pathObject = {
+        name,
+        type: type.instance,
+        required: type.options.required,
+      }
+    if(type.options.enum){
+      console.log(type)
+      pathObject['enum'] = type.options.enum
+    }
+    requiredPaths.push(pathObject)
+  })
+  return requiredPaths
 }
 
-module.exports = {UpdateSchema, makeModel, makeAsrModel}
+module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}

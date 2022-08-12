@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
 const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
-const { makeModel, makeAsrModel } = require("../models/ticket_schema");
+const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
 
 //  Create a new ticket
 router.route("/create").post([session], async (req, res, next) => {
@@ -101,27 +101,10 @@ router.route("/status-filter").get([session], async (req, res, next) => {
     next(err);
   }
 });
-router.route("/req/model").get((req, res) => {
-  const fieldsToSend = [
-    "vendorName",
-    "projectDescription",
-    "department",
-    "vendorService",
-    "test",
-  ];
+router.route("/req/model").get(async (req, res) => {
   const TicketSchema = makeModel();
-  const Ticket = TicketSchema.schema.paths;
-  let toReturn = [];
-  for (tick in Ticket) {
-    if (fieldsToSend.includes(tick)) {
-      toReturn.push({
-        name: tick,
-        type: Ticket[tick].instance,
-        required: Ticket[tick].isRequired,
-      });
-    }
-  }
-  res.send(toReturn);
+  const fieldsToSend = await getRequiredReqSchema()
+  res.json(fieldsToSend);
   //   let response = Ticket.eachPath()
   // res.send(response)
 });

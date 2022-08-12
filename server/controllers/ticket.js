@@ -7,11 +7,10 @@ const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
 const { makeModel } = require("../models/ticket_schema");
 
-//TODO: Add more error handling? & Revisit status-filter route to try to simplify code that handles query as string vs query as array-like object.
-
 //  Create a new ticket
 router.route("/create").post([session], async (req, res, next) => {
   try {
+    console.log(req.body)
     // Only req users and isAdmin asr users can make new tickets
     if (req.user.__type === "asrUser" && !req.user.isAdmin) {
       res.status(403).json({
@@ -103,7 +102,7 @@ router.route("/status-filter").get([session], async (req, res, next) => {
     next(err);
   }
 });
-router.route("/model").get((req, res) => {
+router.route("/req/model").get((req, res) => {
   const fieldsToSend = [
     "vendorName",
     "projectDescription",

@@ -3,12 +3,13 @@ import "./newTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
-  let fieldNameArray = [];
-  let fieldValueArray = [];
+  // let fieldNameArray = [];
+  // let fieldValueArray = [];
+  let newTicketBody={}
 
   useEffect(() => {
     async function getData() {
-      let res = await fetch("http://localhost:4000/api/ticket/model");
+      let res = await fetch("http://localhost:4000/api/ticket/req/model");
       let data = await res.json();
       //console.log(data);
       setAllData(data);
@@ -19,15 +20,35 @@ function NewTicket() {
   function handleSubmit(e) {
     e.preventDefault()
     e.target.reset(); // TODO: change this so redirected
-    // TODO: Set up fetch for post request to send body to the create-ticket endpoint
-    let body = {}
-    function createBody() {
-      for (let i = 0; i < fieldNameArray.length; i++) {
-        body[fieldNameArray[i]] = fieldValueArray[i]
-      }
+    // TODO: Set up fetch for post request to send newTicketBody to the create-ticket endpoint
+    console.log(newTicketBody)
+    fetch('http://localhost:4000/api/ticket/create',
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+      },
+      method: "POST",
+      body: JSON.stringify({
+       newTicketBody
+      }),
+    })
+    .then((res)=>{
+      if (!res.ok){
+      return res.json()
+    } else {
+      console.log('ticket created')
     }
-    createBody()
+  })
+  .then(error=>{
+    console.log(error)
+  })
 
+  .catch((error)=>{
+    // error.json()
+    // .then(err=>console.log(err))
+    console.log(error)
+  })
   }
 
   console.log(allData);
@@ -36,20 +57,21 @@ function NewTicket() {
       <h2>new</h2>
       <form onSubmit={handleSubmit} >
         {allData.map((field) => {
-          fieldNameArray.push(field.name)
-          console.log(fieldNameArray)
           return (
             <label
               key={field.name}
               htmlFor={field.name}>
               {field.name}
+
               <input
                 type={
                   field.type === "String" || field.type === "Number"
                     ? "text"
                     : "checkbox"
                 }
-                onChange={e => { fieldValueArray[fieldNameArray.indexOf(field.name)] = e.target.value; console.log(fieldValueArray) }}
+                onChange={e => { 
+                  newTicketBody[field.name] = e.target.value
+                }}
               />
             </label>
           );

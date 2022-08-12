@@ -1,0 +1,26 @@
+* {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+div {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    vertical-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:black;
+}
+
+input {
+    margin: .5vw 0 2vw 0;
+}
+
+button {
+    margin: 1vw 0 1vw 0;
+    width: 100px;
+}

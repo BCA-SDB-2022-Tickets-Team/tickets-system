@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Login.css'
+
 
 function Login(props) {
 
@@ -9,6 +11,7 @@ function Login(props) {
 
     // useState variable for invalid credentials message
     const [display, setDisplay] = useState({ display: "none" })
+  
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -85,6 +88,8 @@ function Login(props) {
                 <button type="submit">Login</button>
                 <div style={display}>Invalid Credentials!</div>
             </form>
+            <Link to="/createUser">Create User</Link>
+           
         </div>
     )
 }

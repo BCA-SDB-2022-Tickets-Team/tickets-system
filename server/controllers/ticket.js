@@ -10,7 +10,6 @@ const { makeModel } = require("../models/ticket_schema");
 //  Create a new ticket
 router.route("/create").post([session], async (req, res, next) => {
   try {
-    console.log(req.body)
     // Only req users and isAdmin asr users can make new tickets
     if (req.user.__type === "asrUser" && !req.user.isAdmin) {
       res.status(403).json({
@@ -19,13 +18,13 @@ router.route("/create").post([session], async (req, res, next) => {
     } else {
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
-      const bodyFields = Object.keys(req.body);
+      const bodyFields = Object.keys(req.body.newTicketBody);
       const newTicket = new Ticket({
         requestor: req.user._id,
       });
       for (field of bodyFields) {
         if (bodyFields.includes(field)) {
-          newTicket[field] = req.body[field];
+          newTicket[field] = req.body.newTicketBody[field];
         }
       }
       // Save the newly created ticket

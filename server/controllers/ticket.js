@@ -102,23 +102,17 @@ router.route("/status-filter").get([session], async (req, res, next) => {
   }
 });
 router.route("/req/model").get((req, res) => {
-  const fieldsToSend = [
-    "vendorName",
-    "projectDescription",
-    "department",
-    "vendorService",
-    "test",
-  ];
   const TicketSchema = makeModel();
   const Ticket = TicketSchema.schema.paths;
   let toReturn = [];
   for (tick in Ticket) {
-    if (fieldsToSend.includes(tick)) {
-      toReturn.push({
-        name: tick,
-        type: Ticket[tick].instance,
-        required: Ticket[tick].isRequired,
-      });
+    if (Ticket[tick].isRequired) {
+        toReturn.push({
+          name: tick,
+          type: Ticket[tick].instance,
+          required: Ticket[tick].isRequired,
+          enum: Ticket[tick].options.enum
+        });
     }
   }
   res.send(toReturn);

@@ -3,7 +3,7 @@ import "./newTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
-  let newTicketBody = {}
+  let newTicketBody = {};
 
   useEffect(() => {
     async function getData() {
@@ -15,62 +15,74 @@ function NewTicket() {
   }, []);
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     e.target.reset(); // TODO: change this so redirected instead of just form reset
 
-    console.log(newTicketBody)
+    console.log(newTicketBody);
 
-    fetch('http://localhost:4000/api/ticket/create',
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
-        },
-        method: "POST",
-        body: JSON.stringify({
-          newTicketBody
-        }),
-      })
+    fetch("http://localhost:4000/api/ticket/create", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      method: "POST",
+      body: JSON.stringify({
+        newTicketBody,
+      }),
+    })
       .then((res) => {
         if (!res.ok) {
-          return res.json()
+          return res.json();
         } else {
-          console.log('ticket created')
+          console.log("ticket created");
         }
       })
 
       .catch((error) => {
-        console.log(error)
-      })
+        console.log(error);
+      });
   }
 
   return (
     <div>
       <h2>new</h2>
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit}>
         {allData.map((field) => {
-          return (
-            <label
-              key={field.name}
-              htmlFor={field.name}>
-              {field.name}
+          if (!field.enum) {
+            return (
+              <label key={field.name} htmlFor={field.name}>
+                {field.name}
+                <input
+                  onChange={(e) => {
+                    newTicketBody[field.name] = e.target.value;
+                  }}
+                />
+              </label>
+            );
+          } else {
+            return (
+              <label key={field.name} htmlFor={field.name}>
+                {field.name}
 
-              <input
-                type={
-                  field.type === "String" || field.type === "Number"
-                    ? "text"
-                    : "checkbox"
-                }
-                onChange={e => {
-                  newTicketBody[field.name] = e.target.value
-                }}
-              />
-            </label>
-          );
+                <select
+                  onChange={(e) => {
+                    newTicketBody[field.name] = e.target.value;
+                  }}
+                >
+                  {
+                    field.enum.map((item)=>{
+                      return (
+                        <option value={item}>{item}</option>
+                      )
+                    })
+                  }
+                  
+                  </select>
+              </label>
+            );
+          }
         })}
-        <input type="submit"
-
-        />
+        <input type="submit" />
       </form>
     </div>
   );

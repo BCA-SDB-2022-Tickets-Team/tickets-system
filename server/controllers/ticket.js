@@ -16,7 +16,8 @@ router.route("/create").post([session], async (req, res, next) => {
       const bodyFields = Object.keys(req.body.newTicketBody);
       const newTicket = new Ticket({
         Requestor: req.user._id,
-        Department: req.user.Department
+        Department: req.user.isAdmin ? "n/a" : req.user.Department
+        //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {
         if (bodyFields.includes(field)) {
@@ -37,19 +38,38 @@ router.route("/create").post([session], async (req, res, next) => {
 });
 
 // Get all tickets
-router.route("/all").get([session], async (req, res, next) => {
+router
+.route("/all")
+.get([session], async (req, res, next) => {
   try {
+    const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
       let allTickets = await Ticket.find({ Requestor: req.user._id });
-      res.status(200).json({
-        allTickets,
-      });
+      res.send(
+        allTickets.map(ticket => {
+          return {
+            'Created At': ticket.createdAt,
+            'Vendor Name': ticket['Vendor Name'],
+            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+            'Updated At': ticket.updatedAt,
+
+          }
+        }),
+      );
     } else {
       let allTickets = await Ticket.find({});
-      res.status(200).json({
-        allTickets,
-      });
+      res.send(
+        allTickets.map(ticket => {
+          return {
+            'Created At': ticket.createdAt,
+            'Vendor Name': ticket['Vendor Name'],
+            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+            'Updated At': ticket.updatedAt,
+
+          }
+        })
+      );
     }
   } catch (err) {
     // Pass error to error-handling middleware at the bottom

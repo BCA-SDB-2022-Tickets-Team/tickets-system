@@ -4,10 +4,11 @@ import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
 import NewTicket from './components/NewTicket/NewTicket';
 import ViewUpdate from './components/VU/viewupdate';
+import AllTickets from './components/AllTickets/AllTickets';
 
 function Router() {
-    const [ sessionToken, setSessionToken ] = useState(undefined)
-    const [ sessionRole, setSessionRole ] = useState(undefined)
+  const [sessionToken, setSessionToken] = useState(undefined)
+  const [sessionRole, setSessionRole] = useState(undefined)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -28,14 +29,15 @@ function Router() {
 
   // Logout functionality
   return (
-   <Routes >
-       <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />}/>
-       <Route path="/createuser" element={<CreateUser />}/>
-       <Route path="/VU" element={<ViewUpdate />} />
-       <Route path='newticket' element={<NewTicket />}/>
+    <Routes >
+      <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />} />
+      <Route path="/createuser" element={<CreateUser />} />
+      <Route path="/VU" element={<ViewUpdate />} />
+      <Route path='/newticket' element={<NewTicket />} />
+      <Route path='/alltickets' element={<AllTickets />} />
 
 
-   </Routes>
+    </Routes>
   )
 }
 

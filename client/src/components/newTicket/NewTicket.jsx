@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./newTicket.css";
+import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
@@ -10,8 +10,8 @@ function NewTicket() {
       let res = await fetch("http://localhost:4000/api/ticket/req/model", {
         method: "GET",
         headers: new Headers({
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
         })
       });
       let data = await res.json();
@@ -55,7 +55,7 @@ function NewTicket() {
       <h2>new</h2>
       <form onSubmit={handleSubmit}>
         {allData.map((field) => {
-         
+
           if (!field.enum) {
             return (
               <label key={field.name} htmlFor={field.name}>
@@ -70,7 +70,7 @@ function NewTicket() {
           } else {
             return (
               <label key={field.name} htmlFor={field.name}>
-                {field.name}{': '} 
+                {field.name}{': '}
 
                 <select
                   onChange={(e) => {
@@ -78,14 +78,14 @@ function NewTicket() {
                   }}
                 >
                   {
-                    field.enum.map((item)=>{
+                    field.enum.map((item) => {
                       return (
                         <option value={item}>{item}</option>
                       )
                     })
                   }
-                  
-                  </select>
+
+                </select>
               </label>
             );
           }

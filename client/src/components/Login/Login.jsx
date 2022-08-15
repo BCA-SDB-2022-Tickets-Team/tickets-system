@@ -11,7 +11,7 @@ function Login(props) {
 
     // useState variable for invalid credentials message
     const [display, setDisplay] = useState({ display: "none" })
-  
+
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -89,7 +89,7 @@ function Login(props) {
                 <div style={display}>Invalid Credentials!</div>
             </form>
             <Link to="/createUser">Create User</Link>
-           
+
         </div>
     )
 }

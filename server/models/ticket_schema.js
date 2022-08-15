@@ -103,7 +103,8 @@ let reqTicket = new mongoose.Schema(
       required: true,
       default: 0
     },
-  }
+  },
+  {timestamps:  true}
 )
 
 const asrTicket = new mongoose.Schema({

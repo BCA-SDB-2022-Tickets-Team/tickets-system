@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import {CreateUser} from './components/CU/createuser';
+import ViewUpdate from './components/VU/viewupdate';
 
 function Router() {
     const [ sessionToken, setSessionToken ] = useState(undefined)
+    const [ sessionRole, setSessionRole ] = useState(undefined)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -14,18 +14,25 @@ function Router() {
     }
   })
 
-  const updateLocalStorage = newToken => {
+  const updateLocalStorageToken = newToken => {
     localStorage.setItem("token", newToken)
     setSessionToken(newToken)
   }
 
+  const updateLocalStorageRole = newRoleId => {
+    localStorage.setItem("role", newRoleId)
+    setSessionRole(newRoleId)
+  }
+
+
   // Logout functionality
   return (
    <Routes >
-       <Route path="/" element={<Login updateLocalStorage={updateLocalStorage} />}/>
-       <Route path="/createUser" element={<CreateUser />}/>
-           
-       
+       <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />}/>
+       <Route path="/createuser" element={<CreateUser />}/>
+       <Route path="/VU" element={<ViewUpdate />} />
+
+
    </Routes>
   )
 }

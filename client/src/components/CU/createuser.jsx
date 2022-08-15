@@ -4,6 +4,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Table from 'react-bootstrap/Table';
+import { Link} from 'react-router-dom'
 import './createuser.css'
  
 const roles =[   "hr",
@@ -21,7 +22,7 @@ export const CreateUser = (props) => {
    
     const [firstName, setFirst] = useState("")
     const [lastName, setLast] = useState("")
-    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [role, setRole] = useState("")
     const [isManager, setIsManager] = useState(false)
@@ -59,7 +60,7 @@ export const CreateUser = (props) => {
      
 
 
-      alert(`Name: ${firstName} ${lastName}, email: ${username}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
+      alert(`Name: ${firstName} ${lastName}, email: ${email}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
 
   }
   
@@ -79,7 +80,7 @@ export const CreateUser = (props) => {
           <th></th>
           <th>{"First Name"}</th>
           <th>{"Last Name"}</th>
-          <th>{"Username"}</th>
+          <th>{"Email"}</th>
           <th>{"Role"}</th>
           <th>{"Is Manager"}</th>
           <th>{"Is Admin"}</th>
@@ -90,7 +91,7 @@ export const CreateUser = (props) => {
             <td>{"id"}</td>
           <td>{firstName || "first"}</td>
           <td>{lastName || "last"}</td>
-          <td>{username || "user"}</td>
+          <td>{email || "email"}</td>
           <td>{role || "role"}</td>
           <td>{isManager || "manager"}</td>
           <td>{isAdmin || "admin"}</td>
@@ -99,7 +100,7 @@ export const CreateUser = (props) => {
             <td>{"id"}</td>
           <td>{firstName || "first"}</td>
           <td>{lastName || "last"}</td>
-          <td>{username || "user"}</td>
+          <td>{email || "email"}</td>
           <td>{role || "role"}</td>
           <td>{isManager || "manager"}</td>
           <td>{isAdmin || "admin"}</td>
@@ -108,7 +109,7 @@ export const CreateUser = (props) => {
             <td>{"id"}</td>
           <td>{firstName || "first"}</td>
           <td>{lastName || "last"}</td>
-          <td>{username || "user"}</td>
+          <td>{email || "email"}</td>
           <td>{role || "role"}</td>
           <td>{isManager || "manager"}</td>
           <td>{isAdmin || "admin"}</td>
@@ -117,7 +118,7 @@ export const CreateUser = (props) => {
             <td>{"id"}</td>
           <td>{firstName || "first"}</td>
           <td>{lastName || "last"}</td>
-          <td>{username || "user"}</td>
+          <td>{email || "email"}</td>
           <td>{role || "role"}</td>
           <td>{isManager || "manager"}</td>
           <td>{isAdmin || "admin"}</td>
@@ -153,9 +154,9 @@ export const CreateUser = (props) => {
                     <label htmlFor="email">Username:</label>
                     <input
                         type="text"
-                        id="username"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
+                        id="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                     />
                 </div>
 
@@ -191,9 +192,11 @@ export const CreateUser = (props) => {
 
               </container>    
          
-          
+              <Link to="/vu">View User</Link>  
       
     </>
     )
 }
+
+export default CreateUser
 

@@ -216,6 +216,47 @@ router
       next(error)
     }
   })
+//Start
+router
+    .route("/reqcreateuser")
+    .post(async (req, res) => {
+        
+        try {
+            const { firstName, lastName, userName, password, role, isAdmin, isManager } = req.body
+            if (!firstName || !lastName || !userName || !password || role || !isAdmin || !isManager) {
+                throw new Error(`All fields are required`)
+            } else {
+                const newUser = new User({
+                    firstName,
+                    lastName,
+                    username,
+                    password: bcrypt.hashSync(password, 10),
+                    role,
+                    isAdmin,
+                    isManager
+                })
+                newUser.save()
+
+                const token = jwt.sign(
+                    { username: newUser.username },
+                    SECRET_KEY,
+                    { expiresIn: 60 * 60 * 24}
+                )
+
+                res.status(201).json({
+                    status: `User Generated`,
+                    token,
+                    newUser
+                })
+            }
+                
+        } catch(err) {
+            console.log(err)
+        }
+    })
+
+
+
 
 // login for assessor and requestor users
 router.route("/login").post(async (req, res, next) => {

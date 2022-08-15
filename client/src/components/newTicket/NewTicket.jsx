@@ -7,7 +7,13 @@ function NewTicket() {
 
   useEffect(() => {
     async function getData() {
-      let res = await fetch("http://localhost:4000/api/ticket/req/model");
+      let res = await fetch("http://localhost:4000/api/ticket/req/model", {
+        method: "GET",
+        headers: new Headers({
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+        })
+      });
       let data = await res.json();
       setAllData(data);
     }
@@ -48,10 +54,11 @@ function NewTicket() {
       <h2>new</h2>
       <form onSubmit={handleSubmit}>
         {allData.map((field) => {
+         
           if (!field.enum) {
             return (
               <label key={field.name} htmlFor={field.name}>
-                {field.name}
+                {field.name}{': '}
                 <input
                   onChange={(e) => {
                     newTicketBody[field.name] = e.target.value;
@@ -62,7 +69,7 @@ function NewTicket() {
           } else {
             return (
               <label key={field.name} htmlFor={field.name}>
-                {field.name}
+                {field.name}{': '} 
 
                 <select
                   onChange={(e) => {

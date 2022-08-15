@@ -1,49 +1,128 @@
 const mongoose = require('mongoose')
 const CustomFieldsSchema =require('./custom_fields_schema')
 
-/**
- * ? for custom fields, we will make use of Mongoose's discriminator function:
- * https://mongoosejs.com/docs/discriminators.html
- * 
- * in server.js, we will have a variable that holds the current ticket schema
- * when a super admin adds a custom field, we will use model.discriminator to
- * create a new schema, then overwrite the global variable in server.js so that all 
- * new requests use the new schema
- * 
- * when we scale this to include multiple companies, we will need either a database or 
- * a model within the assessor DB to track schemas.
- */
-// todo : write function that produces schema object
-  // takes field to be added, data type, and whether it's required
-  // calls Ticket.discriminator custom field, object made of specified params
-  // returns new discriminator model that extends Ticket
-  // redeclare Ticket as new model
+const FieldsToIgnore = [
+  '_id',
+  '__v',
+  'Department',
+  'Requestor',
+  'createdAt',
+  'updatedAt',
+]
 
-let Ticket = mongoose.Schema(
+let reqTicket = new mongoose.Schema(
   {
-    requestor: {
+    'Requestor': {
       type: mongoose.ObjectId,
       required: true
     },
-    vendorName: {
+    'Vendor Name': {
       type: String,
       required: true
     },
-    overallRisk: {
+    'Project Description': {
       type: String,
-      required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
+      required: true,
     },
-    businessRisk: {
+    'Project Manager': {
       type: String,
-      required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
+      required: true
     },
-    status: {
+    'Business Contact': {
+      type: String,
+      default: '',
+      required: true
+    },
+    Department: {
+      type: String,
+      required: true,
+    },
+    'Data Sensitivy': {
+      type: String,
+      required: true,
+    },
+    'Data Description': {
+      type: String,
+      required: true
+    }, 
+    'Data Regulation': {
+      type: String,
+      required: true,
+      default: 'none',
+      enum: ['none', 'gxp', 'sox', 'gdpr']
+    },
+    PHI: {
+      type: Boolean,
+      required: true,
+    },
+    'Vendor Service': {
+      type: String,
+      default: '',
+      required: true,
+    },
+    'Custom Code Required': {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    'Submitted To Security': {
+      type: Date,
+      required: false
+    },
+    Integrations: {
+      type: Boolean,
+      default: true,
+    },
+    'System Level Access': {
+      type: String,
+      default: '',
+      required: true,
+    },
+    Platform: {
+      type: String,
+      default: '',
+      required: true,
+    },
+    'Data Access': {
+      type: String,
+      default: '',
+      required: true
+    },
+    'Need MFA': {
+      type: Boolean,
+      default: false,
+      required: true
+    },
+    Encryption: {
+      type: Boolean,
+      default: false,
+      required: true
+    },
+    Attachments: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+  }
+)
+
+const asrTicket = new mongoose.Schema({
+    Assessor: {
+      type: mongoose.ObjectId,
+      required: false,
+    },
+    'Overall Risk': {
       type: String,
       required: false,
+      enum: ['low', 'medium', 'high']
+    },
+    'Business Risk': {
+      type: String,
+      required: false,
+      enum: ['low', 'medium', 'high']
+    },
+    Status: {
+      type: String,
       default: 'new-request',
       enum: [
               'new-request', 
@@ -55,161 +134,93 @@ let Ticket = mongoose.Schema(
               'completed'  
             ]
     },
-    dateCompleted: {
+    'Date Completed': {
       type: Date,
       required: false,
     },
-    projectDescription: {
-      type: String,
-      required: false,
-    },
-    projectManager: {
-      type: String,
-      default: '',
-      required: false
-    },
-    buisnessContact: {
-      type: String,
-      default: '',
-      required: false
-    },
-    department: {
-      type: String,
-      default: '',
-      required: false,
-      enum: [
-        '',
-        'hr', 
-        'it', 
-        'legal', 
-        'manufacturing', 
-        'marketing', 
-        'ops', 
-        'procurement'
-      ]
-    },
-    dataSensitivity: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    dataDescription: {
-      type: String,
-      default: '',
-      required: false
-    }, 
-    dataRegulation: {
-      type: String,
-      required: false,
-      default: 'none',
-      enum: ['none', 'gxp', 'sox', 'gdpr']
-    },
-    phi: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    vendorService: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    customCodeRequired: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    submittedToSecurity: {
+    'Due Date': {
       type: Date,
       required: false
     },
-    integrations: {
-      type: Boolean,
-      default: false,
-    },
-    systemLevelAccess: {
-      type: String,
-      default: '',
+    'Warning Date': {
+      type: Date,
       required: false,
     },
-    platform: {
+    'Questionnaire Sent': {
+      type: Date,
+      required: false
+    },
+    'Questionnaire Received': {
+      type: Date, 
+      required: false
+    },
+    Notes: {
       type: String,
       default: '',
-      required: false,
     },
-    dataAccess: {
+    Timeline: {
       type: String,
-      default: '',
-      required: false
-    },
-    needMFA: {
-      type: Boolean,
-      default: false,
-      required: false
-    },
-    encryption: {
-      type: Boolean,
-      default: false,
-      required: false
-    },
-    assessor: {
-      type: mongoose.ObjectId,
-      required: false,
-    },
-    notes: {
-      type: String,
-      default: '',
-      required: false
-    },
-    timeline: {
-      type: String,
-      required: false,
       default: 'standard',
       enum: ['standard', 'expedite']
     },
-    attachments: {
-      type: Number,
-      required: false,
-      default: 0
-    },
-    dueDate: {
-      type: Date,
-      required: false
-    },
-    warningDate: {
-      type: Date,
-      required: false,
-    },
-    questionnaireSent: {
-      type: Date,
-      required: false
-    },
-    questionnaireRec: {
-      type: Date, 
-      required: false
-    }
-  },
-  {
-    timestamps: true
-  }
-)
+})
+
+let Ticket = new mongoose.Schema()
+
 const UpdateSchema = function(field){
   const SchemaFromField = new mongoose.Schema()
   SchemaFromField.path(field.name,field.fieldType)
-  Ticket.add(SchemaFromField)
-  Ticket.path(field.name).required(field.isRequired ?true:false)
+  let schemaToAddTo = field.reqOrAsr === "req" ? reqTicket : asrTicket
+  schemaToAddTo.add(SchemaFromField)
+  schemaToAddTo.path(field.name).required(field.isRequired ? true:false)
+  mergeIntoTicket()
 }
+
 async function runAtStartUp(){
   const allCustomFields = await CustomFieldsSchema.find()
   if (allCustomFields.length > 0){
     for(field of allCustomFields){
       UpdateSchema(field)
     }
-  }else{return} 
- 
+  }
+  mergeIntoTicket()
+  return;
 } runAtStartUp()
+
+function mergeIntoTicket(){
+    Ticket.add(reqTicket)
+    Ticket.add(asrTicket)
+}
+
 const makeModel = function(){
   return mongoose.model('ticket',Ticket)
 }
+/**
+ * takes the current schema, filters out paths that should not be seen by
+ * requestors, and reutnrs an array of strings that can be used to
+ * filter Ticket options by keys 
+ * @returns [pathNames]
+ */
+async function getRequiredReqSchema(){
+  let requiredPaths = []
+  await reqTicket.eachPath((name, type) => {
+    //todo: more filtering once we finalize required values
+    if (!type.options.required || FieldsToIgnore.includes(name)){
+      return null
+    } else {
+    let pathObject = {
+        name,
+        type: type.instance,
+        required: type.options.required,
+      }
+    if(type.options.enum){
+      console.log(type)
+      pathObject['enum'] = type.options.enum
+    }
+    requiredPaths.push(pathObject)
+  }})
+  return requiredPaths
+  
+}
 
-module.exports = {UpdateSchema, makeModel}
+module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}

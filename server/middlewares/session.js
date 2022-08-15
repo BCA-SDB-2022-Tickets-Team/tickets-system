@@ -38,11 +38,12 @@ const session = async(req, res, next)=>{
             res.status(406).json({
                 status: 'Token has expired'
             })
+        } else {
+            res.status(500).json({
+                status: 'Error',
+                error: `${error}`
+            })
         }
-        res.status(500).json({
-            status: 'Error',
-            error: `${error}`
-        })
     }
 }
 module.exports = session

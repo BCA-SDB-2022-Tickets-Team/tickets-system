@@ -5,22 +5,18 @@ import Router from './router';
 
 
 
-function App() {
 
-  const [ sessionToken, setSessionToken ] = useState(undefined)
+function App() {
 
   // Logout functionality
   const logout = () => {
     localStorage.clear()
- 
   }
 
   return (
     <> 
       <nav>
-     
         <button onClick={logout}>Logout</button>
-
       </nav>
       <Router />
     </>

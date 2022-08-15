@@ -285,10 +285,17 @@ router.route("/login").post(async (req, res, next) => {
               expiresIn: KEY_EXPIRATION,
             }
           );
+
+          let userRole = 0
+          if(user.__type === "reqUser" && !user.isManager) userRole = 1
+          if(user.__type === "reqUser" && user.isManager) userRole = 2
+          if(user.__type === "asrUser" && !user.isAdmin) userRole = 3
+          if(user.__type === "asrUser" && user.isAdmin) userRole = 4
+
           res.status(200).json({
             status: "logged in",
             token,
-            user,
+            userRole
           });
         }
       }

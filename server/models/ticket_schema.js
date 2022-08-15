@@ -26,53 +26,43 @@ let reqTicket = new mongoose.Schema(
     },
     'Project Manager': {
       type: String,
-      required: false
+      required: true
     },
     'Business Contact': {
       type: String,
       default: '',
-      required: false
+      required: true
     },
     Department: {
       type: String,
       required: true,
-      enum: [
-        'hr', 
-        'it', 
-        'legal', 
-        'manufacturing', 
-        'marketing', 
-        'ops', 
-        'procurement'
-      ]
     },
     'Data Sensitivy': {
       type: String,
-      default: '',
+      required: true,
     },
     'Data Description': {
       type: String,
-      default: '',
+      required: true
     }, 
     'Data Regulation': {
       type: String,
-      required: false,
+      required: true,
       default: 'none',
       enum: ['none', 'gxp', 'sox', 'gdpr']
     },
     PHI: {
       type: Boolean,
-      required: false,
-      default: false
+      required: true,
     },
     'Vendor Service': {
       type: String,
       default: '',
-      required: false,
+      required: true,
     },
     'Custom Code Required': {
       type: Boolean,
-      required: false,
+      required: true,
       default: false
     },
     'Submitted To Security': {
@@ -81,36 +71,36 @@ let reqTicket = new mongoose.Schema(
     },
     Integrations: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     'System Level Access': {
       type: String,
       default: '',
-      required: false,
+      required: true,
     },
     Platform: {
       type: String,
       default: '',
-      required: false,
+      required: true,
     },
     'Data Access': {
       type: String,
       default: '',
-      required: false
+      required: true
     },
     'Need MFA': {
       type: Boolean,
       default: false,
-      required: false
+      required: true
     },
     Encryption: {
       type: Boolean,
       default: false,
-      required: false
+      required: true
     },
     Attachments: {
       type: Number,
-      required: false,
+      required: true,
       default: 0
     },
   }
@@ -215,7 +205,7 @@ async function getRequiredReqSchema(){
   let requiredPaths = []
   await reqTicket.eachPath((name, type) => {
     //todo: more filtering once we finalize required values
-    if (!type.options.required || FieldsToIgnore.includes('name')){
+    if (!type.options.required || FieldsToIgnore.includes(name)){
       return null
     } else {
     let pathObject = {

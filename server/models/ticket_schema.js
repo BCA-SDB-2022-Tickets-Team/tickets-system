@@ -2,12 +2,12 @@ const mongoose = require('mongoose')
 const CustomFieldsSchema =require('./custom_fields_schema')
 
 const FieldsToIgnore = [
-  _id,
-  __v,
-  Department,
+  '_id',
+  '__v',
+  'Department',
   'Requestor',
-  createdAt,
-  updatedAt,
+  'createdAt',
+  'updatedAt',
 ]
 
 let reqTicket = new mongoose.Schema(

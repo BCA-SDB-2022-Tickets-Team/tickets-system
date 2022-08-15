@@ -39,7 +39,7 @@ export const CreateUser = (props) => {
           body: JSON.stringify({
               firstName: firstName,
               lastName: lastName,
-              username: username,
+              email: email,
               password: password,
               role: role,
               isManager: false,

@@ -41,7 +41,7 @@ const reqUser = User.discriminator(
   "reqUser",
   new mongoose.Schema(
     {
-      department: {
+      Department: {
         type: String,
         required: true,
         enum: [

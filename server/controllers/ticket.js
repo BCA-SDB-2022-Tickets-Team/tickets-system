@@ -1,9 +1,4 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-
-const jwt = require("jsonwebtoken");
-const SECRET_KEY = process.env.SECRET_KEY;
-const KEY_EXPIRATION = process.env.KEY_EXPIRATION;
 const session = require("../middlewares/session");
 const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
 
@@ -21,6 +16,7 @@ router.route("/create").post([session], async (req, res, next) => {
       const bodyFields = Object.keys(req.body.newTicketBody);
       const newTicket = new Ticket({
         requestor: req.user._id,
+        'Department': req.user.Department
       });
       for (field of bodyFields) {
         if (bodyFields.includes(field)) {
@@ -45,7 +41,7 @@ router.route("/all").get([session], async (req, res, next) => {
   try {
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
-      let allTickets = await Ticket.find({ requestor: req.user._id });
+      let allTickets = await Ticket.find({ Requestor: req.user._id });
       res.status(200).json({
         allTickets,
       });
@@ -77,21 +73,21 @@ router.route("/status-filter").get([session], async (req, res, next) => {
       // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
       if (!req.user.isManager) {
         let tickets = await Ticket.find({
-          status: { $in: statusArray },
-          requestor: req.user._id,
+          Status: { $in: statusArray },
+          Requestor: req.user._id,
         });
         res.status(200).json({
           tickets,
         });
       } else {
-        let tickets = await Ticket.find({ status: { $in: statusArray } });
+        let tickets = await Ticket.find({ Status: { $in: statusArray } });
         res.status(200).json({
           tickets,
         });
       }
     } else {
       // Asr
-      let tickets = await Ticket.find({ status: { $in: statusArray } });
+      let tickets = await Ticket.find({ Status: { $in: statusArray } });
       res.status(200).json({
         tickets,
       });
@@ -101,12 +97,11 @@ router.route("/status-filter").get([session], async (req, res, next) => {
     next(err);
   }
 });
-router.route("/req/model").get(async (req, res) => {
+
+router.route("/req/model").get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
   res.json(fieldsToSend);
-  //   let response = Ticket.eachPath()
-  // res.send(response)
 });
 
 // Get one ticket using ticket id as param
@@ -114,68 +109,12 @@ router.route("/:id").get([session], async (req, res, next) => {
   try {
     const { id } = req.params;
     const Ticket = makeModel();
-    let ticket = await Ticket.find({ _id: id });
     // If a reqUser, limit the fields returned
     if (req.user.__type === "reqUser") {
-      ticket = ticket[0];
-      console.log(ticket);
-      let {
-        requestor,
-        vendorName,
-        overallRisk,
-        businessRisk,
-        status,
-        dateCompleted,
-        projectDescription,
-        projectManager,
-        buisnessContact,
-        department,
-        dataSensitivity,
-        dataDescription,
-        dataRegulation,
-        phi,
-        vendorService,
-        customCodeRequired,
-        integrations,
-        systemLevelAccess,
-        platform,
-        dataAccess,
-        needMFA,
-        encryption,
-        assessor,
-        attachments,
-        questionnaireSent,
-        questionnaireRec,
-      } = ticket;
-      res.status(200).json({
-        requestor,
-        vendorName,
-        overallRisk,
-        businessRisk,
-        status,
-        dateCompleted,
-        projectDescription,
-        projectManager,
-        buisnessContact,
-        department,
-        dataSensitivity,
-        dataDescription,
-        dataRegulation,
-        phi,
-        vendorService,
-        customCodeRequired,
-        integrations,
-        systemLevelAccess,
-        platform,
-        dataAccess,
-        needMFA,
-        encryption,
-        assessor,
-        attachments,
-        questionnaireSent,
-        questionnaireRec,
-      });
+      let ticket = await Ticket.findOne({ _id: id }, [...getRequiredReqSchema(), createdAt, updatedAt]);      
+      res.status(200).json();
     } else {
+      let ticket = await Ticket.findOne({ _id: id });
       res.status(200).json({
         ticket,
       });
@@ -196,7 +135,7 @@ router.route("/modify/:id").put([session], async (req, res, next) => {
       });
     } else {
       const Ticket = makeModel();
-      let ticketToModify = await Ticket.findOne({ _id: id, __type:'' });
+      let ticketToModify = await Ticket.findOne({ _id: id});
       // console.log(ticketToModify)
       // Error if no ticket with that ID found
       if (!ticketToModify) {
@@ -204,8 +143,6 @@ router.route("/modify/:id").put([session], async (req, res, next) => {
       } else {
         // loop through request body and only update fields that exist in the request
         const AsrTicket = makeAsrModel()
-        // let asrtick = await AsrTicket.findOne({_id: id, __type: ''})
-        console.log(AsrTicket.discriminators)
 
         for (field in req.body) {
           ticketToModify[field] = req.body[field];

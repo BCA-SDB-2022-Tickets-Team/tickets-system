@@ -1,9 +1,18 @@
 const mongoose = require('mongoose')
 const CustomFieldsSchema =require('./custom_fields_schema')
 
+const FieldsToIgnore = [
+  _id,
+  __v,
+  Department,
+  'Requestor',
+  createdAt,
+  updatedAt,
+]
+
 let reqTicket = new mongoose.Schema(
   {
-    requestor: {
+    'Requestor': {
       type: mongoose.ObjectId,
       required: true
     },
@@ -11,26 +20,23 @@ let reqTicket = new mongoose.Schema(
       type: String,
       required: true
     },
-    projectDescription: {
+    'Project Description': {
       type: String,
-      required: false,
+      required: true,
     },
-    projectManager: {
+    'Project Manager': {
+      type: String,
+      required: false
+    },
+    'Business Contact': {
       type: String,
       default: '',
       required: false
     },
-    buisnessContact: {
+    Department: {
       type: String,
-      default: '',
-      required: false
-    },
-    department: {
-      type: String,
-      default: '',
       required: true,
       enum: [
-        '',
         'hr', 
         'it', 
         'legal', 
@@ -40,71 +46,69 @@ let reqTicket = new mongoose.Schema(
         'procurement'
       ]
     },
-    dataSensitivity: {
+    'Data Sensitivy': {
       type: String,
       default: '',
-      required: false,
     },
-    dataDescription: {
+    'Data Description': {
       type: String,
       default: '',
-      required: false
     }, 
-    dataRegulation: {
+    'Data Regulation': {
       type: String,
       required: false,
       default: 'none',
       enum: ['none', 'gxp', 'sox', 'gdpr']
     },
-    phi: {
+    PHI: {
       type: Boolean,
       required: false,
       default: false
     },
-    vendorService: {
+    'Vendor Service': {
       type: String,
       default: '',
       required: false,
     },
-    customCodeRequired: {
+    'Custom Code Required': {
       type: Boolean,
       required: false,
       default: false
     },
-    submittedToSecurity: {
+    'Submitted To Security': {
       type: Date,
       required: false
     },
-    integrations: {
+    Integrations: {
       type: Boolean,
       default: false,
     },
-    systemLevelAccess: {
+    'System Level Access': {
       type: String,
       default: '',
       required: false,
     },
-    platform: {
+    Platform: {
       type: String,
       default: '',
       required: false,
     },
-    dataAccess: {
+    'Data Access': {
       type: String,
       default: '',
       required: false
     },
-    needMFA: {
+    'Need MFA': {
       type: Boolean,
       default: false,
       required: false
     },
-    encryption: {
+    Encryption: {
       type: Boolean,
       default: false,
       required: false
     },
-    attachments: {
+    Attachments: {
       type: Number,
       required: false,
       default: 0
@@ -113,25 +117,22 @@ let reqTicket = new mongoose.Schema(
 )
 
 const asrTicket = new mongoose.Schema({
-    assessor: {
+    Assessor: {
       type: mongoose.ObjectId,
       required: false,
     },
-    overallRisk: {
+    'Overall Risk': {
       type: String,
       required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
+      enum: ['low', 'medium', 'high']
     },
-    businessRisk: {
+    'Business Risk': {
       type: String,
       required: false,
-      default: '',
-      enum: ['', 'low', 'medium', 'high']
+      enum: ['low', 'medium', 'high']
     },
-    status: {
+    Status: {
       type: String,
-      required: false,
       default: 'new-request',
       enum: [
               'new-request', 
@@ -143,34 +144,32 @@ const asrTicket = new mongoose.Schema({
               'completed'  
             ]
     },
-    dateCompleted: {
+    'Date Completed': {
       type: Date,
       required: false,
     },
-    dueDate: {
+    'Due Date': {
       type: Date,
       required: false
     },
-    warningDate: {
+    'Warning Date': {
       type: Date,
       required: false,
     },
-    questionnaireSent: {
+    'Questionnaire Sent': {
       type: Date,
       required: false
     },
-    questionnaireRec: {
+    'Questionnaire Received': {
       type: Date, 
       required: false
     },
-    notes: {
+    Notes: {
       type: String,
       default: '',
-      required: false
     },
-    timeline: {
+    Timeline: {
       type: String,
-      required: false,
       default: 'standard',
       enum: ['standard', 'expedite']
     },
@@ -206,12 +205,17 @@ function mergeIntoTicket(){
 const makeModel = function(){
   return mongoose.model('ticket',Ticket)
 }
-
+/**
+ * takes the current schema, filters out paths that should not be seen by
+ * requestors, and reutnrs an array of strings that can be used to
+ * filter Ticket options by keys 
+ * @returns [pathNames]
+ */
 async function getRequiredReqSchema(){
   let requiredPaths = []
   await reqTicket.eachPath((name, type) => {
     //todo: more filtering once we finalize required values
-    if (!type.options.required){
+    if (!type.options.required || FieldsToIgnore.includes('name')){
       return null
     } else {
     let pathObject = {

@@ -14,7 +14,12 @@ router.route("/create").post([session], async (req, res, next) => {
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
       const bodyFields = Object.keys(req.body.newTicketBody);
+      console.log(req.user)
       const newTicket = new Ticket({
+<<<<<<< HEAD
+=======
+        
+>>>>>>> dbee8fa (new ticket form tweaks)
         Requestor: req.user._id,
         Department: req.user.Department
       });

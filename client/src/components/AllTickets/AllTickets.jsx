@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table } from "reactstrap"
 
 
-function AllTickets() {
+function AllTickets(props) {
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
 
@@ -27,21 +28,26 @@ function AllTickets() {
         <Table>
             <tbody>
                 <tr>
+                    {/* Map over the ticket field headings and display as table headings */}
                     {ticketFieldHeadings.map(heading => {
-                        return (
-                            <th key={heading}>{heading}</th>
-                        )
+                        if (heading !== "_id") {
+                            return (
+                                <th key={heading}>{heading}</th>
+                            )
+                        }
                     })}
                 </tr>
-                {/* Map over the tickets and display them in a table */}
+                {/* Map over the tickets and display their data in a table */}
                 {ticketData.map((ticket) => {
                     let contentKeys = Object.keys(ticket)
                     return (
                         <tr key={ticket['Created At']}>
                             {contentKeys.map(field => {
-                                return (
-                                    <td key={field}>{ticket[field]}</td>
-                                )
+                                if (field !== "_id") {
+                                    return (
+                                        <td key={field}><NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink></td>
+                                    )
+                                }
                             })}
                         </tr>
                     )

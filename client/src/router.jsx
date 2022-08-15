@@ -5,10 +5,12 @@ import Login from './components/Login/Login';
 import NewTicket from './components/NewTicket/NewTicket';
 import ViewUpdate from './components/VU/viewupdate';
 import AllTickets from './components/AllTickets/AllTickets';
+import OneTicket from './components/OneTicket/OneTicket';
 
 function Router() {
   const [sessionToken, setSessionToken] = useState(undefined)
   const [sessionRole, setSessionRole] = useState(undefined)
+  const [ticketID, setTicketID] = useState("")
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -34,7 +36,8 @@ function Router() {
       <Route path="/createuser" element={<CreateUser />} />
       <Route path="/VU" element={<ViewUpdate />} />
       <Route path='/newticket' element={<NewTicket />} />
-      <Route path='/alltickets' element={<AllTickets />} />
+      <Route path='/alltickets' element={<AllTickets setTicketID={setTicketID} />} />
+      <Route path='/oneticket' element={<OneTicket ticketID={ticketID} />} />
 
 
     </Routes>

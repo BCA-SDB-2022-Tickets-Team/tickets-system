@@ -3,7 +3,9 @@ const session = require("../middlewares/session");
 const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
 
 //  Create a new ticket
-router.route("/create").post([session], async (req, res, next) => {
+router
+.route("/create")
+.post([session], async (req, res, next) => {
   try {
     // Only req users and isAdmin asr users can make new tickets
     if (req.user.__type === "asrUser" && !req.user.isAdmin) {
@@ -49,6 +51,7 @@ router
       res.send(
         allTickets.map(ticket => {
           return {
+            _id: ticket._id,
             'Created At': ticket.createdAt,
             'Vendor Name': ticket['Vendor Name'],
             'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
@@ -62,6 +65,7 @@ router
       res.send(
         allTickets.map(ticket => {
           return {
+            _id: ticket._id,
             'Created At': ticket.createdAt,
             'Vendor Name': ticket['Vendor Name'],
             'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
@@ -78,7 +82,9 @@ router
 });
 
 // Get all tickets by the status filters set (passed through as queries in url)
-router.route("/status-filter").get([session], async (req, res, next) => {
+router
+.route("/status-filter")
+.get([session], async (req, res, next) => {
   const { status } = req.body;
   statusArray = status.split(",");
   try {
@@ -118,14 +124,19 @@ router.route("/status-filter").get([session], async (req, res, next) => {
   }
 });
 
-router.route("/req/model").get([session], async (req, res) => {
+router
+.route("/req/model")
+.get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
   res.json(fieldsToSend);
 });
 
+
 // Get one ticket using ticket id as param
-router.route("/:id").get([session], async (req, res, next) => {
+router
+.route("/:id")
+.get([session], async (req, res, next) => {
   try {
     const { id } = req.params;
     const Ticket = makeModel();
@@ -135,9 +146,9 @@ router.route("/:id").get([session], async (req, res, next) => {
       res.status(200).json();
     } else {
       let ticket = await Ticket.findOne({ _id: id });
-      res.status(200).json({
-        ticket,
-      });
+      res.send(
+        ticket
+      )
     }
   } catch (err) {
     // Pass error to error-handling middleware at the bottom
@@ -145,7 +156,9 @@ router.route("/:id").get([session], async (req, res, next) => {
   }
 });
 
-router.route("/modify/:id").put([session], async (req, res, next) => {
+router
+.route("/modify/:id")
+.put([session], async (req, res, next) => {
   // Find ticket by document ID passed as parameter
   const { id } = req.params;
   try {
@@ -181,7 +194,9 @@ router.route("/modify/:id").put([session], async (req, res, next) => {
   }
 });
 
-router.route("/delete/:id").post([session], async (req, res, next) => {
+router
+.route("/delete/:id")
+.post([session], async (req, res, next) => {
   let { id } = req.params;
   try {
     // Only admins can delete tickets

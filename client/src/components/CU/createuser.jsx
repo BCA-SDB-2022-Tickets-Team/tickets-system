@@ -1,202 +1,244 @@
-import React, { useState, useEffect } from 'react'
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Table from 'react-bootstrap/Table';
-import { Link} from 'react-router-dom'
-import './createuser.css'
- 
-const roles =[   "hr",
-"it",
-"legal",
-"manufacturing",
-"marketing",
-"ops",
-"procurement",]
+
+import React, { useState, useEffect } from 'react';
+import { Table } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+import {
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+} from 'reactstrap';
+
+import './createuser.css';
+
+const departments = ["hr",
+    "it",
+    "legal",
+    "manufacturing",
+    "marketing",
+    "ops",
+    "procurement",]
 
 
 
-export const CreateUser = (props) => {
 
-   
+function CreateUser (props)  {
+
+
     const [firstName, setFirst] = useState("")
     const [lastName, setLast] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [role, setRole] = useState("")
+    const [department, setdepartment] = useState("department")
     const [isManager, setIsManager] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [role, setRole] = useState(undefined)
+useEffect(()=>{
+    setRole(localStorage.getItem("role"))
+    console.log(role)},[])
 
+    const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+    const handleSubmit = e => {
+        e.preventDefault()
+        let newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        }
+        if (role === 2) {
+            newUser["department"] = department
+            newUser["isManager"] = isManager
+        } else { newUser["isAdmin"] = isAdmin }
 
-
-  const handleSubmit = e => {
-      e.preventDefault()
-      let url = "http://localhost:4000/api/user/reqcreateuser"
-      fetch(url, {
-          method:"POST",
-          body: JSON.stringify({
-              firstName: firstName,
-              lastName: lastName,
-              username: username,
-              password: password,
-              role: role,
-              isManager: false,
-              isAdmin: false
-      
-          }),
-               headers: new Headers({
-              "Content-Type": "application/json",
-              "Authorization": props.sessionToken
-          })
-      })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      
-
-      
-
-     
-
-
-      alert(`Name: ${firstName} ${lastName}, email: ${email}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
-
-  }
-  
-
-
+        let url = `http://localhost:4000/api/user/${role === 2 ? "req" : "asr"}`
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(newUser),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                "Authorization": props.sessionToken
+            })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+    }
     return (
-       
-        
-           <>
-       
-           
-   <container className="container">
-     <div className="table">
-     <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th></th>
-          <th>{"First Name"}</th>
-          <th>{"Last Name"}</th>
-          <th>{"Email"}</th>
-          <th>{"Role"}</th>
-          <th>{"Is Manager"}</th>
-          <th>{"Is Admin"}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-    
-      </tbody>
-    </Table>
-                    
-</div>
+
+        <div style={{
+            display: 'block', width: 700, padding: 30
+        }}>
+            <Table
+            >
+                <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            First Name
+                        </th>
+                        <th>
+                            Last Name
+                        </th>
+                        <th>
+                            Department
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">
+                            1
+                        </th>
+                        <td>
+                            {firstName}
+                        </td>
+                        <td>
+                            {lastName }
+                        </td>
+                        <td>
+                            {lastName}
+                        </td>
+                        <td>
+                            {email}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            2
+                        </th>
+                        <td>
+                            Jacob
+                        </td>
+                        <td>
+                            Thornton
+                        </td>
+                        <td>
+                            @fat
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            3
+                        </th>
+                        <td>
+                            Larry
+                        </td>
+                        <td>
+                            the Bird
+                        </td>
+                        <td>
+                            @twitter
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
+            <div className="FormContainer">
+                <Form inline>
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                        <Label
+                            className="me-sm-2"
+                            for="exampleEmail"
+                        >
+                            First Name
+                        </Label>
+                        <Input
+                            id="exampleName"
+                            name="email"
+                            type="email"
+                        />
+                    </FormGroup>
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                        <Label
+                            className="me-sm-2"
+                            for="examplePassword"
+                        >
+                            Last Name
+                        </Label>
+                        <Input
+                            id="examplePassword"
+                            name="password"
+                            type="password"
+                        />
+                    </FormGroup>
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                        <Label
+                            className="me-sm-2"
+                            for="examplePassword"
+                        >
+                            Email
+                        </Label>
+                        <Input
+                            id="examplePassword"
+                            name="password"
+
+                            type="password"
+                        />
+                    </FormGroup>
+
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                        <Label
+                            className="me-sm-2"
+                            for="examplePassword"
+                        >
+                            Password
+                        </Label>
+                        <Input
+                            id="examplePassword"
+                            name="password"
+                            type="password"
+                        />
+                    </FormGroup>
+                    <div className="d-flex p-5">
+                        {role === 2 ?
+                            <Dropdown toggle={toggle} direction={"down"} isOpen={dropdownOpen}>
+                                <DropdownToggle caret>
+                                    {department}
+                                </DropdownToggle>
+                                <DropdownMenu container="body">
+                                    {departments.map(department => {
+                                        return (<DropdownItem onClick={() => setdepartment(department)}>
+                                            {department}
+                                        </DropdownItem>)
+                                    })}
+                                </DropdownMenu>
+                            </Dropdown>
+                            :
+                            null
+                        }
+                    </div>
+
+                    <br></br>
+                    <FormGroup className="checkbox"
+                        check
+                        inline
+                    >
+                        <Input type="checkbox" onClick={() => setIsManager(!isManager)} />
+                        <Label check>
+                            Is Manager
+                        </Label>
+                        <Input type="checkbox" onClick={() => setIsAdmin(!isManager)} />
+                        <Label check>
+                            Is Admin
+                        </Label>
+                    </FormGroup>
 
 
- <div className="formContainer">
-            <form className="createUserWrapper" onSubmit={handleSubmit}>
-            <div className="firstName">
-                    <label htmlFor="firstname">First Name:</label>
-                    <input
-                        type="text"
-                        id="firstName"
-                        value={firstName}
-                        onChange={e => setFirst(e.target.value)}
-                    />
-                </div>
-            <div className="lastName">
-                    <label htmlFor="lastname">Last Name:</label>
-                    <input
-                        type="text"
-                        id="lastName"
-                        value={lastName}
-                        onChange={e => setLast(e.target.value)}
-                    />
-                </div>
-                <div className="email">
-                    <label htmlFor="email">Username:</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                </div>
 
+                    <Button>
+                        Submit
+                    </Button>
+                </Form>
 
-                <div className="password">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
-               
-      <DropdownButton title={role||"role"} id="dropdown-basic">
-          
-      {roles.map(item=>(<Dropdown.Item key={item} onClick={()=>setRole(item)}>{item}</Dropdown.Item>))}
-      </DropdownButton>
+            </div>
+        </div>
 
-      <InputGroup className="mb-3">
-        <InputGroup.Checkbox id="ismanager" onClick={()=>setIsManager(!isManager)} aria-label="Checkbox for following text input" />
-        <Form.Label htmlFor='ismanager' value="Manager" aria-label="Label for Checkbox">Is Manager </Form.Label>
-        <InputGroup.Checkbox id="isadmin" onClick={()=>setIsAdmin(!isAdmin)} aria-label="Checkbox for following text input" />
-        <Form.Label htmlFor='isadmin' value="Admin" aria-label="Label for Checkbox">Is Admin</Form.Label>
-      </InputGroup>
- 
-  
-                <button type="submit" onClick={handleSubmit}>Create User</button>
-       
-              </form>
-              
-              </div>
+    );
 
-              </container>    
-         
-              <Link to="/vu">View User</Link>  
-      
-    </>
-    )
 }
 
-export default CreateUser
 
+export default CreateUser

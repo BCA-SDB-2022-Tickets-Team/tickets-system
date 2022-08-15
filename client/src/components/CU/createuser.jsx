@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Table from 'react-bootstrap/Table';
 import './createuser.css'
-
+ 
 const roles =[   "hr",
 "it",
 "legal",
@@ -14,34 +15,37 @@ const roles =[   "hr",
 "procurement",]
 
 
+
 export const CreateUser = (props) => {
 
    
     const [firstName, setFirst] = useState("")
     const [lastName, setLast] = useState("")
-    const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [role, setRole] = useState("")
     const [isManager, setIsManager] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
 
 
+
+
   const handleSubmit = e => {
       e.preventDefault()
-      let url = "http://localhost:4000/api/user/createuser"
+      let url = "http://localhost:4000/api/user/reqcreateuser"
       fetch(url, {
           method:"POST",
           body: JSON.stringify({
               firstName: firstName,
               lastName: lastName,
-              email: email,
+              username: username,
               password: password,
               role: role,
               isManager: false,
               isAdmin: false
       
           }),
-          headers: new Headers({
+               headers: new Headers({
               "Content-Type": "application/json",
               "Authorization": props.sessionToken
           })
@@ -49,14 +53,83 @@ export const CreateUser = (props) => {
       .then(res => res.json())
       .then(data => console.log(data))
       
-      //alert(`Name: ${firstName} ${lastName}, email: ${email}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
+
+      
+
+     
+
+
+      alert(`Name: ${firstName} ${lastName}, email: ${username}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
 
   }
+  
 
 
     return (
+       
+        
+           <>
+       
+           
+   <container className="container">
+     <div className="table">
+     <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th></th>
+          <th>{"First Name"}</th>
+          <th>{"Last Name"}</th>
+          <th>{"Username"}</th>
+          <th>{"Role"}</th>
+          <th>{"Is Manager"}</th>
+          <th>{"Is Admin"}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>{"id"}</td>
+          <td>{firstName || "first"}</td>
+          <td>{lastName || "last"}</td>
+          <td>{username || "user"}</td>
+          <td>{role || "role"}</td>
+          <td>{isManager || "manager"}</td>
+          <td>{isAdmin || "admin"}</td>
+        </tr>
+        <tr>
+            <td>{"id"}</td>
+          <td>{firstName || "first"}</td>
+          <td>{lastName || "last"}</td>
+          <td>{username || "user"}</td>
+          <td>{role || "role"}</td>
+          <td>{isManager || "manager"}</td>
+          <td>{isAdmin || "admin"}</td>
+        </tr>
+        <tr>
+            <td>{"id"}</td>
+          <td>{firstName || "first"}</td>
+          <td>{lastName || "last"}</td>
+          <td>{username || "user"}</td>
+          <td>{role || "role"}</td>
+          <td>{isManager || "manager"}</td>
+          <td>{isAdmin || "admin"}</td>
+        </tr>
+        <tr>
+            <td>{"id"}</td>
+          <td>{firstName || "first"}</td>
+          <td>{lastName || "last"}</td>
+          <td>{username || "user"}</td>
+          <td>{role || "role"}</td>
+          <td>{isManager || "manager"}</td>
+          <td>{isAdmin || "admin"}</td>
+        </tr>
     
-        <div>
+      </tbody>
+    </Table>
+                    
+</div>
+
+
+ <div className="formContainer">
             <form className="createUserWrapper" onSubmit={handleSubmit}>
             <div className="firstName">
                     <label htmlFor="firstname">First Name:</label>
@@ -80,9 +153,9 @@ export const CreateUser = (props) => {
                     <label htmlFor="email">Username:</label>
                     <input
                         type="text"
-                        id="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        id="username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
                     />
                 </div>
 
@@ -96,7 +169,7 @@ export const CreateUser = (props) => {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-                
+               
       <DropdownButton title={role||"role"} id="dropdown-basic">
           
       {roles.map(item=>(<Dropdown.Item key={item} onClick={()=>setRole(item)}>{item}</Dropdown.Item>))}
@@ -113,8 +186,14 @@ export const CreateUser = (props) => {
                 <button type="submit" onClick={handleSubmit}>Create User</button>
        
               </form>
-    
-        </div>
+              
+              </div>
+
+              </container>    
+         
+          
+      
+    </>
     )
 }
 

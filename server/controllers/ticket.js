@@ -15,8 +15,8 @@ router.route("/create").post([session], async (req, res, next) => {
       const Ticket = makeModel();
       const bodyFields = Object.keys(req.body.newTicketBody);
       const newTicket = new Ticket({
-        requestor: req.user._id,
-        'Department': req.user.Department
+        Requestor: req.user._id,
+        Department: req.user.Department
       });
       for (field of bodyFields) {
         if (bodyFields.includes(field)) {

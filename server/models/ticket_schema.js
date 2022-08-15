@@ -28,7 +28,7 @@ let reqTicket = new mongoose.Schema(
     department: {
       type: String,
       default: '',
-      required: false,
+      required: true,
       enum: [
         '',
         'hr', 
@@ -211,6 +211,9 @@ async function getRequiredReqSchema(){
   let requiredPaths = []
   await reqTicket.eachPath((name, type) => {
     //todo: more filtering once we finalize required values
+    if (!type.options.required){
+      return null
+    } else {
     let pathObject = {
         name,
         type: type.instance,
@@ -221,8 +224,9 @@ async function getRequiredReqSchema(){
       pathObject['enum'] = type.options.enum
     }
     requiredPaths.push(pathObject)
-  })
+  }})
   return requiredPaths
+  
 }
 
 module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}

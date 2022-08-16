@@ -1,40 +1,7 @@
-* {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
 
-table{
-    width:60vw;
 
-}
-.container{
-    display: flex;
-    justify-content: space-between;
-    gap: 10vw;
-  }
-  th{
-      font-size: 1vw;
-  }
+
 tbody{
-    height: 40vw;
-    width: 40vw;
+    background-color: white;
 }
 
-form {
-    margin-top: 10vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: right;
-    align-items: right;
-    color:black;
-    width:20vw;
-    
-}
-
-input {
-    margin: .5vw 0 2vw 0;
-}
-
-button {
-    margin: 1vw 0 1vw 0;
-    width: 100px;
-}

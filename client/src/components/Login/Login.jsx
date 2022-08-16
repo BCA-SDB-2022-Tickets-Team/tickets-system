@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import './Login.css'
 
 
@@ -40,6 +40,7 @@ function Login(props) {
                 const resData = await res.json()
                 props.updateLocalStorageToken(resData.token)
                 props.updateLocalStorageRole(resData.userRole)
+        
                 // ? example of authenticated request to the server
                 // const testRes = await fetch("http://localhost:4000/api/req/test", {
                 //     method: "GET",

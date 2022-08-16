@@ -12,6 +12,9 @@ function Router() {
     if (localStorage.getItem("token")) {
       setSessionToken(localStorage.getItem("token"))
     }
+    if (localStorage.getItem("role")) {
+      setSessionRole(localStorage.getItem("role"))
+    }
   })
 
   const updateLocalStorageToken = newToken => {
@@ -28,8 +31,22 @@ function Router() {
   // Logout functionality
   return (
    <Routes >
-       <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />}/>
-       <Route path="/createuser" element={<CreateUser />}/>
+       <Route path="/" element={
+        <Login 
+          updateLocalStorageToken={updateLocalStorageToken}
+          updateLocalStorageRole={updateLocalStorageRole} 
+        />
+      }
+      />
+       <Route 
+          path="/createuser" 
+          element={
+            <CreateUser 
+              sessionToken={sessionToken}
+              sessionRole={sessionRole} 
+            />
+          }
+        />
        <Route path='newticket' element={<NewTicket />}/>
 
 

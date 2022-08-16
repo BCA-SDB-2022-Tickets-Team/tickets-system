@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Table } from "reactstrap";
+import { Row, Table } from "reactstrap";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import {
     Dropdown,
@@ -35,7 +35,7 @@ function CreateUser (props)  {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [role, setRole] = useState(undefined)
 useEffect(()=>{
-    setRole(localStorage.getItem("role"))
+    setRole(parseInt(localStorage.getItem("role")))
     console.log(role)},[])
 
     const toggle = () => setDropdownOpen((prevState) => !prevState);
@@ -66,10 +66,12 @@ useEffect(()=>{
             .then(data => console.log(data))
     }
     return (
-
+      <container>
+        
         <div style={{
-            display: 'block', width: 700, padding: 30
+            display: 'center', width: 800, padding: 20,  display: "flex", direction: "row", align: "center", background: "lightgrey",
         }}>
+            
             <Table
             >
                 <thead>
@@ -100,7 +102,7 @@ useEffect(()=>{
                             {lastName }
                         </td>
                         <td>
-                            {lastName}
+                            {email}
                         </td>
                         <td>
                             {email}
@@ -108,16 +110,19 @@ useEffect(()=>{
                     </tr>
                     <tr>
                         <th scope="row">
-                            2
+                           2 
                         </th>
                         <td>
-                            Jacob
+                           {firstName}
                         </td>
                         <td>
-                            Thornton
+                           {lastName}
                         </td>
                         <td>
-                            @fat
+                            {email}
+                        </td>
+                        <td>
+                            {email}
                         </td>
                     </tr>
                     <tr>
@@ -125,20 +130,25 @@ useEffect(()=>{
                             3
                         </th>
                         <td>
-                            Larry
+                            {email}
                         </td>
                         <td>
-                            the Bird
+                            {email}
                         </td>
                         <td>
-                            @twitter
+                            {email}
+                        </td>
+                        <td>
+                            {email}
                         </td>
                     </tr>
                 </tbody>
             </Table>
+          
+            <div className="sidePanel">
             <div className="FormContainer">
-                <Form inline>
-                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                <Form className="form" inline>
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
                         <Label
                             className="me-sm-2"
                             for="exampleEmail"
@@ -146,12 +156,12 @@ useEffect(()=>{
                             First Name
                         </Label>
                         <Input
-                            id="exampleName"
-                            name="email"
-                            type="email"
+                            id="First Name"
+                            name="first name"
+                            type="name"
                         />
                     </FormGroup>
-                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
                         <Label
                             className="me-sm-2"
                             for="examplePassword"
@@ -159,12 +169,12 @@ useEffect(()=>{
                             Last Name
                         </Label>
                         <Input
-                            id="examplePassword"
-                            name="password"
-                            type="password"
+                            id="Last Name"
+                            name="last name"
+                            type="last name"
                         />
                     </FormGroup>
-                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
                         <Label
                             className="me-sm-2"
                             for="examplePassword"
@@ -172,14 +182,15 @@ useEffect(()=>{
                             Email
                         </Label>
                         <Input
-                            id="examplePassword"
-                            name="password"
+                            id="Email"
+                            name="email"
 
-                            type="password"
+                            type="email"
+                         
                         />
                     </FormGroup>
 
-                    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                    <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
                         <Label
                             className="me-sm-2"
                             for="examplePassword"
@@ -187,9 +198,11 @@ useEffect(()=>{
                             Password
                         </Label>
                         <Input
-                            id="examplePassword"
+                            id="password"
                             name="password"
                             type="password"
+                          
+                       
                         />
                     </FormGroup>
                     <div className="d-flex p-5">
@@ -215,15 +228,22 @@ useEffect(()=>{
                     <FormGroup className="checkbox"
                         check
                         inline
-                    >
+                    > 
+                    {role === 2 ?
+                    <>
                         <Input type="checkbox" onClick={() => setIsManager(!isManager)} />
                         <Label check>
                             Is Manager
                         </Label>
-                        <Input type="checkbox" onClick={() => setIsAdmin(!isManager)} />
-                        <Label check>
-                            Is Admin
-                        </Label>
+                        </>
+                          :
+                         <> <Input type="checkbox" onClick={() => setIsAdmin(!isManager)} />
+                         <Label check>
+                             Is Admin
+                         </Label></>
+                      }
+
+                       
                     </FormGroup>
 
 
@@ -232,10 +252,11 @@ useEffect(()=>{
                         Submit
                     </Button>
                 </Form>
-
+               
             </div>
         </div>
-
+        </div>
+        </container>
     );
 
 }

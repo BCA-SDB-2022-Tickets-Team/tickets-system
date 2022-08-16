@@ -12,7 +12,7 @@ const FieldsToIgnore = [
 
 let reqTicket = new mongoose.Schema(
   {
-    'Requestor': {
+    Requestor: {
       type: mongoose.ObjectId,
       required: true
     },

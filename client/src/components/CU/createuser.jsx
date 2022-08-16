@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Row, Table } from "reactstrap";
-import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+import { Form, FormGroup, Label, Input, Button, Container } from "reactstrap";
 import {
     Dropdown,
     DropdownToggle,
@@ -34,9 +34,40 @@ function CreateUser (props)  {
     const [isAdmin, setIsAdmin] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [role, setRole] = useState(undefined)
-useEffect(()=>{
-    setRole(parseInt(localStorage.getItem("role")))
-    console.log(role)},[])
+    const [allUsers, setAllUsers] = useState(undefined)
+    useEffect(()=>{
+        async function getAllUsers(){
+            try {
+                let token = localStorage.getItem("token")
+                let allUsersResponse = await fetch(`http://localhost:4000/api/user/allusers`, {
+                    method: "GET",
+                    headers: new Headers({
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    })
+                })
+                if(allUsersResponse.ok){
+                    console.log(`allusers response:`, allUsersResponse)
+                    await allUsersResponse.json()
+                        .then(data => {
+                            console.log(data)
+                            setAllUsers(data.allUsers)
+                        })
+                        .catch(err => console.log(err))
+                } else {
+                    let errorMsg = await allUsersResponse.json()
+                    console.log(`error getting /allusers: `, allUsersResponse)
+                    throw new Error(errorMsg.status)
+                }
+            } catch (error) {
+                console.log(`awww shucks: `, error)
+            }   
+        }
+        getAllUsers()
+        setRole(parseInt(localStorage.getItem("role")))
+        console.log(role)},
+        []
+    )
 
     const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -66,82 +97,60 @@ useEffect(()=>{
             .then(data => console.log(data))
     }
     return (
-      <container>
+      <Container>
         
         <div style={{
             display: 'center', width: 800, padding: 20,  display: "flex", direction: "row", align: "center", background: "lightgrey",
         }}>
             
-            <Table
-            >
+            <Table>
                 <thead>
                     <tr>
-                        <th>
-                            #
-                        </th>
-                        <th>
-                            First Name
-                        </th>
-                        <th>
-                            Last Name
-                        </th>
-                        <th>
-                            Department
-                        </th>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>E-mail</th>
+                        <th>Department</th>
+                        <th>Admin?</th>
+                        <th>User Type</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">
-                            1
-                        </th>
-                        <td>
-                            {firstName}
-                        </td>
-                        <td>
-                            {lastName }
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                           2 
-                        </th>
-                        <td>
-                           {firstName}
-                        </td>
-                        <td>
-                           {lastName}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            3
-                        </th>
-                        <td>
-                            {email}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                        <td>
-                            {email}
-                        </td>
-                    </tr>
+                    { allUsers !== undefined ?
+                        allUsers.map(user => {
+                            return (
+                                <tr>
+                                    <th scope="row">
+                                        {user._id}
+                                    </th>
+                                    <td>
+                                        {user.firstName}
+                                    </td>
+                                    <td>
+                                        {user.lastName}
+                                    </td>
+                                    <td>
+                                        {user.email}
+                                    </td>
+                                    <td>
+                                        {user.Department !== undefined ? user.Department : `n/a`}
+                                    </td>
+                                    <td>
+                                        {user.isManager !== undefined ? 
+                                            `${user.isManager}`
+                                            :
+                                            `${user.isAdmin}`
+                                        }
+                                    </td>
+                                    <td>
+                                        {user.__type}
+                                    </td>
+                                </tr>
+                            )
+                        })
+                        : 
+                        null
+                    }
                 </tbody>
             </Table>
           
@@ -256,7 +265,7 @@ useEffect(()=>{
             </div>
         </div>
         </div>
-        </container>
+        </Container>
     );
 
 }

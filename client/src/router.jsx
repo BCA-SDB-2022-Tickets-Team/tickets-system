@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
-
+import NewTicket from './components/NewTicket/NewTicket';
 
 function Router() {
     const [ sessionToken, setSessionToken ] = useState(undefined)
@@ -30,7 +30,7 @@ function Router() {
    <Routes >
        <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />}/>
        <Route path="/createuser" element={<CreateUser />}/>
-      
+       <Route path='newticket' element={<NewTicket />}/>
 
 
    </Routes>

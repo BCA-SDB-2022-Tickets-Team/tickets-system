@@ -1,5 +1,14 @@
+* {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 nav {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+  background-color: #d2ebe4;
 }

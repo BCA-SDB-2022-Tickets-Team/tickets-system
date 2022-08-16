@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Table } from "reactstrap"
+import { Table, Button } from "reactstrap"
 
 function OneTicket(props) {
 
     const [oneTicketData, setOneTicketData] = useState([])
+    const [userRole, setUserRole] = useState("")
 
     useEffect(() => {
         async function getData() {
@@ -21,20 +22,31 @@ function OneTicket(props) {
         getData();
     }, []);
 
-    console.log(oneTicketData)
+    useEffect(() => {
+        setUserRole(localStorage.getItem('role'))
+    })
 
     return (
         <>
-
-            {/* Map over the ticket and display its data in a table */}
-            {Object.keys(oneTicketData).forEach(field => {
-                return (
-                    <div>{field}</div>
-                )
+            {userRole === "3" || userRole === "4"
+                ? <Button color="info" outline>Edit</Button>
+                : null
             }
-            )}
-
-        </ >
+            <Table striped>
+                <tbody>
+                    {/* Map over the ticket and display its data in a table */}
+                    {Object.keys(oneTicketData).map(field => {
+                        return (
+                            <tr key={field}>
+                                <td>{field}:</td>
+                                <td>{oneTicketData[field]}</td>
+                            </tr>
+                        )
+                    }
+                    )}
+                </tbody>
+            </Table>
+        </>
     )
 }
 

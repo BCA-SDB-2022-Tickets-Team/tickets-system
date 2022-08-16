@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table } from "reactstrap"
+import "./AllTickets.css"
 
 
 function AllTickets(props) {
@@ -25,7 +26,7 @@ function AllTickets(props) {
     }, []);
 
     return (
-        <Table>
+        <Table striped responsive hover>
             <tbody>
                 <tr>
                     {/* Map over the ticket field headings and display as table headings */}

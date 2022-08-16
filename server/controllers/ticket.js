@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
-const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
+const { makeModel, makeAsrModel, getRequiredReqSchema, makeReqTicketView } = require("../models/ticket_schema");
 
 //  Create a new ticket
 router
@@ -52,11 +52,10 @@ router
         allTickets.map(ticket => {
           return {
             _id: ticket._id,
-            'Created At': ticket.createdAt,
+            'Created At': ticket['Created At'],
             'Vendor Name': ticket['Vendor Name'],
             'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-            'Updated At': ticket.updatedAt,
-
+            'Updated At': ticket['Updated At'],
           }
         }),
       );
@@ -66,11 +65,10 @@ router
         allTickets.map(ticket => {
           return {
             _id: ticket._id,
-            'Created At': ticket.createdAt,
+            'Created At': ticket['Created At'],
             'Vendor Name': ticket['Vendor Name'],
             'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-            'Updated At': ticket.updatedAt,
-
+            'Updated At': ticket['Updated At'],
           }
         })
       );
@@ -98,18 +96,34 @@ router
       );
       // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
       if (!req.user.isManager) {
-        let tickets = await Ticket.find({
+        let allTickets = await Ticket.find({
           Status: { $in: statusArray },
           Requestor: req.user._id,
         });
-        res.status(200).json({
-          tickets,
-        });
+        res.send(
+          allTickets.map(ticket => {
+            return {
+              _id: ticket._id,
+              'Created At': ticket['Created At'],
+              'Vendor Name': ticket['Vendor Name'],
+              'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+              'Updated At': ticket['Updated At'],
+            }
+          })
+        );
       } else {
-        let tickets = await Ticket.find({ Status: { $in: statusArray } });
-        res.status(200).json({
-          tickets,
-        });
+        let allTickets = await Ticket.find({ Status: { $in: statusArray } });
+        res.send(
+          allTickets.map(ticket => {
+            return {
+              _id: ticket._id,
+              'Created At': ticket['Created At'],
+              'Vendor Name': ticket['Vendor Name'],
+              'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+              'Updated At': ticket['Updated At'],
+            }
+          })
+        );
       }
     } else {
       // Asr
@@ -142,11 +156,25 @@ router
     const Ticket = makeModel();
     // If a reqUser, limit the fields returned
     if (req.user.__type === "reqUser") {
-      let ticket = await Ticket.findOne({ _id: id }, [...getRequiredReqSchema(), createdAt, updatedAt]);      
-      res.status(200).json();
-    } else {
-      let ticket = await Ticket.findOne({ _id: id });
+      let ticket = await Ticket.findById(id, {
+        // Remove fields Reqs should not see
+        _id:0,
+        __v:0,
+        'Date Completed':0,
+        'Due Date':0,
+        'Warning Date':0,
+        Notes:0,
+        Timeline:0
+      })
+      //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
+        ticket
+      )
+    } else {
+      let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
+      //TODO: change Requestor & Assessor to be names instead of object IDs
+      res.send(
+        
         ticket
       )
     }

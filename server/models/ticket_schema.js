@@ -37,7 +37,7 @@ let reqTicket = new mongoose.Schema(
       type: String,
       required: true,
     },
-    'Data Sensitivy': {
+    'Data Sensitivity': {
       type: String,
       required: true,
     },
@@ -104,7 +104,12 @@ let reqTicket = new mongoose.Schema(
       default: 0
     },
   },
-  {timestamps:  true}
+  {timestamps: 
+    {
+      createdAt: 'Created At', 
+      updatedAt: 'Updated At'
+    } 
+  }
 )
 
 const asrTicket = new mongoose.Schema({
@@ -221,7 +226,7 @@ async function getRequiredReqSchema(){
     requiredPaths.push(pathObject)
   }})
   return requiredPaths
-  
+
 }
 
 module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}

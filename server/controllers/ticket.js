@@ -16,10 +16,6 @@ router.route("/create").post([session], async (req, res, next) => {
       const bodyFields = Object.keys(req.body.newTicketBody);
       console.log(req.user)
       const newTicket = new Ticket({
-<<<<<<< HEAD
-=======
-        
->>>>>>> dbee8fa (new ticket form tweaks)
         Requestor: req.user._id,
         Department: req.user.Department
       });

@@ -255,6 +255,45 @@ router
         }
     })
 
+router.route("/allusers")
+    .get([session], async (req, res, next) => {
+      try { 
+        //if the requesting user is a Super Admin, return a list of all Requestors and all Assessors
+        if(req.user.isAdmin){
+          const reqUsers = await User.find({__type: "reqUser"})
+          const asrUsers = await User.find({__type: "asrUser"})
+
+          if(reqUsers.length > 0 && asrUsers.length > 0) {
+            res.status(200).json({
+              requestors: reqUsers,
+              assessors: asrUsers
+            })
+          } else {
+            throw new Error('Could not find requestor and/or assessor users')
+          }
+          //else if the requesing user isa manager, just return all the users in their apartment 
+        } else if(req.user.isManager){
+          let department = req.user.Department
+          let departmentUsers = await User.find({
+            __type: "reqUser",
+            Department: department
+          })
+          if(departmentUsers.length > 0){
+            res.status(200).json({
+              requestors: departmentUsers
+            })
+          } else {
+            throw new Error("Could not find requestor users in the department")
+          }
+        } else {
+          throw new Error('Only Admins and Managers are allowed to see all users')
+        }
+        
+      } catch (error) {
+        next(error)
+      }
+    })
+
 
 
 

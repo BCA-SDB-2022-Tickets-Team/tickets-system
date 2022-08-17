@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import { Link} from 'react-router-dom'
 import './Login.css'
 
@@ -63,36 +64,49 @@ function Login(props) {
     }
 
 
+
+
+
     return (
-        <div>
-            <form className="formWrapper" action="" onSubmit={handleSubmit}>
-                <div className="email">
-                    <label htmlFor="email">Username:</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                </div>
 
-
-                <div className="password">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Login</button>
-                <div style={display}>Invalid Credentials!</div>
-            </form>
-            <Link to="/createUser">Create User</Link>
-
-        </div>
-    )
+<Form inline>
+    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+        <Label
+            className="me-sm-2"
+            for="exampleEmail"
+        >
+            Email
+        </Label>
+        <Input
+            id="email"
+            name="email"
+            placeholder="email"
+            type="text"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+        />
+    </FormGroup>
+    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+        <Label
+            className="me-sm-2"
+            for="examplePassword"
+        >
+            Password
+        </Label>
+        <Input
+            id="password"
+            name="password"
+            placeholder="password"
+            type="text"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+        />
+    </FormGroup>
+    <Button type='submit'>
+        Submit
+    </Button>
+</Form>
+)
 }
 
 export default Login

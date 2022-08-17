@@ -16,6 +16,7 @@ router
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
       const bodyFields = Object.keys(req.body.newTicketBody);
+      console.log(req.user)
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department

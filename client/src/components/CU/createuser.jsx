@@ -1,202 +1,293 @@
-import React, { useState, useEffect } from 'react'
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Table from 'react-bootstrap/Table';
-import { Link} from 'react-router-dom'
-import './createuser.css'
- 
-const roles =[   "hr",
-"it",
-"legal",
-"manufacturing",
-"marketing",
-"ops",
-"procurement",]
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Form, FormGroup, Label, Input, Button, Container, Row, Table, Col  } from "reactstrap";
+import {
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+} from 'reactstrap';
+
+import './createuser.css';
+
+const departments = ["hr",
+    "it",
+    "legal",
+    "manufacturing",
+    "marketing",
+    "ops",
+    "procurement",]
+const allowedRoles = [2, 4]
 
 
 
-export const CreateUser = (props) => {
+function CreateUser (props)  {
 
-   
+
     const [firstName, setFirst] = useState("")
     const [lastName, setLast] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [role, setRole] = useState("")
+    const [department, setdepartment] = useState("department")
     const [isManager, setIsManager] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [role, setRole] = useState(parseInt(props.sessionRole))
+    const [allUsers, setAllUsers] = useState(undefined)
+    const navigate = useNavigate()
 
+    useEffect(()=>{
+        if(!allowedRoles.includes(parseInt(props.sessionRole))){
+            navigate('/')
+        } else {
+            setRole(parseInt(props.sessionRole))
+            async function getAllUsers(){
+                try {
+                    // let token = localStorage.getItem("token")
+                    let allUsersResponse = await fetch(`http://localhost:4000/api/user/allusers`, {
+                        method: "GET",
+                        headers: new Headers({
+                            "Content-Type": "application/json",
+                            "Authorization": props.sessionToken
+                        })
+                    })
+                    if(allUsersResponse.ok){
+                        console.log(`allusers response:`, allUsersResponse)
+                        await allUsersResponse.json()
+                            .then(data => {
+                                console.log(data)
+                                setAllUsers(data.allUsers)
+                            })
+                            .catch(err => console.log(err))
+                    } else {
+                        let errorMsg = await allUsersResponse.json()
+                        console.log(`error getting /allusers: `, allUsersResponse)
+                        throw new Error(errorMsg.status)
+                    }
+                } catch (error) {
+                    console.log(`awww shucks: `, error)
+                }   
+            }
+            getAllUsers()
+        }
+    },
+    [])
 
+    const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+    const onChangeHndler = (e, setter) => {
+        setter(e.target.value)
+    }
 
-  const handleSubmit = e => {
-      e.preventDefault()
-      let url = "http://localhost:4000/api/user/reqcreateuser"
-      fetch(url, {
-          method:"POST",
-          body: JSON.stringify({
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              password: password,
-              role: role,
-              isManager: false,
-              isAdmin: false
-      
-          }),
-               headers: new Headers({
-              "Content-Type": "application/json",
-              "Authorization": props.sessionToken
-          })
-      })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      
+    const handleSubmit = e => {
+        e.preventDefault()
+        let newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        }
+        if (role === 2) {
+            newUser["Department"] = department
+            newUser["isManager"] = isManager
+        } else { newUser["isAdmin"] = isAdmin }
 
-      
-
-     
-
-
-      alert(`Name: ${firstName} ${lastName}, email: ${email}, password: ${password}, role: ${role}, Manager: ${isManager}, Admin: ${isAdmin}`)
-
-  }
-  
-
-
+        let url = `http://localhost:4000/api/user/${role === 2 ? "req" : "asr"}`
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(newUser),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                "Authorization": props.sessionToken
+            })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+    }
     return (
-       
-        
-           <>
-       
-           
-   <container className="container">
-     <div className="table">
-     <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th></th>
-          <th>{"First Name"}</th>
-          <th>{"Last Name"}</th>
-          <th>{"Email"}</th>
-          <th>{"Role"}</th>
-          <th>{"Is Manager"}</th>
-          <th>{"Is Admin"}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-        <tr>
-            <td>{"id"}</td>
-          <td>{firstName || "first"}</td>
-          <td>{lastName || "last"}</td>
-          <td>{email || "email"}</td>
-          <td>{role || "role"}</td>
-          <td>{isManager || "manager"}</td>
-          <td>{isAdmin || "admin"}</td>
-        </tr>
-    
-      </tbody>
-    </Table>
+      <Container fluid className='create-user-container'>
+        <Row className="create-user-row">
+            <Col xs="8">
+                <Table responsive striped>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>E-mail</th>
+                            <th>Department</th>
+                            <th>Admin?</th>
+                            {
+                                role === 4 ?
+                                    <th>User Type</th>
+                                :
+                                null
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { allUsers !== undefined ?
+                            allUsers.map(user => {
+                                return (
+                                    <tr key={user._id}>
+                                        <th scope="row">
+                                            {user._id}
+                                        </th>
+                                        <td>
+                                            {user.firstName}
+                                        </td>
+                                        <td>
+                                            {user.lastName}
+                                        </td>
+                                        <td>
+                                            {user.email}
+                                        </td>
+                                        <td>
+                                            {user.Department !== undefined ? user.Department : `n/a`}
+                                        </td>
+                                        <td>
+                                            {user.isManager !== undefined ? 
+                                                `${user.isManager}`
+                                                :
+                                                `${user.isAdmin}`
+                                            }
+                                        </td>
+                                        { 
+                                            role === 4 ? 
+                                                <td>
+                                                    {user.__type}
+                                                </td>
+                                            :
+                                                null
+                                        }
+                                    </tr>
+                                )
+                            })
+                            : 
+                            null
+                        }
+                    </tbody>
+                </Table>
+            </Col>
+            <Col 
+                className='sidePanel'
+                xs="2"
+            >
+                <div className="FormContainer">
+                    <Form 
+                        className="form" 
+                        inline
+                        onSubmit={handleSubmit}>
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                            <Label
+                                className="me-sm-2"
+                                for="exampleEmail"
+                            >
+                                First Name
+                            </Label>
+                            <Input
+                                id="First Name"
+                                name="first name"
+                                type="name"
+                                onChange={(e) => onChangeHndler(e, setFirst)}
+                            />
+                        </FormGroup>
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                            <Label
+                                className="me-sm-2"
+                                for="examplePassword"
+                            >
+                                Last Name
+                            </Label>
+                            <Input
+                                id="Last Name"
+                                name="last name"
+                                type="last name"
+                                onChange={(e) => onChangeHndler(e, setLast)}
+                            />
+                        </FormGroup>
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                            <Label
+                                className="me-sm-2"
+                                for="examplePassword"
+                            >
+                                Email
+                            </Label>
+                            <Input
+                                id="Email"
+                                name="email"
+                                type="email"
+                                onChange={(e) => onChangeHndler(e, setFirst)}
+                            />
+                        </FormGroup>
+
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                            <Label
+                                className="me-sm-2"
+                                for="examplePassword"
+                            >
+                                Password
+                            </Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                onChange={(e) => onChangeHndler(e, setPassword)}
+                            />
+                        </FormGroup>
+                        <div className="d-flex p-5">
+                            {role === 2 ?
+                                <Dropdown toggle={toggle} direction={"down"} isOpen={dropdownOpen}>
+                                    <DropdownToggle caret>
+                                        {department}
+                                    </DropdownToggle>
+                                    <DropdownMenu container="body">
+                                        {departments.map(department => {
+                                            return (
+                                                <DropdownItem onClick={() => setdepartment(department)}>
+                                                    {department}
+                                                </DropdownItem>
+                                            )
+                                        })}
+                                    </DropdownMenu>
+                                </Dropdown>
+                                :
+                                null
+                            }
+                        </div>
+
+                        <br></br>
+                        <FormGroup className="checkbox"
+                            check
+                            inline
+                        > 
+                        {role === 2 ?
+                        <>
+                            <Input type="checkbox" onClick={() => setIsManager(!isManager)} />
+                            <Label check>
+                                Is Manager
+                            </Label>
+                            </>
+                                :
+                                <> <Input type="checkbox" onClick={() => setIsAdmin(!isAdmin)} />
+                                <Label check>
+                                    Is Admin
+                                </Label></>
+                            }
+                        </FormGroup>
+                        <Button type='submit'>
+                            Submit
+                        </Button>
+                    </Form>
                     
-</div>
-
-
- <div className="formContainer">
-            <form className="createUserWrapper" onSubmit={handleSubmit}>
-            <div className="firstName">
-                    <label htmlFor="firstname">First Name:</label>
-                    <input
-                        type="text"
-                        id="firstName"
-                        value={firstName}
-                        onChange={e => setFirst(e.target.value)}
-                    />
                 </div>
-            <div className="lastName">
-                    <label htmlFor="lastname">Last Name:</label>
-                    <input
-                        type="text"
-                        id="lastName"
-                        value={lastName}
-                        onChange={e => setLast(e.target.value)}
-                    />
-                </div>
-                <div className="email">
-                    <label htmlFor="email">Username:</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                </div>
+            </Col>
+        </Row>
+    </Container>
+    );
 
-
-                <div className="password">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
-               
-      <DropdownButton title={role||"role"} id="dropdown-basic">
-          
-      {roles.map(item=>(<Dropdown.Item key={item} onClick={()=>setRole(item)}>{item}</Dropdown.Item>))}
-      </DropdownButton>
-
-      <InputGroup className="mb-3">
-        <InputGroup.Checkbox id="ismanager" onClick={()=>setIsManager(!isManager)} aria-label="Checkbox for following text input" />
-        <Form.Label htmlFor='ismanager' value="Manager" aria-label="Label for Checkbox">Is Manager </Form.Label>
-        <InputGroup.Checkbox id="isadmin" onClick={()=>setIsAdmin(!isAdmin)} aria-label="Checkbox for following text input" />
-        <Form.Label htmlFor='isadmin' value="Admin" aria-label="Label for Checkbox">Is Admin</Form.Label>
-      </InputGroup>
- 
-  
-                <button type="submit" onClick={handleSubmit}>Create User</button>
-       
-              </form>
-              
-              </div>
-
-              </container>    
-         
-              <Link to="/vu">View User</Link>  
-      
-    </>
-    )
 }
 
-export default CreateUser
 
+export default CreateUser

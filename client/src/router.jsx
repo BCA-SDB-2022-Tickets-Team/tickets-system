@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom'
 import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
 import NewTicket from './components/NewTicket/NewTicket';
-import ViewUpdate from './components/VU/viewupdate';
 import AllTickets from './components/AllTickets/AllTickets';
 import OneTicket from './components/OneTicket/OneTicket';
 
@@ -15,6 +14,9 @@ function Router() {
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setSessionToken(localStorage.getItem("token"))
+    }
+    if (localStorage.getItem("role")) {
+      setSessionRole(localStorage.getItem("role"))
     }
   })
 
@@ -32,9 +34,22 @@ function Router() {
   // Logout functionality
   return (
     <Routes >
-      <Route path="/" element={<Login updateLocalStorageToken={updateLocalStorageToken} updateLocalStorageRole={updateLocalStorageRole} />} />
-      <Route path="/createuser" element={<CreateUser />} />
-      <Route path="/VU" element={<ViewUpdate />} />
+     <Route path="/" element={
+        <Login 
+          updateLocalStorageToken={updateLocalStorageToken}
+          updateLocalStorageRole={updateLocalStorageRole} 
+        />
+      }
+      />
+       <Route 
+          path="/createuser" 
+          element={
+            <CreateUser 
+              sessionToken={sessionToken}
+              sessionRole={sessionRole} 
+            />
+          }
+        />
       <Route path='/newticket' element={<NewTicket />} />
       <Route path='/alltickets' element={<AllTickets setTicketID={setTicketID} />} />
       <Route path='/oneticket' element={<OneTicket ticketID={ticketID} />} />

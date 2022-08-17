@@ -20,11 +20,10 @@ function OneTicket(props) {
             setOneTicketData(data);
         }
         getData();
-    }, []);
 
-    useEffect(() => {
         setUserRole(localStorage.getItem('role'))
-    })
+
+    }, []);
 
     return (
         <>

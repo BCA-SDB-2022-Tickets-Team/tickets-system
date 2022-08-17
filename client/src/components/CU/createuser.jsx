@@ -38,9 +38,10 @@ function CreateUser (props)  {
     const navigate = useNavigate()
 
     useEffect(()=>{
-        if(!allowedRoles.includes(parseInt(props.sessionRole))){
-            navigate('/')
-        } else {
+        // if(!allowedRoles.includes(parseInt(props.sessionRole))){
+        //     navigate('/')
+        // } else 
+        // {
             setRole(parseInt(props.sessionRole))
             async function getAllUsers(){
                 try {
@@ -70,7 +71,7 @@ function CreateUser (props)  {
                 }   
             }
             getAllUsers()
-        }
+        // }
     },
     [])
 

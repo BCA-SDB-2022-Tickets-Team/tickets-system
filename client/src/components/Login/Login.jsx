@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Form, FormGroup, Label, Input, Button } from "reactstrap";
-import { Link} from 'react-router-dom'
+import { Form, FormGroup, Label, Input, Button, Container, Col, Row } from "reactstrap";
+import { Link } from 'react-router-dom'
 import './Login.css'
 
 
@@ -41,22 +41,8 @@ function Login(props) {
                 const resData = await res.json()
                 props.updateLocalStorageToken(resData.token)
                 props.updateLocalStorageRole(resData.userRole)
-        
-                // ? example of authenticated request to the server
-                // const testRes = await fetch("http://localhost:4000/api/req/test", {
-                //     method: "GET",
-                //     headers: new Headers({
-                //         "Content-Type": "application/json",
-                //         "Authorization": `Bearer ${localStorage.getItem('token')}`
-                //     })
-                // })
-                // if(!testRes.ok){
-                //     if(testRes.status === 403){
-                //        //user does not have sufficident permissions, redirect to either login page or home 
-                //     }
-                // } else {
-                //     console.log('authenticated request!')
-                // }
+
+
             }
         } catch (err) {
             console.log(`error: ${err}`)
@@ -68,45 +54,53 @@ function Login(props) {
 
 
     return (
-
-<Form inline>
-    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-        <Label
-            className="me-sm-2"
-            for="exampleEmail"
-        >
-            Email
-        </Label>
-        <Input
-            id="email"
-            name="email"
-            placeholder="email"
-            type="text"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-        />
-    </FormGroup>
-    <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-        <Label
-            className="me-sm-2"
-            for="examplePassword"
-        >
-            Password
-        </Label>
-        <Input
-            id="password"
-            name="password"
-            placeholder="password"
-            type="text"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-        />
-    </FormGroup>
-    <Button type='submit'>
-        Submit
-    </Button>
-</Form>
-)
+<Container fluid className="login-container">
+<Row className="loginRow">
+<Col xs="5"></Col>
+<Col xs="3">
+        <Form inline className="form"
+            onSubmit={handleSubmit}>
+            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                <Label
+                    className="me-sm-2"
+                    for="exampleEmail"
+                >
+                    Email
+                </Label>
+                <Input
+                    id="email"
+                    name="email"
+                    placeholder="email"
+                    type="text"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                />
+            </FormGroup>
+            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                <Label
+                    className="me-sm-2"
+                    for="examplePassword"
+                >
+                    Password
+                </Label>
+                <Input
+                    id="password"
+                    name="password"
+                    placeholder="password"
+                    type="text"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                />
+            </FormGroup>
+            <Button type='submit'>
+                Login
+            </Button>
+                <div style={display}>Invalid Credentials!</div>
+        </Form>
+        </Col>
+        </Row>
+       </Container>
+    )
 }
 
 export default Login

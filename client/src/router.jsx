@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
 import NewTicket from './components/NewTicket/NewTicket';
 import AllTickets from './components/AllTickets/AllTickets';
 import OneTicket from './components/OneTicket/OneTicket';
+import { LoginContext } from './App';
 
 //* THIS IS HOW TO AUTHENTICATE ROUTES *\\
 //this returns a "pass-through" component that takes:
   //? permittedRoles <Array>
-  //? sessionRole <String>
 //and compares them. If the comparison fails, it redirects to "/"
 function RequireAuth(props) {
-  let auth = props.permittedRoles.includes(props.sessionRole)
+  const {sessionRole} = useContext(LoginContext)
+  const [auth, setAuth] = useState(props.permittedRoles.includes(sessionRole))
+  
   let location = useLocation()
-  console.log(`from RequireAuth, auth is: ${auth}, and permittedRole is: ${props.permittedRoles}` )
+  console.log(`from RequireAuth, sessionRole is: ${sessionRole}, and permittedRole is: ${props.permittedRoles}` )
 
   if(!auth){
     return <Navigate to="/" replace state={{from: location}}/>
@@ -39,59 +41,44 @@ function RequireAuth(props) {
 }
 
 function Router() {
-  const [sessionToken, setSessionToken] = useState(undefined)
-  const [sessionRole, setSessionRole] = useState(undefined)
+  const {sessionRole, sessionToken} = useContext(LoginContext)
   const [ticketID, setTicketID] = useState("")
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      setSessionToken(localStorage.getItem("token"))
-    }
-    if (localStorage.getItem("role")) {
-      setSessionRole(localStorage.getItem("role"))
-    }
-  })
-
-  const updateLocalStorageToken = newToken => {
-    localStorage.setItem("token", newToken)
-    setSessionToken(newToken)
-  }
-
-  const updateLocalStorageRole = newRoleId => {
-    localStorage.setItem("role", newRoleId)
-    setSessionRole(newRoleId)
-  }
-
-
-  // Logout functionality
   return (
     <Routes >
-     <Route path="/" element={
-        <Login 
-          updateLocalStorageToken={updateLocalStorageToken}
-          updateLocalStorageRole={updateLocalStorageRole} 
-        />
-      }
+      <Route path="/" 
+            element= {
+              <Login />
+            }
       />
-       <Route 
-          path="/createuser" 
-          element={
-            <RequireAuth
-              sessionRole={sessionRole}
-              permittedRoles={["2", "4"]}
-            >
-              <CreateUser 
-                sessionToken={sessionToken}
-                sessionRole={sessionRole} 
-              />
-            </RequireAuth>
-          }
-        />
-      <Route path='/newticket' element={<NewTicket />} />
-      <Route path='/alltickets' element={<AllTickets setTicketID={setTicketID} />} />
-      <Route path='/oneticket' element={<OneTicket ticketID={ticketID} />} />
-
-
+      <Route path="/createuser" 
+            element= {
+          <RequireAuth
+            sessionRole={sessionRole}
+            permittedRoles={["2", "4"]}
+          >
+            <CreateUser 
+              sessionToken={sessionToken}
+              sessionRole={sessionRole} 
+            />
+          </RequireAuth>
+        }
+      />
+      <Route path='/newticket' 
+              element= {
+                <NewTicket />
+              } 
+      />
+      <Route path='/alltickets' 
+             element= {
+              <AllTickets setTicketID={setTicketID} />
+             } 
+      />
+      <Route path='/oneticket' 
+             element= {
+              <OneTicket ticketID={ticketID} />
+            } 
+      />
     </Routes>
   )
 }

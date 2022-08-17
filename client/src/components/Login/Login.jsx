@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { Link} from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Link } from 'react-router-dom'
+import { LoginContext } from '../../App'
 import './Login.css'
 
 
-function Login(props) {
-
+function Login() {
+    const { updateLocalStorageRole, updateLocalStorageToken } = useContext(LoginContext)
     // useState variables for username and password
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -38,8 +39,8 @@ function Login(props) {
             } else {
                 console.log('yay! good login!')
                 const resData = await res.json()
-                props.updateLocalStorageToken(resData.token)
-                props.updateLocalStorageRole(resData.userRole)
+                updateLocalStorageToken(resData.token)
+                updateLocalStorageRole(resData.userRole)
         
                 // ? example of authenticated request to the server
                 // const testRes = await fetch("http://localhost:4000/api/req/test", {

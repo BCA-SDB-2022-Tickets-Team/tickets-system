@@ -65,7 +65,7 @@ function Router() {
         }
       />
       <Route path='/newticket' 
-              element= {
+             element= {
                 <NewTicket />
               } 
       />

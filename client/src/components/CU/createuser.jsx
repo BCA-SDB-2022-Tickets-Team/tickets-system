@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, Button, Container, Row, Table, Col  } from "reactstrap";
 import {
@@ -8,6 +8,7 @@ import {
     DropdownMenu,
     DropdownItem,
 } from 'reactstrap';
+import { LoginContext } from '../../App';
 
 import './createuser.css';
 
@@ -24,7 +25,7 @@ const allowedRoles = [2, 4]
 
 function CreateUser (props)  {
 
-
+    const { sessionRole, sessionToken } = useContext(LoginContext)
     const [firstName, setFirst] = useState("")
     const [lastName, setLast] = useState("")
     const [email, setEmail] = useState("")
@@ -33,24 +34,19 @@ function CreateUser (props)  {
     const [isManager, setIsManager] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
-    const [role, setRole] = useState(parseInt(props.sessionRole))
+    const [role, setRole] = useState(parseInt(sessionRole))
     const [allUsers, setAllUsers] = useState(undefined)
     const navigate = useNavigate()
 
     useEffect(()=>{
-        // if(!allowedRoles.includes(parseInt(props.sessionRole))){
-        //     navigate('/')
-        // } else 
-        // {
-            setRole(parseInt(props.sessionRole))
+            setRole(parseInt(sessionRole))
             async function getAllUsers(){
                 try {
-                    // let token = localStorage.getItem("token")
                     let allUsersResponse = await fetch(`http://localhost:4000/api/user/allusers`, {
                         method: "GET",
                         headers: new Headers({
                             "Content-Type": "application/json",
-                            "Authorization": props.sessionToken
+                            "Authorization": sessionToken
                         })
                     })
                     if(allUsersResponse.ok){
@@ -100,7 +96,7 @@ function CreateUser (props)  {
             body: JSON.stringify(newUser),
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": props.sessionToken
+                "Authorization": sessionToken
             })
         })
             .then(res => res.json())
@@ -219,7 +215,7 @@ function CreateUser (props)  {
                                 id="Email"
                                 name="email"
                                 type="email"
-                                onChange={(e) => onChangeHndler(e, setFirst)}
+                                onChange={(e) => onChangeHndler(e, setEmail)}
                             />
                         </FormGroup>
 

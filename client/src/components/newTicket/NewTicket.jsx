@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "./newTicket.css";
+import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
+  let booleanFields = [];
   let newTicketBody = {}
 
   useEffect(() => {
@@ -25,6 +26,15 @@ function NewTicket() {
     e.target.reset(); // TODO: change this so redirected instead of just form reset
 
     console.log(newTicketBody)
+
+    for (let field of booleanFields) {
+      if (newTicketBody[field] === "on") {
+        newTicketBody[field] = true
+      } else {
+        newTicketBody[field] = false
+      }
+    }
+
 
     fetch('http://localhost:4000/api/ticket/create',
       {
@@ -56,7 +66,20 @@ function NewTicket() {
       <form onSubmit={handleSubmit}>
         {allData.map((field) => {
 
-          if (!field.enum) {
+          if (field.type === "Boolean") {
+            booleanFields.push(field.name)
+            return (
+              <label key={field.name} htmlFor={field.name}>
+                {field.name}{': '}
+                <input type="checkbox"
+                  onChange={(e) => {
+                    newTicketBody[field.name] = e.target.value;
+                  }}
+                />
+              </label>
+            );
+          }
+          else if (!field.enum) {
             return (
               <label key={field.name} htmlFor={field.name}>
                 {field.name}{': '}

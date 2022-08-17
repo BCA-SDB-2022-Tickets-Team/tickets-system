@@ -33,7 +33,7 @@ function AllTickets(props) {
                     {ticketFieldHeadings.map(heading => {
                         if (heading !== "_id") {
                             return (
-                                <th key={heading}>{heading}</th>
+                                <th className="all-tickets-headings" key={heading}>{heading}</th>
                             )
                         }
                     })}
@@ -46,7 +46,7 @@ function AllTickets(props) {
                             {contentKeys.map(field => {
                                 if (field !== "_id") {
                                     return (
-                                        <td key={field}><NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink></td>
+                                        <td className="all-tickets-data" key={field}><NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink></td>
                                     )
                                 }
                             })}

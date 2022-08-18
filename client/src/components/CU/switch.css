@@ -37,7 +37,5 @@
   
   .react-switch-label:active .react-switch-button {
     width: 60px;
+    align: center;
   }
-.toggle {
-    margin-bottom: 5vw;
-}

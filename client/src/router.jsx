@@ -5,6 +5,7 @@ import Login from './components/Login/Login';
 import NewTicket from './components/NewTicket/NewTicket';
 import AllTickets from './components/AllTickets/AllTickets';
 import OneTicket from './components/OneTicket/OneTicket';
+import AddCustomField from './components/AddCustomField/AddCustomField';
 
 function Router() {
   const [sessionToken, setSessionToken] = useState(undefined)
@@ -34,25 +35,26 @@ function Router() {
   // Logout functionality
   return (
     <Routes >
-     <Route path="/" element={
-        <Login 
+      <Route path="/" element={
+        <Login
           updateLocalStorageToken={updateLocalStorageToken}
-          updateLocalStorageRole={updateLocalStorageRole} 
+          updateLocalStorageRole={updateLocalStorageRole}
         />
       }
       />
-       <Route 
-          path="/createuser" 
-          element={
-            <CreateUser 
-              sessionToken={sessionToken}
-              sessionRole={sessionRole} 
-            />
-          }
-        />
+      <Route
+        path="/createuser"
+        element={
+          <CreateUser
+            sessionToken={sessionToken}
+            sessionRole={sessionRole}
+          />
+        }
+      />
       <Route path='/newticket' element={<NewTicket />} />
       <Route path='/alltickets' element={<AllTickets setTicketID={setTicketID} />} />
       <Route path='/oneticket' element={<OneTicket ticketID={ticketID} />} />
+      <Route path='/add-custom-field' element={<AddCustomField />} />
 
 
     </Routes>

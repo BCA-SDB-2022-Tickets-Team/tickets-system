@@ -4,7 +4,8 @@ const session = require("../middlewares/session");
 const CustomFields = require("../models/custom_fields_schema.js")
 const {UpdateSchema } = require("../models/ticket_schema")
 
-router.route("/add-custom-field")
+router
+.route("/add-custom-field")
 .post([session], async (req, res, next)=>{
     try {if(!req.user.isAdmin)
         {

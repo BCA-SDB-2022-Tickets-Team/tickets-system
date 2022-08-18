@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./newTicket.css";
+import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);

@@ -5,7 +5,7 @@ import Login from "./components/Login/Login";
 import NewTicket from "./components/NewTicket/NewTicket";
 import AllTickets from "./components/AllTickets/AllTickets";
 import OneTicket from "./components/OneTicket/OneTicket";
-import { LoginContext } from "./App";
+import { LoginContext } from './index';
 
 //* THIS IS HOW TO AUTHENTICATE ROUTES *\\
 //this returns a "pass-through" component that takes:
@@ -20,7 +20,7 @@ function RequireAuth(props) {
   if (!auth) {
     return <Navigate to="/" replace state={{ from: location }} />;
   }
-  /**
+  /*
    * the props object includes a few internal properties
    * in addition to the ones we define.
    * One of these is props.children, which includes all the JSX
@@ -49,15 +49,24 @@ function Router() {
       <Route
         path="/createuser"
         element={
-          <RequireAuth sessionRole={sessionRole} permittedRoles={["2", "4"]}>
+          <RequireAuth permittedRoles={["2", "4"]}>
             <CreateUser sessionToken={sessionToken} sessionRole={sessionRole} />
           </RequireAuth>
         }
       />
-      <Route path="/newticket" element={<NewTicket />} />
+      <Route path="/newticket" element={
+          <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
+            <NewTicket />    
+          </RequireAuth>
+        }
+      />
       <Route
         path="/alltickets"
-        element={<AllTickets setTicketID={setTicketID} />}
+        element={
+          <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
+            <AllTickets setTicketID={setTicketID} />
+          </RequireAuth>
+        }
       />
       <Route path="/oneticket" element={<OneTicket ticketID={ticketID} />} />
     </Routes>

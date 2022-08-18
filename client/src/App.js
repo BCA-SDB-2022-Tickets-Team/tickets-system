@@ -1,37 +1,15 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
-import { Nav, NavItem, NavLink } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
 import './App.css';
 import Router from './router';
-
-export const LoginContext = createContext()
-
-function GlobalNav() {
-  const {logoutAndClearSession} = useContext(LoginContext)
-  const navigate = useNavigate()
-  const logout = (e) => {
-    e.preventDefault()
-    logoutAndClearSession()
-    navigate('/')
-  }
-  return (
-    <Nav tabs>
-      <NavItem>
-        <NavLink 
-          onClick={logout}
-          href="#"
-        > 
-          Logout 
-        </NavLink>
-      </NavItem>
-    </Nav>
-  )
-}
-
+import GlobalNav from './components/GlobalNav/GlobalNav';
+import { LoginContext } from './index';
+//create a context that can be accessed and modified globally without needing to be passed as a prop
+//https://dmitripavlutin.com/react-context-and-usecontext/
 
 function App() {
-  const [sessionToken, setSessionToken] = useState(undefined)
-  const [sessionRole, setSessionRole] = useState(undefined)
+  const LoginCtx = useContext(LoginContext)
+  const [sessionToken, setSessionToken] = useState(LoginCtx.sessionToken)
+  const [sessionRole, setSessionRole] = useState(LoginCtx.sessionRole)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -62,6 +40,14 @@ function App() {
     setSessionToken(undefined)
   }
   return (
+    /*
+        This is where we define our Context values. We are providing the user's
+        session token, session role (a number 1-4), the functions to update
+        the token and the role by modifying localStorage, which *should* trigger
+        the useEffect() and change the state values for token and role,
+        and a function that logs out, clears local storage values, and boots the
+        user to the homepage (login)
+     */
     <LoginContext.Provider value={{
       sessionToken,
       sessionRole,

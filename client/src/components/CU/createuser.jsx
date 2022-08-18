@@ -17,7 +17,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import { LoginContext } from "../../App";
+import { LoginContext } from '../../index';
 import "./createuser.css";
 
 const departments = [

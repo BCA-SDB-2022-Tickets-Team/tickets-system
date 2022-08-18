@@ -8,6 +8,7 @@ import {
     DropdownMenu,
     DropdownItem,
 } from 'reactstrap';
+import Switch from  "./Switch"
 
 import './createuser.css';
 
@@ -35,7 +36,9 @@ function CreateUser (props)  {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [role, setRole] = useState(parseInt(props.sessionRole))
     const [allUsers, setAllUsers] = useState(undefined)
+    const [isAsr, setisAsr] = useState(null)
     const navigate = useNavigate()
+
 
     useEffect(()=>{
         if(!allowedRoles.includes(parseInt(props.sessionRole))){
@@ -106,11 +109,13 @@ function CreateUser (props)  {
             .then(data => console.log(data))
     }
     return (
+       
       <Container fluid className='create-user-container'>
         <Row className="create-user-row">
             <Col xs="8">
+
                 <Table responsive striped>
-                    <thead>
+                <thead>
                         <tr>
                             <th>ID</th>
                             <th>First Name</th>
@@ -175,6 +180,10 @@ function CreateUser (props)  {
                 xs="2"
             >
                 <div className="FormContainer">
+                    <div className="toggleContainer">
+                <Switch name="toggle" className="switch" isOn={!isAsr}
+        handleToggle={() => (!isAsr)} /><div>text</div>
+             </div>
                     <Form 
                         className="form" 
                         inline
@@ -276,15 +285,19 @@ function CreateUser (props)  {
                                 </Label></>
                             }
                         </FormGroup>
+                        
                         <Button type='submit'>
                             Submit
                         </Button>
-                    </Form>
+                    </Form> 
                     
                 </div>
+        
             </Col>
         </Row>
+   
     </Container>
+    
     );
 
 }

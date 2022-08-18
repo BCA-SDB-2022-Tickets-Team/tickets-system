@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import CreateUser from './components/CU/createuser';
 import Login from './components/Login/Login';
-import NewTicket from './components/NewTicket/NewTicket';
+import NewTicket from './components/newTicket/NewTicket';
 
 function Router() {
     const [ sessionToken, setSessionToken ] = useState(undefined)

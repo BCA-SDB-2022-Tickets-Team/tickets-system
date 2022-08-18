@@ -9,4 +9,9 @@
 tbody{
     background-color: white;
 }
+.toggletitle{
+    display: flex;
+    justify-content: right;
+    justify-content: space-between;
+}
 

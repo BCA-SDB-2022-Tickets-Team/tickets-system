@@ -8,13 +8,6 @@ import OneTicket from "./components/OneTicket/OneTicket";
 import { LoginContext } from './index';
 import AddCustomField from './components/AddCustomField/AddCustomField';
 
-<<<<<<< HEAD
-
-function Router() {
-  const [sessionToken, setSessionToken] = useState(undefined)
-  const [sessionRole, setSessionRole] = useState(undefined)
-  const [ticketID, setTicketID] = useState("")
-=======
 //* THIS IS HOW TO AUTHENTICATE ROUTES *\\
 //this returns a "pass-through" component that takes:
 //? permittedRoles <Array>
@@ -22,7 +15,6 @@ function Router() {
 function RequireAuth(props) {
   const { sessionRole } = useContext(LoginContext);
   const [auth, setAuth] = useState(props.permittedRoles.includes(sessionRole));
->>>>>>> develop
 
   let location = useLocation();
 

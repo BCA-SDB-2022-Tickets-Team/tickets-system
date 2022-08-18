@@ -190,6 +190,7 @@ async function runAtStartUp(){
     }
   }
   mergeIntoTicket()
+  console.log(Ticket.paths)
   return;
 } runAtStartUp()
 
@@ -220,7 +221,6 @@ async function getRequiredReqSchema(){
         required: type.options.required,
       }
     if(type.options.enum){
-      console.log(type)
       pathObject['enum'] = type.options.enum
     }
     requiredPaths.push(pathObject)

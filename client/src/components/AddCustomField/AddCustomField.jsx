@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, FormGroup, Label, Input, Button, Container, Row, Table, Col } from "reactstrap";
-import {
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-} from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button, Container, Row, Col } from "reactstrap";
 import "./AddCustomField.css"
+
+//TODO: Add enum list-maker for drop-downs. Try again on conditional fields (field showing up based on entry in previous field)
 
 const allowedRoles = [4]
 
-const userTypes = ["Assessor", "Requestor"]
-const fieldTypes = ["Text", "Drop-down", "Checkbox"]
+const fieldTypes = ["Text", "Drop-down", "Checkbox", "Date", "Number"]
 
 
-function CreateCustomField(props) {
+function AddCustomField(props) {
 
     const [name, setName] = useState("")
-    const [fieldType, setFieldType] = useState("Field Type")
+    const [fieldType, setFieldType] = useState("")
     const [isRequired, setIsRequired] = useState(false)
     const [defaultValue, setDefaultValue] = useState("")
-    const [reqOrAsr, setReqOrAsr] = useState("Field Permissions")
-    const [dropdownOpen, setDropdownOpen] = useState(false)
-    const [dropdownOpen2, setDropdownOpen2] = useState(false)
+    const [reqOrAsr, setReqOrAsr] = useState(false)
     const [role, setRole] = useState(parseInt(props.sessionRole))
     const navigate = useNavigate()
 
@@ -35,17 +28,13 @@ function CreateCustomField(props) {
             }
         }, []) */
 
-    const toggle = () => setDropdownOpen((prevState) => !prevState);
-    const toggle2 = () => setDropdownOpen2((prevState) => !prevState);
-
-    const onChangeHndler = (e, setter) => {
+    const onChangeHandler = (e, setter) => {
         setter(e.target.value)
     }
 
     const handleSubmit = e => {
-        e.preventDefault()
 
-        //TODO: convert field type into field type expected by the post route
+        e.preventDefault()
 
         let newCustomField = {
             name: name,
@@ -54,7 +43,8 @@ function CreateCustomField(props) {
             defaultValue: defaultValue,
             reqOrAsr: reqOrAsr
         }
-        let url = 'http://localhost:4000/api/user/add-custom-field'
+        console.log(newCustomField)
+        let url = 'http://localhost:4000/api/fields/add-custom-field'
         fetch(url, {
             method: "POST",
             body: JSON.stringify(newCustomField),
@@ -68,88 +58,82 @@ function CreateCustomField(props) {
     }
 
     return (
-        <Container fluid className="add-custom-field-container">
-            <Form className="form"
-                inline
-                onSubmit={handleSubmit}>
-                <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
-                    <Label
-                        className="me-sm-2"
-                        for="nem"
-                    >
-                        Field Name
-                    </Label>
-                    <Input
-                        id="Field Name"
-                        name="field name"
-                        type="name"
-                        onChange={(e) => onChangeHndler(e, setName)}
-                    />
-                </FormGroup>
-                <div className="d-flex p-5">
-                    <Dropdown toggle={toggle} direction={"down"} isOpen={dropdownOpen}>
-                        <DropdownToggle caret>
-                            {fieldType}
-                        </DropdownToggle>
-                        <DropdownMenu container="body">
-                            {fieldTypes.map(type => {
-                                return (
-                                    <DropdownItem onClick={() => setFieldType(fieldType)}>
-                                        {type}
-                                    </DropdownItem>
-                                )
-                            })}
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
-                <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
-                    <Label
-                        className="me-sm-2"
-                        for="defaultValue"
-                    >
-                        Default Value(s)
-                    </Label>
-                    <Input
-                        id="Default Value"
-                        name="Default Value"
-                        type="defaultValue"
-                        onChange={(e) => onChangeHndler(e, setDefaultValue)}
-                    />
-                </FormGroup>
-                <div className="d-flex p-5">
-                    <Dropdown toggle={toggle2} direction={"down"} isOpen={dropdownOpen2}>
-                        <DropdownToggle caret>
-                            {reqOrAsr}
-                        </DropdownToggle>
-                        <DropdownMenu container="body">
-                            {userTypes.map(userType => {
-                                return (
-                                    <DropdownItem onClick={() => setReqOrAsr(reqOrAsr)}>
-                                        {userType}
-                                    </DropdownItem>
-                                )
-                            })}
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
-
-                <br></br>
-                <FormGroup className="checkbox"
-                    check
-                    inline
+        <Form className="form"
+            inline
+            onSubmit={handleSubmit}>
+            <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                <Label
+                    className="me-sm-2"
+                    for="name"
                 >
-                    <Input type="checkbox" onClick={() => setIsRequired(!isRequired)} />
-                    <Label check>
-                        Required field
-                    </Label>
+                    Field Name
+                </Label>
+                <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    onChange={(e) => onChangeHandler(e, setName)}
+                />
+            </FormGroup>
+            <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                <Label
+                    className="me-sm-2"
+                    for="fieldType"
+                >
+                    Field Type
+                </Label>
+                <Input
+                    id="fieldType"
+                    name="fieldType"
+                    type="select"
+                    onChange={(e) => onChangeHandler(e, setFieldType)}
+                >
+                    {fieldTypes.map(type => {
+                        return <option>{type}</option>
+                    })}
+                </Input>
+            </FormGroup>
+            <FormGroup className="mb-2 me-sm-2 mb-sm-0" >
+                <Label
+                    className="me-sm-2"
+                    for="defaultValue"
+                >
+                    Default Field Value(s)
+                </Label>
+                <Input
+                    id="defaultValue"
+                    name="defaultValue"
+                    type="text"
+                    onChange={(e) => onChangeHandler(e, setDefaultValue)}
+                />
+            </FormGroup>
+            <br />
+            <FormGroup className="checkbox"
+                check
+                inline
+            >
+                <Input type="checkbox" onClick={() => setReqOrAsr(!reqOrAsr)} />
+                <Label check>
+                    Assessors Only
+                </Label>
 
-                </FormGroup>
-                <Button type='submit'>
-                    Create Field
-                </Button>
-            </Form>
-        </Container>
+            </FormGroup>
+            <br />
+            <FormGroup className="checkbox"
+                check
+                inline
+            >
+                <Input type="checkbox" onClick={() => setIsRequired(!isRequired)} />
+                <Label check>
+                    Required Field
+                </Label>
+
+            </FormGroup>
+            <Button type='submit'>
+                Create Field
+            </Button>
+        </Form>
     )
 }
 
-export default CreateCustomField
+export default AddCustomField

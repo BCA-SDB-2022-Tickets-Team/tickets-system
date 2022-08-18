@@ -54,7 +54,11 @@ function Router() {
       <Route path='/newticket' element={<NewTicket />} />
       <Route path='/alltickets' element={<AllTickets setTicketID={setTicketID} />} />
       <Route path='/oneticket' element={<OneTicket ticketID={ticketID} />} />
-      <Route path='/add-custom-field' element={<AddCustomField />} />
+      <Route path=
+        '/add-custom-field'
+        element={<AddCustomField
+          sessionToken={sessionToken}
+          sessionRole={sessionRole} />} />
 
 
     </Routes>

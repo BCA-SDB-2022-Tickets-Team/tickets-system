@@ -144,6 +144,7 @@ router
 .get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
+  console.log(fieldsToSend)
   res.json(fieldsToSend);
 });
 

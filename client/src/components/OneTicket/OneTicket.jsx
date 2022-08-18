@@ -54,7 +54,13 @@ function OneTicket(props) {
           }),
           body: JSON.stringify({updateTicketBody})
         }
-      ).then(console.log('fetched'))
+      ).then((data) => {
+        console.log(data)
+        return data.json()
+      })
+      .then((realData) => {
+        console.log(realData)
+      })
       .catch(Error)
 }
 

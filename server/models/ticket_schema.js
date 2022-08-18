@@ -7,8 +7,8 @@ const FieldsToIgnore = [
   'ID',
   'Department',
   'Requestor',
-  'createdAt',
-  'updatedAt',
+  'Created At',
+  'Updated At',
 ]
 
 let reqTicket = new mongoose.Schema(
@@ -195,7 +195,7 @@ async function runAtStartUp(){
     }
   }
   mergeIntoTicket()
-  console.log(Ticket.paths)
+  // console.log(Ticket.paths)
   return;
 } runAtStartUp()
 
@@ -216,14 +216,14 @@ const makeModel = function(){
 async function getRequiredReqSchema(){
   let requiredPaths = []
   await reqTicket.eachPath((name, type) => {
-    //todo: more filtering once we finalize required values
-    if (!type.options.required || FieldsToIgnore.includes(name)){
+    console.log(type.isRequired, type.options.required)
+    if (FieldsToIgnore.includes(name)){
       return null
     } else {
     let pathObject = {
         name,
         type: type.instance,
-        required: type.options.required,
+        required: type.isRequired,
       }
     if(type.options.enum){
       pathObject['enum'] = type.options.enum
@@ -231,7 +231,6 @@ async function getRequiredReqSchema(){
     requiredPaths.push(pathObject)
   }})
   return requiredPaths
-
 }
 
 module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}

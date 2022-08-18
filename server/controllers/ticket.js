@@ -18,20 +18,20 @@ router
       const Ticket = makeModel();
       
       // Incrememnet the Ticket ID
-      const newID = await idcounter.findOneAndUpdate(
+      let newID = await idcounter.findOneAndUpdate(
         { _id: "62fd54304a734f7a798a3708" }, 
         {$inc: { COUNT: 1 }}, 
         {
         new: true,
         upsert: true
-        });
+      });
 
       const bodyFields = Object.keys(req.body.newTicketBody);
 
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department,
-        ID: newID.COUNT
+        ID: newID
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {

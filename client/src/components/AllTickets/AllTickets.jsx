@@ -8,6 +8,7 @@ import "./AllTickets.css"
 function AllTickets(props) {
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
+    
 
     useEffect(() => {
         async function getData() {
@@ -24,6 +25,7 @@ function AllTickets(props) {
         }
         getData();
     }, []);
+
 
     return (
         <Table striped responsive hover>
@@ -42,11 +44,14 @@ function AllTickets(props) {
                 {ticketData.map((ticket) => {
                     let contentKeys = Object.keys(ticket)
                     return (
-                        <tr key={ticket['Created At']}>
+                        <tr key={ticket['Created At']} >
                             {contentKeys.map(field => {
                                 if (field !== "_id") {
                                     return (
-                                        <td className="all-tickets-data" key={field}><NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink></td>
+                                        <td className="all-tickets-data" key={field} >
+                                            <NavLink onClick={props.setTicketID(ticket._id)} to={`/oneticket?id=${ticket['_id']}`}>{ticket[field]}</NavLink>
+                                            {/* <NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink> */}
+                                        </td>
                                     )
                                 }
                             })}

@@ -149,41 +149,7 @@ router
 
 
 // Get one ticket using ticket id as param
-router
-.route("/:id")
-.get([session], async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const Ticket = makeModel();
-    // If a reqUser, limit the fields returned
-    if (req.user.__type === "reqUser") {
-      let ticket = await Ticket.findById(id, {
-        // Remove fields Reqs should not see
-        _id:0,
-        __v:0,
-        'Date Completed':0,
-        'Due Date':0,
-        'Warning Date':0,
-        Notes:0,
-        Timeline:0
-      })
-      //TODO: change Requestor & Assessor to be names instead of object IDs
-      res.send(
-        ticket
-      )
-    } else {
-      let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
-      //TODO: change Requestor & Assessor to be names instead of object IDs
-      res.send(
-        
-        ticket
-      )
-    }
-  } catch (err) {
-    // Pass error to error-handling middleware at the bottom
-    next(err);
-  }
-});
+
 
 router
 .route("/modify/:id")
@@ -204,7 +170,6 @@ router
         throw new Error("no ticket with that id exists");
       } else {
         // loop through request body and only update fields that exist in the request
-        const AsrTicket = makeAsrModel()
 
         for (field in req.body) {
           ticketToModify[field] = req.body[field];
@@ -248,6 +213,42 @@ router
       }
     }
   } catch (err) {
+    next(err);
+  }
+});
+
+router
+.route("/:id")
+.get([session], async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const Ticket = makeModel();
+    // If a reqUser, limit the fields returned
+    if (req.user.__type === "reqUser") {
+      let ticket = await Ticket.findById(id, {
+        // Remove fields Reqs should not see
+        _id:0,
+        __v:0,
+        'Date Completed':0,
+        'Due Date':0,
+        'Warning Date':0,
+        Notes:0,
+        Timeline:0
+      })
+      //TODO: change Requestor & Assessor to be names instead of object IDs
+      res.send(
+        ticket
+      )
+    } else {
+      let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
+      //TODO: change Requestor & Assessor to be names instead of object IDs
+      res.send(
+        
+        ticket
+      )
+    }
+  } catch (err) {
+    // Pass error to error-handling middleware at the bottom
     next(err);
   }
 });

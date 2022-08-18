@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Form, FormGroup, Label, Input, Button, Container, Col, Row } from "reactstrap";
 import { Link } from 'react-router-dom'
+import { LoginContext } from '../../index';
 
 
 import './Login.css'

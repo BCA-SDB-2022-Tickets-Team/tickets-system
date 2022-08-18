@@ -9,6 +9,7 @@ const Switch = () => {
         id={`react-switch-new`}
         type="checkbox"
       />
+      ACCESSOR/REQUESTOR
       <label
         className="react-switch-label"
         htmlFor={`react-switch-new`}

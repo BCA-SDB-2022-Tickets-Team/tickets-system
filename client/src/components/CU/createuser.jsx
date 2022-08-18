@@ -182,7 +182,7 @@ function CreateUser (props)  {
                 <div className="FormContainer">
                     <div className="toggleContainer">
                 <Switch name="toggle" className="switch" isOn={!isAsr}
-        handleToggle={() => (!isAsr)} /><div>text</div>
+        handleToggle={() => (!isAsr)} />
              </div>
                     <Form 
                         className="form" 

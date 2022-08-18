@@ -17,15 +17,14 @@ router
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
       
+      // Incrememnet the Ticket ID
       const newID = await idcounter.findOneAndUpdate(
         { _id: "62fd54304a734f7a798a3708" }, 
         {$inc: { COUNT: 1 }}, 
         {
         new: true,
-        upsert: true // Make this update into an upsert
+        upsert: true
         });
-
-      console.log(newID.COUNT)
 
       const bodyFields = Object.keys(req.body.newTicketBody);
 

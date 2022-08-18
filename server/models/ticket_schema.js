@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const CustomFieldsSchema =require('./custom_fields_schema')
+const CustomFieldsSchema = require('./custom_fields_schema')
 
 const FieldsToIgnore = [
   '_id',

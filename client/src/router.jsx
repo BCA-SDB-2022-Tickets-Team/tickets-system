@@ -14,7 +14,7 @@ import AddCustomField from './components/AddCustomField/AddCustomField';
 //and compares them. If the comparison fails, it redirects to "/"
 function RequireAuth(props) {
   const { sessionRole } = useContext(LoginContext);
-  const [auth, setAuth] = useState(props.permittedRoles.includes(sessionRole));
+  const [auth] = useState(props.permittedRoles.includes(sessionRole));
 
   let location = useLocation();
 
@@ -70,6 +70,15 @@ function Router() {
         }
       />
       <Route path="/oneticket" element={<OneTicket ticketID={ticketID} />} />
+      <Route path=
+        '/add-custom-field'
+        element={
+          <AddCustomField
+            sessionToken={sessionToken}
+            sessionRole={sessionRole} 
+          />
+        } 
+      />
     </Routes>
   );
 }

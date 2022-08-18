@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './App.css';
 import Router from './router';
 import GlobalNav from './components/GlobalNav/GlobalNav';

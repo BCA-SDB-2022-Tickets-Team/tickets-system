@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Form,
   FormGroup,
@@ -30,7 +29,7 @@ const departments = [
   "procurement",
 ];
 
-function CreateUser(props) {
+function CreateUser() {
   const { sessionRole, sessionToken } = useContext(LoginContext);
   const [firstName, setFirst] = useState("");
   const [lastName, setLast] = useState("");
@@ -42,7 +41,6 @@ function CreateUser(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [role, setRole] = useState(parseInt(sessionRole));
   const [allUsers, setAllUsers] = useState(undefined);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setRole(parseInt(sessionRole));

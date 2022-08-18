@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from '../../index';
@@ -25,8 +25,7 @@ function GlobalNav() {
         ["4"].includes(sessionRole) ?
           <NavItem >
             <NavLink onClick={
-              //TODO: ADD THE PATH TO THE COMPONENT
-              () => null //navigate('/createuser')
+              () => navigate('/add-custom-field')
             }>
               Modify Ticket Fields
             </NavLink>

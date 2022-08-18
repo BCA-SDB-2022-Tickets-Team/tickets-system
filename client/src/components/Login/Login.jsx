@@ -107,7 +107,7 @@ function Login() {
                     id="password"
                     name="password"
                     placeholder="password"
-                    type="text"
+                    type="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />

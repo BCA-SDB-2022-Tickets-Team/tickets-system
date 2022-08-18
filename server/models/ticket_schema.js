@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
-const CustomFieldsSchema =require('./custom_fields_schema')
+const CustomFieldsSchema = require('./custom_fields_schema')
 
 const FieldsToIgnore = [
   '_id',
   '__v',
+  'ID',
   'Department',
   'Requestor',
   'createdAt',
@@ -12,6 +13,10 @@ const FieldsToIgnore = [
 
 let reqTicket = new mongoose.Schema(
   {
+    ID: {
+      type: Number,
+      required: true
+    },
     Requestor: {
       type: mongoose.ObjectId,
       required: true

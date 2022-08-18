@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
-const { makeModel, makeAsrModel, getRequiredReqSchema, makeReqTicketView } = require("../models/ticket_schema");
+const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
+const idcounter = require("../models/idcounter")
 
 //  Create a new ticket
 router
@@ -15,11 +16,22 @@ router
     } else {
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
+      
+      // Incrememnet the Ticket ID
+      let newID = await idcounter.findOneAndUpdate(
+        { _id: "62fd54304a734f7a798a3708" }, 
+        {$inc: { COUNT: 1 }}, 
+        {
+        new: true,
+        upsert: true
+      });
+
       const bodyFields = Object.keys(req.body.newTicketBody);
-      console.log(req.user)
+
       const newTicket = new Ticket({
         Requestor: req.user._id,
-        Department: req.user.isAdmin ? "n/a" : req.user.Department
+        Department: req.user.isAdmin ? "n/a" : req.user.Department,
+        ID: newID
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {

@@ -248,7 +248,7 @@ function CreateUser(props) {
                   </>
                 )}
               </FormGroup>
-              <Button type="submit">Submit</Button>
+              <Button id="button" type="submit">Submit</Button>
             </Form>
           </div>
         </Col>

@@ -6,6 +6,7 @@ import NewTicket from "./components/NewTicket/NewTicket";
 import AllTickets from "./components/AllTickets/AllTickets";
 import OneTicket from "./components/OneTicket/OneTicket";
 import { LoginContext } from './index';
+import AddCustomField from './components/AddCustomField/AddCustomField';
 
 //* THIS IS HOW TO AUTHENTICATE ROUTES *\\
 //this returns a "pass-through" component that takes:

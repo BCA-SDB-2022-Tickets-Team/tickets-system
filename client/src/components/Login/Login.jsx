@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Form, FormGroup, Label, Input, Button, Container, Col, Row } from "reactstrap";
 import { Link } from 'react-router-dom'
+
+
 import './Login.css'
 
 
@@ -56,8 +58,11 @@ function Login(props) {
     return (
 <Container fluid className="login-container">
 <Row className="loginRow">
+
 <Col xs="5"></Col>
-<Col xs="3">
+<Col xs="1">
+
+  
         <Form inline className="form"
             onSubmit={handleSubmit}>
             <FormGroup className="mb-2 me-sm-2 mb-sm-0">
@@ -91,15 +96,18 @@ function Login(props) {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
-            </FormGroup>
-            <Button type='submit'>
+             </FormGroup>
+             <Button className= "loginbutton" type='submit' xs="3">
                 Login
             </Button>
-                <div style={display}>Invalid Credentials!</div>
-        </Form>
+          </Form>
+          <div style={display}>Invalid Credentials!</div>
+            <Link to="/createUser">Create User</Link>
+         
         </Col>
         </Row>
        </Container>
+       
     )
 }
 

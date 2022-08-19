@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
 const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
+const { User } = require("../models/base-user")
 const idcounter = require("../models/idcounter")
 
 //  Create a new ticket
@@ -62,27 +63,35 @@ router
     const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({ Requestor: req.user._id });
       res.send(
         allTickets.map(ticket => {
+        //  let assessorInfo = !User.findOne({_id: ticket['Assessor']}) ? null : User.findOne({_id: ticket['Assessor']})
+        //  console.log(assessorInfo)
           return {
             _id: ticket._id,
             'Created At': ticket['Created At'],
             'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+            'Assessor': !ticket.Assessor ?'Unassigned' : ticket['Assessor'],
+            // `${assessorInfo.firstName} ${assessorInfo.lastName}`,         
             'Updated At': ticket['Updated At'],
           }
         }),
       );
     } else {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({});
       res.send(
         allTickets.map(ticket => {
+          // let assessorInfo = User.find({_id:ticket.Assessor})
+          // assessorInfo ? console.log(assessorInfo.paths) : null
           return {
             _id: ticket._id,
             'Created At': ticket['Created At'],
             'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+            'Assessor': !ticket.Assessor ?'Unassigned' : ticket['Assessor'],
+            // `${assessorInfo.firstName} ${assessorInfo.lastName}`,
             'Updated At': ticket['Updated At'],
           }
         })
@@ -137,7 +146,8 @@ router
               'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
               'Updated At': ticket['Updated At'],
             }
-          })
+          }),
+
         );
       }
     } else {
@@ -185,7 +195,6 @@ router
         throw new Error("no ticket with that id exists");
       } else {
         // loop through request body and only update fields that exist in the request
-
         for (field in req.body) {
           ticketToModify[field] = req.body[field];
         }
@@ -205,7 +214,7 @@ router
 
 router
 .route("/delete/:id")
-.post([session], async (req, res, next) => {
+.delete([session], async (req, res, next) => {
   let { id } = req.params;
   try {
     // Only admins can delete tickets
@@ -252,13 +261,13 @@ router
       })
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        ticket
+        ticket,
+        
       )
     } else {
       let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        
         ticket
       )
     }

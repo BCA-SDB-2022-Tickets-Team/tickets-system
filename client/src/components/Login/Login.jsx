@@ -8,7 +8,7 @@ import './Login.css'
 
 
 function Login() {
-    const { updateLocalStorageRole, updateLocalStorageToken } = useContext(LoginContext)
+    const { updateLocalStorageRole, updateLocalStorageToken, updateLocalStorageId } = useContext(LoginContext)
     // useState variables for username and password
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -44,6 +44,7 @@ function Login() {
                 const resData = await res.json()
                 updateLocalStorageToken(resData.token)
                 updateLocalStorageRole(resData.userRole)
+                updateLocalStorageId(resData.userId)
         
                 // ? example of authenticated request to the server
                 // const testRes = await fetch("http://localhost:4000/api/req/test", {

@@ -10,6 +10,7 @@ function App() {
   const LoginCtx = useContext(LoginContext)
   const [sessionToken, setSessionToken] = useState(LoginCtx.sessionToken)
   const [sessionRole, setSessionRole] = useState(LoginCtx.sessionRole)
+  const [sessionId, setSessionId] = useState(LoginCtx.sessionId)
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -22,6 +23,11 @@ function App() {
     } else {
       setSessionRole(undefined)
     }
+    if (localStorage.getItem("userId")) {
+      setSessionId(localStorage.getItem("userId"))
+    } else {
+      setSessionId(undefined)
+    }
   })
 
   const updateLocalStorageToken = newToken => {
@@ -33,11 +39,16 @@ function App() {
     localStorage.setItem("role", newRoleId)
     setSessionRole(newRoleId)
   }
+  const updateLocalStorageId = newUserId => {
+    localStorage.setItem("userId", newUserId )
+    setSessionId(newUserId)
+  }
 
   const logoutAndClearSession = () => {
     localStorage.clear()
     setSessionRole(undefined)
     setSessionToken(undefined)
+    setSessionId(undefined)
   }
   return (
     /*
@@ -51,8 +62,10 @@ function App() {
     <LoginContext.Provider value={{
       sessionToken,
       sessionRole,
+      sessionId,
       updateLocalStorageToken,
       updateLocalStorageRole,
+      updateLocalStorageId,
       logoutAndClearSession
     }}> 
       <GlobalNav />

@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button } from "reactstrap"
-import "./NewTicket.css";
+import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
+import "./newTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertMessage, setAlertMessage] = useState(undefined)
+  const [alertType, setAlertType] = useState("warning")
   let newTicketBody = {};
 
+  
+
+
+ const onDismiss = () => {
+  setAlertVisible(false)
+  setAlertMessage(undefined)
+  setAlertType("warning")
+ }
   useEffect(() => {
     async function getData() {
       let res = await fetch("http://localhost:4000/api/ticket/req/model", {
@@ -18,6 +29,7 @@ function NewTicket() {
       let data = await res.json();
       setAllData(data);
     }
+    onDismiss()
     getData();
   }, []);
 
@@ -37,8 +49,13 @@ function NewTicket() {
       .then(async (res) => {
         if (!res.ok) {
           let error = await res.json()
+          setAlertVisible(true)
+          setAlertMessage(error.status)
           console.log(error)
         } else {
+          setAlertVisible(true)
+          setAlertType("success")
+          setAlertMessage("ticket successfully created")
           e.target.reset(); // TODO: change this so redirected instead of just form reset
           console.log("ticket created");
         }
@@ -54,6 +71,10 @@ function NewTicket() {
     maxWidth: '90vw',
     padding: '1vw 0'
    }}>
+    <Alert color={alertType} isOpen={alertVisible} toggle={onDismiss}>
+      {alertMessage}
+    </Alert>
+
     <Form onSubmit={handleSubmit}>
       { 
         allData.map((field) => {
@@ -65,6 +86,7 @@ function NewTicket() {
                     Description:
                   </InputGroupText>
                   <Input
+                   
                     bsSize="lg" 
                     type="textarea" 
                     name={field.name}

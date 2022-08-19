@@ -233,4 +233,4 @@ async function getRequiredReqSchema(){
   return requiredPaths
 }
 
-module.exports = {UpdateSchema, makeModel, getRequiredReqSchema}
+module.exports = {UpdateSchema, makeModel, getRequiredReqSchema, Ticket}

@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const router = require("express").Router();
 const session = require("../middlewares/session");
 const CustomFields = require("../models/custom_fields_schema.js")
-const { UpdateSchema } = require("../models/ticket_schema")
+const { UpdateSchema, makeModel, Ticket } = require("../models/ticket_schema")
 
 router
 .route("/add-custom-field")
@@ -13,7 +13,6 @@ router
         throw new Error("user must be admin to add custom fields")
         } else {
             if (req.body) {
-                console.log(req.body)
 
                 // Convert field type into correct formatting for database
                 let fieldType = req.body.fieldType
@@ -30,7 +29,6 @@ router
                 } else {
                     fieldType = 'string'
                 }
-                console.log(fieldType)
                 
                 // Convert reqOrAsr into correct formatting for database
                 let reqOrAsr = req.body.reqOrAsr
@@ -39,7 +37,6 @@ router
                 } else {
                     reqOrAsr = "asr"
                 }
-                console.log(reqOrAsr)
 
                 const newField = new CustomFields({
                     name: req.body.name,
@@ -48,7 +45,7 @@ router
                     defaultValue: req.body.defaultValue,
                     reqOrAsr: reqOrAsr
                 })
-                console.log(newField)
+
                 await newField.save()
                     .then(newField=>{
                         UpdateSchema(newField)
@@ -69,6 +66,30 @@ router
        console.log(error) 
        res.status(500).json({
            status: "adding custom field failed",
+           message: error
+       })
+    }
+})
+
+router
+.route("/view-all-fields")
+.get([session], async (req, res, next)=>{
+    try {
+        const ticketSchema = Object.values(Ticket.paths)
+        
+        res.send(
+            ticketSchema.map(field => {
+              return {
+                'Field Name': field.path,
+                'Field Type': field.instance,
+              }
+            }),
+          );
+        
+    } catch (error) {
+       console.log(error) 
+       res.status(500).json({
+           status: "viewing fields failed",
            message: error
        })
     }

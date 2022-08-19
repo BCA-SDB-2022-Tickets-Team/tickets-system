@@ -111,7 +111,6 @@ function OneTicket(props) {
                     />
                    : oneTicketData[field]
                   }
-                  )
                 </td>
               </tr>
             );

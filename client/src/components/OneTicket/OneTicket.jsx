@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table, Button } from "reactstrap";
+import { Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import "./OneTicket.css";
 
 function OneTicket(props) {
@@ -9,6 +9,8 @@ function OneTicket(props) {
   const [userId, setUserId ] = useState("")
   const [editDisplay, setEditDisplay] = useState("hide");
   const [readDisplay, setReadDisplay] = useState("show");
+  const [show, setShow] = useState(false)
+  
   const notEditable = [
     "_id",
     "Requestor",
@@ -17,7 +19,6 @@ function OneTicket(props) {
     "Updated At",
   ];
   let updateTicketBody = {};
-  const claimTicketBody = {}
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
@@ -76,12 +77,49 @@ function claimTicket(){
       .then((realData) => {
         console.log(realData);
       })
-      .catch(Error);
+      .catch(Error)
+      .then(window.location.reload(false))
+    }     
+function assignTicket(){
+  console.log('assigning')
 }
+
+function deleteTicket(){
+  
+  fetch(`http://localhost:4000/api/ticket/delete/${id}`,
+  {method: 'DELETE',
+  headers: {
+    'Content-type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+     // Indicates the content 
+   }
+  }
+  )
+  .then((data) => {
+    console.log(data);
+    return data.json();
+  })
+  .then((realData) => {
+    console.log(realData);
+  })
+  .catch(Error)
+}
+
 
   return (
     <>
-      {userRole === "3"
+    <Modal isOpen={show}>
+      
+       <ModalHeader>Are you sure you want to delete ticket?</ModalHeader>
+      <ModalBody>This action cannot be undone.</ModalBody>
+      <ModalFooter>
+        <Button variant="secondary" onClick={deleteTicket}>Delete User</Button>
+        <Button variant="primary" onClick={()=>setShow(false)}>Cancel</Button>
+        </ModalFooter>
+    </Modal>
+  
+    <div className="button-bar">
+    {userRole === "3"
       && !oneTicketData.Assessor
       ? (
         <Button
@@ -91,8 +129,8 @@ function claimTicket(){
           outline
         >
           Claim Ticket
-        </Button>
-      ) : null}
+        </Button>)
+       : null}
 
       {(userRole === "3" 
       && userId===oneTicketData.Assessor)
@@ -106,9 +144,35 @@ function claimTicket(){
           }}
           outline
         >
-          Edit
+          Edit Ticket
         </Button>
       ) : null}
+    {
+      userRole==="4"
+      ? (
+        <>
+        <Button
+          color="info"
+          className={readDisplay}
+          onClick={assignTicket}
+          outline
+        >
+          Assign Ticket
+        </Button>
+        <Button
+        color="info"
+        className={readDisplay}
+        onClick={()=>setShow(true)}
+        outline
+      >
+        Delete Ticket
+      </Button>
+        </>
+      ) : null
+      }
+
+      
+      </div>
 
       <Table striped className={readDisplay}>
         <tbody>

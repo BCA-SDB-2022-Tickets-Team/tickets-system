@@ -1,7 +1,20 @@
+.ticket-filters {
+    margin-top: 1em;
+}
+
+.ticket-filters h4 {
+    margin-bottom: 1em;
+}
+
 .all-tickets-headings {
     font-size: 11pt;
 }
 
 .all-tickets-data {
     font-size: 10pt;
+}
+
+.all-tickets-data a {
+    text-decoration: none;
+    color: #000000;
 }

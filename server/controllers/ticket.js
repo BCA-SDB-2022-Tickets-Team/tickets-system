@@ -62,31 +62,13 @@ router
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
       let allTickets = await Ticket.find({ Requestor: req.user._id });
-      res.send(
-        allTickets.map(ticket => {
-          return {
-            _id: ticket._id,
-            'Created At': ticket['Created At'],
-            'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-            'Updated At': ticket['Updated At'],
-          }
-        }),
+      res.json(
+        allTickets
       );
     } else {
       let allTickets = await Ticket.find({});
-      res.send(
-        allTickets.map(ticket => {
-          let assessorInfo = User.find({_id:ticket.Assessor})
-          assessorInfo ? console.log(assessorInfo) : null
-          return {
-            _id: ticket._id,
-            'Created At': ticket['Created At'],
-            'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : `${assessorInfo.firstName} ${assessorInfo.lastName}`,
-            'Updated At': ticket['Updated At'],
-          }
-        })
+      res.json(
+        allTickets
       );
     }
   } catch (err) {

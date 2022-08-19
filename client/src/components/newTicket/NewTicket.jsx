@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button } from "reactstrap"
 import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
-  let booleanFields = [];
   let newTicketBody = {};
 
   useEffect(() => {
@@ -23,17 +23,7 @@ function NewTicket() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    e.target.reset(); // TODO: change this so redirected instead of just form reset
-
-    console.log(newTicketBody);
-
-    for (let field of booleanFields) {
-      if (newTicketBody[field] === "on") {
-        newTicketBody[field] = true;
-      } else {
-        newTicketBody[field] = false;
-      }
-    }
+    console.log(`submitting: `, newTicketBody)
     fetch("http://localhost:4000/api/ticket/create", {
       headers: {
         "Content-Type": "application/json",
@@ -44,10 +34,12 @@ function NewTicket() {
         newTicketBody,
       }),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (!res.ok) {
-          return res.json();
+          let error = await res.json()
+          console.log(error)
         } else {
+          e.target.reset(); // TODO: change this so redirected instead of just form reset
           console.log("ticket created");
         }
       })
@@ -58,73 +50,160 @@ function NewTicket() {
   }
 
   return (
-    <div>
-      <h2>new</h2>
-      <form onSubmit={handleSubmit}>
-        {allData.map((field) => {
-          if (field.name === "Project Description") {
+   <Container style={{
+    maxWidth: '90vw',
+    padding: '1vw 0'
+   }}>
+    <Form onSubmit={handleSubmit}>
+      { 
+        allData.map((field) => {
+          if (field.name === "Project Description"){
             return (
-              <label key={field.name} htmlFor={field.name}>
-                {field.name}
-                {": "}
-                <textarea
-                  required
-                  onChange={(e) => {
-                    newTicketBody[field.name] = e.target.value;
-                  }}
-                ></textarea>
-              </label>
-            );
+              <FormGroup key={field.name}>
+                <InputGroup>
+                  <InputGroupText>
+                    Description:
+                  </InputGroupText>
+                  <Input
+                    bsSize="lg" 
+                    type="textarea" 
+                    name={field.name}
+                    required
+                    onChange={(e) => {
+                      newTicketBody[field.name] = e.target.value
+                    }}
+                  />
+                </InputGroup>
+              </FormGroup>
+            )
           } else if (field.type === "Boolean") {
-            booleanFields.push(field.name);
+            newTicketBody[field.name] = false
             return (
-              <label key={field.name} htmlFor={field.name}>
-                {field.name}
-                {": "}
-                <input
-                  type="checkbox"
-                  onChange={(e) => {
-                    newTicketBody[field.name] = e.target.value;
-                  }}
-                />
-              </label>
-            );
-          } else if (!field.enum) {
-            return (
-              <label key={field.name} htmlFor={field.name}>
-                {field.name}
-                {": "}
-                <input
-                  required
-                  onChange={(e) => {
-                    newTicketBody[field.name] = e.target.value;
-                  }}
-                />
-              </label>
-            );
+              <FormGroup 
+                key={field.name} 
+                check
+                className="mb-3" 
+                style={{
+                  paddingLeft: "0"
+                }}
+              >
+                    <InputGroup>
+                      <Input 
+                        readOnly
+                        value={field.name}
+                        style={{
+                          pointerEvents: "none"
+                        }}
+                      />
+                      <InputGroupText>
+                        <Input
+                          addon 
+                          type="checkbox"
+                          name={field.name}
+                          onClick={() => {
+                            newTicketBody[field.name] = !newTicketBody[field.name]
+                          }}
+                        />
+                      </InputGroupText>
+                    </InputGroup>
+              </FormGroup>
+            )
+          } else if(!field.enum){
+            if(field.type === "String"){
+              return (
+                <FormGroup key={field.name}>
+                  <InputGroup>
+                    <InputGroupText>
+                      {field.name}
+                    </InputGroupText>
+                    <Input
+                      name={field.name}
+                      onChange={(e) => {
+                        newTicketBody[field.name] = e.target.value
+                      }}
+                    />
+                  </InputGroup>
+                </FormGroup>
+              )
+            } else if(field.type === "Number"){
+              return (
+                <FormGroup key={field.name}>
+                  <InputGroup>
+                    <InputGroupText>
+                      {field.name}
+                    </InputGroupText>
+                    <Input
+                      name={field.name}
+                      placeholder="0"
+                      type="number"
+                      onChange={(e) => {
+                        newTicketBody[field.name] = e.target.value
+                      }}
+                    />
+                  </InputGroup>
+                </FormGroup>
+              )
+            } else if(field.type === "Date") {
+              return(
+                <FormGroup key={field.name}>
+                  <InputGroup>
+                    <InputGroupText>
+                      {field.name}
+                    </InputGroupText>
+                    <Input
+                      name={field.name}
+                      placeholder={new Intl.DateTimeFormat('en-US').format(Date.now())}
+                      type="datetime"
+                      onChange={(e) => {
+                        newTicketBody[field.name] = new Date(e.target.value)
+                      }}
+                    />
+                  </InputGroup>
+                </FormGroup>
+              )
+            }
           } else {
             return (
-              <label key={field.name} htmlFor={field.name}>
-                {field.name}
-                {": "}
-
-                <select
-                  required
-                  onChange={(e) => {
-                    newTicketBody[field.name] = e.target.value;
-                  }}
-                >
-                  {field.enum.map((item) => {
-                    return <option value={item}>{item}</option>;
-                  })}
-                </select>
-              </label>
-            );
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupText>
+                    {field.name}
+                  </InputGroupText>
+                  <Input
+                    addon
+                    type="select"
+                    required
+                    onChange={(e) => {
+                      newTicketBody[field.name] = e.target.value
+                    }}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  >
+                    {
+                      field.enum.map((item) => {
+                        return (
+                          <option 
+                            key={item}
+                            value={item}
+                          >
+                            {item}
+                          </option>
+                        )
+                      })
+                    }
+                  </Input>
+                </InputGroup>
+              </FormGroup>
+            )
           }
-        })}
-        <input type="submit" />
-      </form>
-    </div>
+        })
+      }
+      <Button type="submit" color="primary">
+        Submit Ticket
+      </Button>
+    </Form>
+   </Container>
   );
 }
 

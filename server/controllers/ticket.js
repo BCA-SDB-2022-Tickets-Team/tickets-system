@@ -27,12 +27,14 @@ router
         upsert: true
       });
 
+      console.log(newID)
+
       const bodyFields = Object.keys(req.body.newTicketBody);
 
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department,
-        ID: newID
+        ID: newID.COUNT
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {
@@ -61,11 +63,13 @@ router
     const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({ Requestor: req.user._id });
       res.json(
         allTickets
       );
     } else {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({});
       res.json(
         allTickets
@@ -142,7 +146,7 @@ router
 .get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
-  console.log(fieldsToSend)
+  // console.log(fieldsToSend)
   res.json(fieldsToSend);
 });
 
@@ -188,7 +192,7 @@ router
 
 router
 .route("/delete/:id")
-.post([session], async (req, res, next) => {
+.delete([session], async (req, res, next) => {
   let { id } = req.params;
   try {
     // Only admins can delete tickets
@@ -254,10 +258,21 @@ router
 // Universal error handler
 // Any error thrown above goes through this
 router.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({
-    status: err.message,
-  });
+  if(err._message.includes("ticket validation failed")){
+    let missingFields = []
+    for(let [name, val] of Object.entries(err.errors)){
+      missingFields.push(name)
+    }
+    let errObj = {
+      status: `${err._message}, you are missing the following fields: `,
+      missingFields
+    }
+    res.status(500).json(errObj)
+  } else {
+    res.status(500).json({
+      status: err.message,
+    });
+  }
 });
 
 module.exports = router;

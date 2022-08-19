@@ -4,3 +4,7 @@
 .show{
     display: table;
 }
+.button-bar{
+    display: flex;
+    justify-content: space-around;
+}

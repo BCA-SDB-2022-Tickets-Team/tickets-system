@@ -56,10 +56,10 @@ function Router() {
         }
       />
       <Route path="/newticket" element={
-          <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
-            <NewTicket />    
-          </RequireAuth>
-        }
+        <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
+          <NewTicket />
+        </RequireAuth>
+      }
       />
       <Route
         path="/alltickets"
@@ -73,11 +73,10 @@ function Router() {
       <Route path=
         '/add-custom-field'
         element={
-          <AddCustomField
-            sessionToken={sessionToken}
-            sessionRole={sessionRole} 
-          />
-        } 
+          <RequireAuth permittedRoles={["4"]}>
+            <AddCustomField />
+          </RequireAuth>
+        }
       />
     </Routes>
   );

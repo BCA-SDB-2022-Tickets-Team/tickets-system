@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
-import "./newTicket.css";
+import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);
@@ -50,7 +50,10 @@ function NewTicket() {
         if (!res.ok) {
           let error = await res.json()
           setAlertVisible(true)
-          setAlertMessage(error.status)
+          if(error.missingFields){
+            let message = `${error.status} \n ${error.missingFields.join(' ')}`
+            setAlertMessage(message)
+          }
           console.log(error)
         } else {
           setAlertVisible(true)

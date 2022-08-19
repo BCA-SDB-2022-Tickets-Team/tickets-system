@@ -26,12 +26,14 @@ router
         upsert: true
       });
 
+      console.log(newID)
+
       const bodyFields = Object.keys(req.body.newTicketBody);
 
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department,
-        ID: newID
+        ID: newID.COUNT
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {
@@ -156,7 +158,7 @@ router
 .get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
-  console.log(fieldsToSend)
+  // console.log(fieldsToSend)
   res.json(fieldsToSend);
 });
 
@@ -269,10 +271,21 @@ router
 // Universal error handler
 // Any error thrown above goes through this
 router.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({
-    status: err.message,
-  });
+  if(err._message.includes("ticket validation failed")){
+    let missingFields = []
+    for(let [name, val] of Object.entries(err.errors)){
+      missingFields.push(name)
+    }
+    let errObj = {
+      status: `${err._message}, you are missing the following fields: `,
+      missingFields
+    }
+    res.status(500).json(errObj)
+  } else {
+    res.status(500).json({
+      status: err.message,
+    });
+  }
 });
 
 module.exports = router;

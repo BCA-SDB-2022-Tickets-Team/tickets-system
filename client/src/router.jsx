@@ -41,7 +41,7 @@ function RequireAuth(props) {
 }
 
 function Router() {
-  const { sessionRole, sessionToken } = useContext(LoginContext);
+  const { sessionRole, sessionToken, sessionId } = useContext(LoginContext);
   const [ticketID, setTicketID] = useState("");
 
   return (
@@ -65,11 +65,11 @@ function Router() {
         path="/alltickets"
         element={
           <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
-            <AllTickets setTicketID={setTicketID} />
+            <AllTickets setTicketID={setTicketID} sessionRole={sessionRole} />
           </RequireAuth>
         }
       />
-      <Route path="/oneticket" element={<OneTicket ticketID={ticketID} />} />
+      <Route path="/oneticket" element={<OneTicket ticketID={ticketID} sessionId={sessionId} />} />
       <Route path=
         '/add-custom-field'
         element={

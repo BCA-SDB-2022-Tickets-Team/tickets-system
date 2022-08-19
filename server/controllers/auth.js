@@ -325,7 +325,7 @@ router.route("/login").post(async (req, res, next) => {
               expiresIn: KEY_EXPIRATION,
             }
           );
-
+          let userId = user._id
           let userRole = 0
           if(user.__type === "reqUser" && !user.isManager) userRole = 1
           if(user.__type === "reqUser" && user.isManager) userRole = 2
@@ -335,7 +335,8 @@ router.route("/login").post(async (req, res, next) => {
           res.status(200).json({
             status: "logged in",
             token,
-            userRole
+            userRole,
+            userId
           });
         }
       }

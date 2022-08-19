@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
 const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
+const { User } = require("../models/base-user")
 const idcounter = require("../models/idcounter")
 
 //  Create a new ticket
@@ -26,12 +27,14 @@ router
         upsert: true
       });
 
+      console.log(newID)
+
       const bodyFields = Object.keys(req.body.newTicketBody);
 
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department,
-        ID: newID
+        ID: newID.COUNT
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
       for (field of bodyFields) {
@@ -60,30 +63,16 @@ router
     const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({ Requestor: req.user._id });
-      res.send(
-        allTickets.map(ticket => {
-          return {
-            _id: ticket._id,
-            'Created At': ticket['Created At'],
-            'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-            'Updated At': ticket['Updated At'],
-          }
-        }),
+      res.json(
+        allTickets
       );
     } else {
+      const Ticket = makeModel()
       let allTickets = await Ticket.find({});
-      res.send(
-        allTickets.map(ticket => {
-          return {
-            _id: ticket._id,
-            'Created At': ticket['Created At'],
-            'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-            'Updated At': ticket['Updated At'],
-          }
-        })
+      res.json(
+        allTickets
       );
     }
   } catch (err) {
@@ -135,7 +124,8 @@ router
               'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
               'Updated At': ticket['Updated At'],
             }
-          })
+          }),
+
         );
       }
     } else {
@@ -156,7 +146,7 @@ router
 .get([session], async (req, res) => {
   const TicketSchema = makeModel();
   const fieldsToSend = await getRequiredReqSchema()
-  console.log(fieldsToSend)
+  // console.log(fieldsToSend)
   res.json(fieldsToSend);
 });
 
@@ -183,7 +173,6 @@ router
         throw new Error("no ticket with that id exists");
       } else {
         // loop through request body and only update fields that exist in the request
-
         for (field in req.body) {
           ticketToModify[field] = req.body[field];
         }
@@ -203,7 +192,7 @@ router
 
 router
 .route("/delete/:id")
-.post([session], async (req, res, next) => {
+.delete([session], async (req, res, next) => {
   let { id } = req.params;
   try {
     // Only admins can delete tickets
@@ -250,13 +239,13 @@ router
       })
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        ticket
+        ticket,
+        
       )
     } else {
       let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        
         ticket
       )
     }
@@ -269,10 +258,21 @@ router
 // Universal error handler
 // Any error thrown above goes through this
 router.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({
-    status: err.message,
-  });
+  if(err._message.includes("ticket validation failed")){
+    let missingFields = []
+    for(let [name, val] of Object.entries(err.errors)){
+      missingFields.push(name)
+    }
+    let errObj = {
+      status: `${err._message}, you are missing the following fields: `,
+      missingFields
+    }
+    res.status(500).json(errObj)
+  } else {
+    res.status(500).json({
+      status: err.message,
+    });
+  }
 });
 
 module.exports = router;

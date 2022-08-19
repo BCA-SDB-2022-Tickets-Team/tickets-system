@@ -216,7 +216,7 @@ const makeModel = function(){
 async function getRequiredReqSchema(){
   let requiredPaths = []
   await reqTicket.eachPath((name, type) => {
-    console.log(type.isRequired, type.options.required)
+    // console.log(type.isRequired, type.options.required)
     if (FieldsToIgnore.includes(name)){
       return null
     } else {

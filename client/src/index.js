@@ -11,7 +11,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 //https://dmitripavlutin.com/react-context-and-usecontext/
 export const LoginContext = createContext({
   sessionToken: localStorage.getItem('token'),
-  sessionRole: localStorage.getItem('role')
+  sessionRole: localStorage.getItem('role'),
+  sessionId: localStorage.getItem('userId')
 })
   
 

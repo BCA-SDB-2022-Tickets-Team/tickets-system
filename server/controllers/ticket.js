@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
 const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
+const { User } = require("../models/base-user")
 const idcounter = require("../models/idcounter")
 
 //  Create a new ticket
@@ -76,11 +77,13 @@ router
       let allTickets = await Ticket.find({});
       res.send(
         allTickets.map(ticket => {
+          let assessorInfo = User.find({_id:ticket.Assessor})
+          assessorInfo ? console.log(assessorInfo) : null
           return {
             _id: ticket._id,
             'Created At': ticket['Created At'],
             'Vendor Name': ticket['Vendor Name'],
-            'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
+            'Assessor': !ticket.Assessor ?'Unassigned' : `${assessorInfo.firstName} ${assessorInfo.lastName}`,
             'Updated At': ticket['Updated At'],
           }
         })
@@ -135,7 +138,8 @@ router
               'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
               'Updated At': ticket['Updated At'],
             }
-          })
+          }),
+
         );
       }
     } else {
@@ -183,7 +187,6 @@ router
         throw new Error("no ticket with that id exists");
       } else {
         // loop through request body and only update fields that exist in the request
-
         for (field in req.body) {
           ticketToModify[field] = req.body[field];
         }
@@ -250,13 +253,13 @@ router
       })
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        ticket
+        ticket,
+        
       )
     } else {
       let ticket = await Ticket.findById(id, {__v:0}); // Remove unnecessary fields
       //TODO: change Requestor & Assessor to be names instead of object IDs
       res.send(
-        
         ticket
       )
     }

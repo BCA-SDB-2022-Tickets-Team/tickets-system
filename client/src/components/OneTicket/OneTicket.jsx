@@ -1,16 +1,33 @@
 import React, { useEffect, useState } from "react";
+import DeleteCancel from "./Modals/DeleteCancel";
+//import SaveCancel from "../Modals/SaveCancel"
+/* 
+  - Tried setting up a modal to check before submitting changes,  but every time the modal popped up updateObject reset to {}
+  - I tried adding updateObject to local storage, in hopes that it would persist, but even then... modal messes it up
+  - So for now... no modal
+
+*/
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Table,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
 import "./OneTicket.css";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
   const [userRole, setUserRole] = useState("");
-  const [userId, setUserId ] = useState("")
+  const [userId, setUserId] = useState("");
   const [editDisplay, setEditDisplay] = useState("hide");
   const [readDisplay, setReadDisplay] = useState("show");
-  const [show, setShow] = useState(false)
-  
+  const [showDelete, setShowDelete] = useState(false);
+  //const [storedObject, setStoredObject] = useState()
+  //const [showCancel, setShowCancel] = useState(false);
+
   const notEditable = [
     "_id",
     "Requestor",
@@ -18,7 +35,7 @@ function OneTicket(props) {
     "Created At",
     "Updated At",
   ];
-  let updateTicketBody = {};
+  let updateObject={}
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
@@ -37,38 +54,22 @@ function OneTicket(props) {
     getData();
 
     setUserRole(localStorage.getItem("role"));
-    setUserId(localStorage.getItem("userId"))
+    setUserId(localStorage.getItem("userId"));
   }, []);
 
   function handleSubmit(e) {
+    e.preventDefault()
+    console.log(updateObject);
     setReadDisplay("show");
     setEditDisplay("hide");
-    console.log(updateTicketBody);
+
     fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
       method: "PUT",
       headers: new Headers({
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       }),
-      body: JSON.stringify(updateTicketBody),
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error);
-  }
-function claimTicket(){
-  fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
-      method: "PUT",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }),
-      body: JSON.stringify({'Assessor': userId}),
+      body: JSON.stringify(updateObject),
     })
       .then((data) => {
         console.log(data);
@@ -78,100 +79,102 @@ function claimTicket(){
         console.log(realData);
       })
       .catch(Error)
-      .then(window.location.reload(false))
-    }     
-function assignTicket(){
-  console.log('assigning')
-}
-
-function deleteTicket(){
-  
-  fetch(`http://localhost:4000/api/ticket/delete/${id}`,
-  {method: 'DELETE',
-  headers: {
-    'Content-type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-     // Indicates the content 
-   }
   }
-  )
-  .then((data) => {
-    console.log(data);
-    return data.json();
-  })
-  .then((realData) => {
-    console.log(realData);
-  })
-  .catch(Error)
-}
+  function claimTicket() {
+    fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
+      method: "PUT",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }),
+      // body: JSON.stringify({ Assessor: userId }),
+      body : localStorage.getItem('updateObject')
+    })
+      .then((data) => {
+        console.log(data);
+        return data.json();
+      })
+      .then((realData) => {
+        console.log(realData);
+      })
+      .catch(Error)
+      .then();
+  }
+  function assignTicket() {
+    console.log("assigning");
+  }
 
+  function deleteTicket() {
+    
+    fetch(`http://localhost:4000/api/ticket/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // Indicates the content
+      },
+    })
+      .then((data) => {
+        console.log(data);
+        return data.json();
+      })
+      .then((realData) => {
+        console.log(realData);
+      })
+      .catch(Error)
+      .then(setTimeout(()=>{window.location.reload(false)}, 1000))
+  }
 
   return (
     <>
-    <Modal isOpen={show}>
-      
-       <ModalHeader>Are you sure you want to delete ticket?</ModalHeader>
-      <ModalBody>This action cannot be undone.</ModalBody>
-      <ModalFooter>
-        <Button variant="secondary" onClick={deleteTicket}>Delete User</Button>
-        <Button variant="primary" onClick={()=>setShow(false)}>Cancel</Button>
-        </ModalFooter>
-    </Modal>
-  
-    <div className="button-bar">
-    {userRole === "3"
-      && !oneTicketData.Assessor
-      ? (
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={claimTicket}
-          outline
-        >
-          Claim Ticket
-        </Button>)
-       : null}
+      <DeleteCancel showDelete={showDelete} setShowDelete={setShowDelete} deleteTicket={deleteTicket} />
 
-      {(userRole === "3" 
-      && userId===oneTicketData.Assessor)
-      || userRole === "4" ? (
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={() => {
-            setReadDisplay("hide");
-            setEditDisplay("show");
-          }}
-          outline
-        >
-          Edit Ticket
-        </Button>
-      ) : null}
-    {
-      userRole==="4"
-      ? (
-        <>
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={assignTicket}
-          outline
-        >
-          Assign Ticket
-        </Button>
-        <Button
-        color="info"
-        className={readDisplay}
-        onClick={()=>setShow(true)}
-        outline
-      >
-        Delete Ticket
-      </Button>
-        </>
-      ) : null
-      }
+      <div className="button-bar">
+        {userRole === "3" && !oneTicketData.Assessor ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={claimTicket}
+            outline
+          >
+            Claim Ticket
+          </Button>
+        ) : null}
 
-      
+        {(userRole === "3" && userId === oneTicketData.Assessor) ||
+        userRole === "4" ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => {
+              setReadDisplay("hide");
+              setEditDisplay("show");
+            }}
+            outline
+          >
+            Edit Ticket
+          </Button>
+        ) : null}
+        {userRole === "4" ? (
+          <>
+            <Button
+              color="info"
+              className={readDisplay}
+              onClick={assignTicket}
+              outline
+            >
+              Assign Ticket
+            </Button>
+            <Button
+              color="info"
+              className={readDisplay}
+              onClick={() => setShowDelete(true)}
+              outline
+            >
+              Delete Ticket
+            </Button>
+          </>
+        ) : null}
       </div>
 
       <Table striped className={readDisplay}>
@@ -198,9 +201,10 @@ function deleteTicket(){
                   {!notEditable.includes(field) ? (
                     <input
                       onChange={(e) => {
-                        updateTicketBody[field] = e.target.value;
+                        updateObject[field] = e.target.value
+                        localStorage.setItem('updateObject', `${updateObject}`)
                       }}
-                      placeholder={oneTicketData[field]}
+                      defaultValue={oneTicketData[field]}
                     />
                   ) : (
                     oneTicketData[field]
@@ -211,9 +215,19 @@ function deleteTicket(){
           })}
         </tbody>
       </Table>
-      <Button color="info" className={editDisplay} onClick={handleSubmit}>
-        Save
-      </Button>
+      <div className="button-bar">
+        <Button
+          color="info"
+          className={editDisplay}
+          onClick={handleSubmit}
+        >
+          Save
+        </Button>
+        <Button color="info" className={editDisplay} onClick={() => {window.location.reload(false)}}>
+          Cancel
+        </Button>
+      </div>
+      {/* <SaveCancel showCancel={showCancel} handleSubmit={handleSubmit} /> */}
     </>
   );
 }

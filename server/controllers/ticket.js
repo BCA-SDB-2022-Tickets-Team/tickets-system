@@ -159,6 +159,7 @@ router
 .put([session], async (req, res, next) => {
   // Find ticket by document ID passed as parameter
   const { id } = req.params;
+  console.log(req.body)
   try {
     if (req.user.__type === "reqUser") {
       res.status(403).json({

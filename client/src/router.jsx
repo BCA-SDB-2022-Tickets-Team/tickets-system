@@ -69,7 +69,7 @@ function Router() {
           </RequireAuth>
         }
       />
-      <Route path="/oneticket" element={<OneTicket ticketID={ticketID} sessionId={sessionId} />} />
+      <Route path="/oneticket" element={<OneTicket ticketID={ticketID} Navigate={Navigate} sessionId={sessionId} />} />
       <Route path=
         '/add-custom-field'
         element={

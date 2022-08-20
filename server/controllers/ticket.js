@@ -60,20 +60,23 @@ router
 .route("/all")
 .get([session], async (req, res, next) => {
   try {
-    const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
       const Ticket = makeModel()
-      let allTickets = await Ticket.find({ Requestor: req.user._id });
-      res.json(
-        allTickets
-      );
+      let allTicketsData = await Ticket.find({ Requestor: req.user._id });
+      let allUsers = await User.find({_id: req.user._id});
+      res.json({
+        allTicketsData,
+        allUsers
+      });
     } else {
       const Ticket = makeModel()
-      let allTickets = await Ticket.find({});
-      res.json(
-        allTickets
-      );
+      let allTicketsData = await Ticket.find({});
+      let allUsers = await User.find({});
+      res.json({
+        allTicketsData,
+        allUsers
+      });
     }
   } catch (err) {
     // Pass error to error-handling middleware at the bottom

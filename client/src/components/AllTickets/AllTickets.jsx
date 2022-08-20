@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table, Container, Row, Col, Label, Input } from "reactstrap"
@@ -9,8 +9,6 @@ import "./AllTickets.css"
 function AllTickets(props) {
     const { sessionRole, sessionToken } = useContext(LoginContext);
     const [role, setRole] = useState(parseInt(sessionRole));
-
-    const [allUsers, setAllUsers] = useState(undefined);
 
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
@@ -28,47 +26,14 @@ function AllTickets(props) {
         'Review (Requestor)',
         'Complete']
 
-
-    /*     useEffect(() => {
-    
-            setRole(parseInt(sessionRole));
-    
-            async function getAllUsers() {
-                try {
-                    let allUsersResponse = await fetch(
-                        `http://localhost:4000/api/user/allusers`,
-                        {
-                            method: "GET",
-                            headers: new Headers({
-                                "Content-Type": "application/json",
-                                Authorization: sessionToken,
-                            }),
-                        }
-                    );
-                    if (allUsersResponse.ok) {
-                        await allUsersResponse
-                            .json()
-                            .then((data) => {
-                                setAllUsers(data.allUsers);
-                            })
-                            .catch((err) => console.log(err));
-                    } else {
-                        let errorMsg = await allUsersResponse.json();
-                        console.log(`error getting /allusers: `, allUsersResponse);
-                        throw new Error(errorMsg.status);
-                    }
-                } catch (error) {
-                    console.log(`awww shucks: `, error);
-                }
-            }
-            getAllUsers();
-        }) */
+    const [filters, setFilters] = useState([]);
 
     useEffect(() => {
 
         setRole(parseInt(sessionRole));
 
         async function getData() {
+
             let res = await fetch("http://localhost:4000/api/ticket/all", {
                 method: "GET",
                 headers: new Headers({
@@ -76,34 +41,59 @@ function AllTickets(props) {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`
                 })
             });
+
             res.json()
                 .then(data => {
-                    return data.map(ticket => {
+                    return data.allTicketsData.map(ticket => {
                         return {
                             _id: ticket._id,
+                            'Ticket ID': ticket.ID,
+                            'Assessor': !ticket.Assessor
+                                ? <em>Unassigned</em>
+                                : data.allUsers.map(user => {
+                                    if (ticket.Assessor === user._id) {
+                                        return `${user.firstName} ${user.lastName}`
+                                    }
+                                }),
                             'Created At': ticket['Created At'],
                             'Vendor Name': ticket['Vendor Name'],
-                            //'Assessor': !ticket.Assessor ? 'Unassigned' : allUsers.find(user => user._id === ticket.Assessor),
                             'Updated At': ticket['Updated At'],
+                            'Status': ticket.Status
                         }
                     })
                 })
                 .then(mappedData => {
-                    console.log(mappedData)
                     setTicketData(mappedData)
                     return mappedData
                 })
                 .then((mappedTicketData) => {
-                    console.log(mappedTicketData)
                     setTicketFieldHeadings(Object.keys(mappedTicketData[0]))
                 })
-        
+
+        }
+        getData();
+    }, []);
+
+
+    let selected = [];
+
+    const onFilterChange = (e) => {
+        if (e.target.checked === true) {
+            selected.push(e.target.value)
+            console.log(selected)
+        } else {
+            let i = 0;
+            while (i < selected.length) {
+                let filter = selected.pop()
+                if (filter.includes(e.target.value) === false) {
+                    selected.unshift(filter)
+                }
+                i++
+                console.log(selected)
+                return selected
             }
-            getData();
-            //console.log(allUsers)
-        }, []);
-
-
+        }
+    }
 
     return (
         <Container>
@@ -114,14 +104,26 @@ function AllTickets(props) {
                         ? reqFilterOptions.map(option => {
                             return (
                                 <Label>
-                                    <Input name={option} type="checkbox" />{option}
+                                    <Input
+                                        name={option}
+                                        value={option}
+                                        onChange={onFilterChange}
+                                        type="checkbox"
+                                    />
+                                    {option}
                                 </Label>
                             )
                         })
                         : asrFilterOptions.map(option => {
                             return (
                                 <Label>
-                                    <Input type="checkbox" />{option}
+                                    <Input
+                                        name={option}
+                                        value={option}
+                                        onChange={onFilterChange}
+                                        type="checkbox"
+                                    />
+                                    {option}
                                 </Label>
                             )
                         })}
@@ -152,9 +154,9 @@ function AllTickets(props) {
                                                             {field === 'Created At' || field === 'Updated At'
                                                                 ? new Date(ticket[field]).toLocaleDateString()
                                                                 : ticket[field]}</NavLink>
-                                                        {/* <NavLink onClick={props.setTicketID(ticket["_id"])} to="/oneticket">{ticket[field]}</NavLink> */}
                                                     </td>
                                                 )
+                                                //}
                                             }
                                         })}
                                     </tr>

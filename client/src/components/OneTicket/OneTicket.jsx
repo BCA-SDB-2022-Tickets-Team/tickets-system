@@ -196,11 +196,9 @@ function OneTicket(props) {
                           type={inputType}
                           onChange={(e) => {
                             updateObject[field] =
-                              !modelData[field].type === "Boolean"
-                                ? e.target.value
+                              modelData[field].type === "Boolean"
+                                ? !oneTicketData[field]
                                 : e.target.value
-                                ? true
-                                : false;
                           }}
                           defaultValue={oneTicketData[field]}
                         />

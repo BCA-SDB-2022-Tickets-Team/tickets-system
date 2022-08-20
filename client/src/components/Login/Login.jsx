@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react'
-import { Form, FormGroup, Label, Input, Button, Container, Col, Row } from "reactstrap";
-import { Link } from 'react-router-dom'
+import React, { useState, useContext, useEffect } from 'react'
+import { Form, FormGroup, Label, Input, Button, Container, Col, Row, Alert } from "reactstrap";
+import { useNavigate, Navigate } from 'react-router-dom'
 import { LoginContext } from '../../index';
 
 
@@ -8,13 +8,20 @@ import './Login.css'
 
 
 function Login() {
-    const { updateLocalStorageRole, updateLocalStorageToken, updateLocalStorageId } = useContext(LoginContext)
+    const { updateLocalStorageRole, updateLocalStorageToken, updateLocalStorageId, sessionToken } = useContext(LoginContext)
     // useState variables for username and password
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     // useState variable for invalid credentials message
-    const [display, setDisplay] = useState({ display: "none" })
+    const [displayError, setDisplayError] = useState(false)
+    const [invalidMessage, setInvalidMessage] = useState(undefined)
+    const navigate = useNavigate()
+    // useEffect(() => {
+    //     if(sessionToken !== null){
+    //         navigate('/alltickets')
+    //     }
+    // }, [sessionToken])
 
 
     async function handleSubmit(e) {
@@ -37,15 +44,15 @@ function Login() {
 
             if (!res.ok) {
                 console.log(`oh no bad login!`)
-                setDisplay({ display: "inline" }) // Show invalid credentials message
-                throw new Error(res.JSON.status)
+                let serverErrorMessage = await res.json()
+                console.log(serverErrorMessage)
+                throw new Error(serverErrorMessage.status)
             } else {
                 console.log('yay! good login!')
                 const resData = await res.json()
                 updateLocalStorageToken(resData.token)
                 updateLocalStorageRole(resData.userRole)
                 updateLocalStorageId(resData.userId)
-        
                 // ? example of authenticated request to the server
                 // const testRes = await fetch("http://localhost:4000/api/req/test", {
                 //     method: "GET",
@@ -63,22 +70,25 @@ function Login() {
                 // }
             }
         } catch (err) {
+            setInvalidMessage(err.message)
+            setDisplayError(true)
             console.log(`error: ${err}`)
         }
     }
-
-
-
-
-
     return (
 <Container fluid className="login-container">
-<Row className="loginRow">
+<Row style={{ justifyContent: 'center' }}>
+    <Alert
+        isOpen={displayError}
+        toggle={(e) => setDisplayError(false)}
+        color="warning"
+    >
+        {invalidMessage}
+    </Alert>
+</Row>
+<Row className="loginRow" style={{ justifyContent: 'center' }}>
+<Col xs="2">
 
-<Col xs="5"></Col>
-<Col xs="1">
-
-  
         <Form inline className="form"
             onSubmit={handleSubmit}>
             <FormGroup className="mb-2 me-sm-2 mb-sm-0">
@@ -117,9 +127,6 @@ function Login() {
                 Login
             </Button>
           </Form>
-          <div style={display}>Invalid Credentials!</div>
-            <Link to="/createUser">Create User</Link>
-         
         </Col>
         </Row>
        </Container>

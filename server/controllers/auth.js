@@ -303,15 +303,15 @@ router.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;
   try {
     if (!email || !password) {
-      throw new Error("both email & password are required");
+      throw new Error("Both e-mail & password are required");
     } else {
       const user = await User.findOne({ email });
       if (!user) {
-        throw new Error("no user with that email can be found");
+        throw new Error("No user with that email can be found");
       } else {
         const verifyPW = await bcrypt.compare(password, user.password);
         if (!verifyPW) {
-          const badPW = new Error("incorrect password!");
+          const badPW = new Error("Incorrect password!");
           badPW.status = 403;
           throw badPW;
         } else {

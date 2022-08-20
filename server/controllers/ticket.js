@@ -30,10 +30,19 @@ router
       console.log(newID)
 
       const bodyFields = Object.keys(req.body.newTicketBody);
-
+      let tickerManager
+      if(req.user.manager){
+        ticketManager = req.user.manager
+      } else if (req.user.isManager) {
+        tickerManager = req.user._id
+      } else {
+        tickerManager = 'n/a'
+      }
+      console.log(tickerManager)
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.isAdmin ? "n/a" : req.user.Department,
+        'Project Manager': ticketManager,
         ID: newID.COUNT
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });

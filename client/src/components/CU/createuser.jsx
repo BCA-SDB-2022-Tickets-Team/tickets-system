@@ -90,6 +90,7 @@ function CreateUser() {
       firstName: firstName,
       lastName: lastName,
       email: email,
+      Department: department,
       password: password,
     };
     if (role === 2) {

@@ -111,19 +111,20 @@ router
         status: "Forbidden",
       });
     } else {
-      const { firstName, lastName, email, role, password } = req.body;
+      const { firstName, lastName, email, Department, password } = req.body;
       try {
-        if (!firstName || !lastName || !email || !role || !password) {
+        if (!firstName || !lastName || !email || !Department || !password) {
           throw new Error("Insufficient data");
         } else {
           const newUser = new reqUser({
             firstName,
             lastName,
             email,
-            role,
+            Department,
             password: bcrypt.hashSync(password, parseInt(SALT)),
           });
-          req.body.isManager ? (newUser.isManager = true) : null;
+          newUser.isManager = req.body.isManager ? true : false;
+          req.user.isManager && (newUser.manager = req.user._id)
 
           try {
             await newUser.save();
@@ -216,44 +217,6 @@ router
       next(error)
     }
   })
-//Start
-router
-    .route("/reqcreateuser")
-    .post(async (req, res) => {
-        
-        try {
-            const { firstName, lastName, userName, password, role, isAdmin, isManager } = req.body
-            if (!firstName || !lastName || !userName || !password || role || !isAdmin || !isManager) {
-                throw new Error(`All fields are required`)
-            } else {
-                const newUser = new User({
-                    firstName,
-                    lastName,
-                    username,
-                    password: bcrypt.hashSync(password, 10),
-                    role,
-                    isAdmin,
-                    isManager
-                })
-                newUser.save()
-
-                const token = jwt.sign(
-                    { username: newUser.username },
-                    SECRET_KEY,
-                    { expiresIn: 60 * 60 * 24}
-                )
-
-                res.status(201).json({
-                    status: `User Generated`,
-                    token,
-                    newUser
-                })
-            }
-                
-        } catch(err) {
-            console.log(err)
-        }
-    })
 
 router.route("/allusers")
     .get([session], async (req, res, next) => {

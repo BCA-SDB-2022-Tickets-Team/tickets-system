@@ -9,6 +9,7 @@ const FieldsToIgnore = [
   'Requestor',
   'Created At',
   'Updated At',
+  'Project Manager',
 ]
 
 let reqTicket = new mongoose.Schema(
@@ -30,7 +31,7 @@ let reqTicket = new mongoose.Schema(
       required: true,
     },
     'Project Manager': {
-      type: String,
+      type: mongoose.Mixed,
       required: true
     },
     'Business Contact': {

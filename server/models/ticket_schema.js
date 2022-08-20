@@ -232,5 +232,23 @@ async function getRequiredReqSchema(){
   }})
   return requiredPaths
 }
+async function getAsrSchema(){
+  let asrPaths = {}
 
-module.exports = {UpdateSchema, makeModel, getRequiredReqSchema, Ticket}
+  Ticket.eachPath((name, type) => {
+  //  let thisName=name.toString()
+  //  console.log(thisName)
+    
+  let pathObject = {
+      
+          type: type.instance,
+          enum: type.options.enum ? type.options.enum : undefined
+        }
+       
+      asrPaths[name]=pathObject
+  
+})
+return asrPaths
+}
+
+module.exports = {UpdateSchema, makeModel, getRequiredReqSchema, getAsrSchema, Ticket}

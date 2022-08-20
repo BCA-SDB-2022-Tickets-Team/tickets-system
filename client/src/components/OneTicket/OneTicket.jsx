@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table, Button } from "reactstrap";
+import {
+  Table,
+  Button,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
 import "./OneTicket.css";
-//import SaveCancel from "../Modals/SaveCancel"
-import DeleteCancel from "./Modals/DeleteCancel";
+import SaveModal from "./Modals/SaveModal";
+import DeleteModal from "./Modals/DeleteModal";
 import Assign from "./Modals/Assign";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
-  // need data for selected ticket by id
   const [userRole, setUserRole] = useState("");
-  //determine view & options
   const [userId, setUserId] = useState("");
-  // need ID for 'claim ticket'
   const [editDisplay, setEditDisplay] = useState("hide");
   const [readDisplay, setReadDisplay] = useState("show");
-  // body changes based on read/edit
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  // modals pop up as onClick of 'delete' and 'assign' buttons
-  //const [showCancelModal, setShowCancelModal] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [modelData, setModelData] = useState([]);
-  // need data from ticket schema to determine input types for 'edit' toggle
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [modelData, setModelData] = useState({});
+  const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
     "_id",
     "Requestor",
@@ -31,7 +31,6 @@ function OneTicket(props) {
     "Created At",
     "Updated At",
   ];
-  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   // ticket id passed as params from allTickets
   const id = params.get("id");
@@ -40,7 +39,7 @@ function OneTicket(props) {
 
   useEffect(() => {
     async function getData() {
-      let res = await fetch("http://localhost:4000/api/ticket/req/model", {
+      let res = await fetch("http://localhost:4000/api/ticket/asr/model", {
         method: "GET",
         headers: new Headers({
           "Content-Type": "application/json",
@@ -72,32 +71,7 @@ function OneTicket(props) {
     setUserId(localStorage.getItem("userId"));
     // grab those guys from local storage
   }, []);
-  console.log(oneTicketData);
 
-  function handleModifyRequest(e) {
-    e.preventDefault();
-    console.log(updateObject);
-    setReadDisplay("show");
-    setEditDisplay("hide");
-
-    fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
-      method: "PUT",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }),
-      body: JSON.stringify(updateObject),
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error)
-      .then(setTimeout(() => navigate(0), 1000));
-  }
   function claimTicket() {
     fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
       method: "PUT",
@@ -106,10 +80,11 @@ function OneTicket(props) {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       }),
       // body: JSON.stringify({ Assessor: userId }),
-      body: localStorage.getItem("updateObject"),
+      body: JSON.stringify({
+        Assessor: userId,
+      }),
     })
       .then((data) => {
-        console.log(data);
         return data.json();
       })
       .then((realData) => {
@@ -119,42 +94,16 @@ function OneTicket(props) {
       .then();
   }
 
-  function deleteTicket() {
-    fetch(`http://localhost:4000/api/ticket/delete/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        // Indicates the content
-      },
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error)
-      .then(
-        setTimeout(() => {
-          navigate("/alltickets");
-        }, 1000)
-      );
-  }
-
   return (
     <>
-      <DeleteCancel
+      <DeleteModal
         showDeleteModal={showDeleteModal}
         setShowDeleteModal={setShowDeleteModal}
-        deleteTicket={deleteTicket}
+        id={id}
       />
       <Assign
         showAssignModal={showAssignModal}
         setShowAssignModal={setShowAssignModal}
-        isDropdownOpen={isDropdownOpen}
-        setIsDropdownOpen={setIsDropdownOpen}
         id={id}
       />
 
@@ -186,11 +135,13 @@ function OneTicket(props) {
         ) : null}
         {userRole === "4" ? (
           <>
-            {oneTicketData.Assessor ? (
+            {!oneTicketData.Assessor ? (
               <Button
                 color="info"
                 className={readDisplay}
-                onClick={() => {setShowAssignModal(true); setIsDropdownOpen(true)}}
+                onClick={() => {
+                  setShowAssignModal(true);
+                }}
                 outline
               >
                 Assign Ticket
@@ -208,7 +159,6 @@ function OneTicket(props) {
           </>
         ) : null}
       </div>
-
       <Table striped className={readDisplay}>
         <tbody>
           {/* Map over the ticket and display its data in a table */}
@@ -226,23 +176,66 @@ function OneTicket(props) {
         <tbody>
           {/* Map over the ticket and display its data in a table */}
           {Object.keys(oneTicketData).map((field) => {
+            let inputType;
+            if (modelData[field].type === "Boolean") {
+              inputType = "checkbox";
+            }
+            if (modelData[field].type === "String") {
+              inputType = "text";
+            }
+
             return (
-              <tr key={field}>
-                <td>{field}:</td>
-                <td>
+              <>
+                <tr key={field}>
+                  <td>{field}:</td>
+
                   {!notEditable.includes(field) ? (
-                    <input
-                      onChange={(e) => {
-                        updateObject[field] = e.target.value;
-                        localStorage.setItem("updateObject", `${updateObject}`);
-                      }}
-                      defaultValue={oneTicketData[field]}
-                    />
+                    <td>
+                      {modelData[field].enum === undefined ? (
+                        <input
+                          type={inputType}
+                          onChange={(e) => {
+                            updateObject[field] =
+                              !modelData[field].type === "Boolean"
+                                ? e.target.value
+                                : e.target.value
+                                ? true
+                                : false;
+                          }}
+                          defaultValue={oneTicketData[field]}
+                        />
+                      ) : (
+                        // TODO: make dropdowns visible; possibly Popper js?
+                        <UncontrolledDropdown>
+                          <DropdownToggle
+                            caret
+                          >
+                            select
+                          </DropdownToggle>
+                          <DropdownMenu
+                            container="body"
+                            className="dropdown"
+                            positionFixed={true}
+                          >
+                            {modelData[field].enum.map((option) => {
+                              {console.log(option)}
+                              <DropdownItem
+                                onClick={(e) => {
+                                  updateObject[field] = e.target.value;
+                                }}
+                              >
+                                {option}
+                              </DropdownItem>;
+                            })}
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      )}
+                    </td>
                   ) : (
                     oneTicketData[field]
                   )}
-                </td>
-              </tr>
+                </tr>
+              </>
             );
           })}
         </tbody>
@@ -251,7 +244,10 @@ function OneTicket(props) {
         <Button
           color="info"
           className={editDisplay}
-          onClick={handleModifyRequest}
+          onClick={() => {
+            setObjectToSend(updateObject);
+            setShowCancelModal(true);
+          }}
         >
           Save
         </Button>
@@ -265,7 +261,12 @@ function OneTicket(props) {
           Cancel
         </Button>
       </div>
-      {/* <SaveCancel showCancelModal={showCancelModal} handleModifyRequest={handleModifyRequest} /> */}
+      <SaveModal
+        showCancelModal={showCancelModal}
+        setShowCancelModal={setShowCancelModal}
+        id={id}
+        objectToSend={objectToSend}
+      />
     </>
   );
 }

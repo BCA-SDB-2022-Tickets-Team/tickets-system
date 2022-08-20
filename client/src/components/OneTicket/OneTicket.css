@@ -8,3 +8,9 @@
     display: flex;
     justify-content: space-around;
 }
+.dropdown{
+    z-index: 1000000;
+    overflow: visible;   
+  overflow-y: visible; 
+ 
+}

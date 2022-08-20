@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
-const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
-const { User } = require("../models/base-user")
+const { makeModel, getAsrSchema, getRequiredReqSchema } = require("../models/ticket_schema");
 const idcounter = require("../models/idcounter")
+
 
 //  Create a new ticket
 router
@@ -150,6 +150,12 @@ router
   res.json(fieldsToSend);
 });
 
+router
+.route("/asr/model")
+.get([session], async (req, res)=>{
+const allFields = await getAsrSchema()
+  res.json(allFields)
+})
 
 // Get one ticket using ticket id as param
 

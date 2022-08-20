@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useNavigate } from "react";
 import {
   Form,
   FormGroup,
@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 import { LoginContext } from '../../index';
 import "./createuser.css";
+import Switch from "./Switch";
 
 const departments = [
   "hr",
@@ -41,6 +42,7 @@ function CreateUser() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [role, setRole] = useState(parseInt(sessionRole));
   const [allUsers, setAllUsers] = useState(undefined);
+  const [asrMakingReq, setAsrMakingReq] = useState(false);
 
   useEffect(() => {
     setRole(parseInt(sessionRole));
@@ -83,23 +85,24 @@ function CreateUser() {
   const onChangeHndler = (e, setter) => {
     setter(e.target.value);
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    let url
     let newUser = {
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
     };
-    if (role === 2) {
+    if (role === 2 || (role === 4 && asrMakingReq)) {
       newUser["Department"] = department;
       newUser["isManager"] = isManager;
-    } else {
+      url = "http://localhost:4000/api/user/req"
+    } else if (role === 4 && !asrMakingReq) {
       newUser["isAdmin"] = isAdmin;
+      url = "http://localhost:4000/api/user/asr"
     }
-
-    let url = `http://localhost:4000/api/user/${role === 2 ? "req" : "asr"}`;
     fetch(url, {
       method: "POST",
       body: JSON.stringify(newUser),
@@ -113,6 +116,15 @@ function CreateUser() {
   };
   return (
     <Container fluid className="create-user-container">
+      <div className="app">
+        <Switch
+          isOn={asrMakingReq}
+          onColor="#EF476F"
+          handleToggle={
+            setAsrMakingReq(currentValue => !currentValue)
+          }
+        />
+      </div>
       <Row className="create-user-row">
         <Col xs="8">
           <Table responsive striped>
@@ -130,26 +142,26 @@ function CreateUser() {
             <tbody>
               {allUsers !== undefined
                 ? allUsers.map((user) => {
-                    return (
-                      <tr key={user._id}>
-                        <th scope="row">{user._id}</th>
-                        <td>{user.firstName}</td>
-                        <td>{user.lastName}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          {user.Department !== undefined
-                            ? user.Department
-                            : `n/a`}
-                        </td>
-                        <td>
-                          {user.isManager !== undefined
-                            ? `${user.isManager}`
-                            : `${user.isAdmin}`}
-                        </td>
-                        {role === 4 ? <td>{user.__type}</td> : null}
-                      </tr>
-                    );
-                  })
+                  return (
+                    <tr key={user._id}>
+                      <th scope="row">{user._id}</th>
+                      <td>{user.firstName}</td>
+                      <td>{user.lastName}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        {user.Department !== undefined
+                          ? user.Department
+                          : `n/a`}
+                      </td>
+                      <td>
+                        {user.isManager !== undefined
+                          ? `${user.isManager}`
+                          : `${user.isAdmin}`}
+                      </td>
+                      {role === 4 ? <td>{user.__type}</td> : null}
+                    </tr>
+                  );
+                })
                 : null}
             </tbody>
           </Table>
@@ -203,7 +215,7 @@ function CreateUser() {
                 />
               </FormGroup>
               <div className="d-flex p-5">
-                {role === 2 ? (
+                {(role === 2 || asrMakingReq) ? (
                   <Dropdown
                     toggle={toggle}
                     direction={"down"}
@@ -227,7 +239,7 @@ function CreateUser() {
 
               <br></br>
               <FormGroup className="checkbox" check inline>
-                {role === 2 ? (
+                {(role === 2 || asrMakingReq) ? (
                   <>
                     <Input
                       type="checkbox"

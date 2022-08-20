@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import CreateUser from "./components/CU/createuser";
 import Login from "./components/Login/Login";
-import NewTicket from "./components/NewTicket/NewTicket";
+import NewTicket from "./components/newTicket/NewTicket";
 import AllTickets from "./components/AllTickets/AllTickets";
 import OneTicket from "./components/OneTicket/OneTicket";
 import { LoginContext } from './index';

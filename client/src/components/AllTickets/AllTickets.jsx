@@ -76,24 +76,34 @@ function AllTickets(props) {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`
                 })
             });
-            let data = await res.json();
+            res.json()
+                .then(data => {
+                    return data.map(ticket => {
+                        return {
+                            _id: ticket._id,
+                            'Created At': ticket['Created At'],
+                            'Vendor Name': ticket['Vendor Name'],
+                            //'Assessor': !ticket.Assessor ? 'Unassigned' : allUsers.find(user => user._id === ticket.Assessor),
+                            'Updated At': ticket['Updated At'],
+                        }
+                    })
+                })
+                .then(mappedData => {
+                    console.log(mappedData)
+                    setTicketData(mappedData)
+                    return mappedData
+                })
+                .then((mappedTicketData) => {
+                    console.log(mappedTicketData)
+                    setTicketFieldHeadings(Object.keys(mappedTicketData[0]))
+                })
+        
+            }
+            getData();
             //console.log(allUsers)
+        }, []);
 
-            setTicketData(data.map(ticket => {
-                return {
-                    _id: ticket._id,
-                    'Created At': ticket['Created At'],
-                    'Vendor Name': ticket['Vendor Name'],
-                    //'Assessor': !ticket.Assessor ? 'Unassigned' : allUsers.find(user => user._id === ticket.Assessor),
-                    'Updated At': ticket['Updated At'],
-                }
-            }))
 
-            setTicketFieldHeadings(Object.keys(ticketData[0]))
-        }
-        getData();
-
-    }, []);
 
     return (
         <Container>

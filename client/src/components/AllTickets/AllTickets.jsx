@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table, Container, Row, Col, Label, Input } from "reactstrap"
@@ -13,13 +13,17 @@ function AllTickets(props) {
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
 
+    const [ticketStatuses, setTicketStatuses] = useState([])
+
+    const [checked, setChecked] = useState(true);
+
     const reqFilterOptions = [
         'New Request',
         'In Progress',
         'Review',
         'Complete']
     const asrFilterOptions = [
-        'New Request',
+        'new-request',
         'In Progress',
         'On Hold (Vendor)',
         'Review (Director)',
@@ -66,20 +70,19 @@ function AllTickets(props) {
                     setTicketData(mappedData)
                     return mappedData
                 })
-                .then((mappedTicketData) => {
-                    setTicketFieldHeadings(Object.keys(mappedTicketData[0]))
+                .then(mappedData => {
+                    setTicketFieldHeadings(Object.keys(mappedData[0]))
                 })
-
         }
         getData();
     }, []);
 
-
     let selected = [];
 
-    const onFilterChange = (e) => {
+    const onFilterChange = e => {
         if (e.target.checked === true) {
             selected.push(e.target.value)
+            //setFilters(selected)
             console.log(selected)
         } else {
             let i = 0;
@@ -87,13 +90,15 @@ function AllTickets(props) {
                 let filter = selected.pop()
                 if (filter.includes(e.target.value) === false) {
                     selected.unshift(filter)
+                    i++
                 }
-                i++
                 console.log(selected)
                 return selected
             }
         }
     }
+
+    //TODO: useeffect that will re-render the table when the status array updates (table might need to be its own component)
 
     return (
         <Container>
@@ -144,6 +149,7 @@ function AllTickets(props) {
                             {/* Map over the tickets and display their data in a table */}
                             {ticketData.map((ticket) => {
                                 let contentKeys = Object.keys(ticket)
+                                //if (selected.includes(ticket.Status) || selected == []) {
                                 return (
                                     <tr key={ticket['Created At']} >
                                         {contentKeys.map(field => {
@@ -156,11 +162,11 @@ function AllTickets(props) {
                                                                 : ticket[field]}</NavLink>
                                                     </td>
                                                 )
-                                                //}
                                             }
                                         })}
                                     </tr>
                                 )
+                                //}
                             })}
                         </tbody>
                     </Table>

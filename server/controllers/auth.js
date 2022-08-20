@@ -277,7 +277,7 @@ router.route("/allusers")
           let departmentUsers = await User.find({
             __type: "reqUser",
             Department: department
-          }, ['firstName', 'lastName', 'email', 'Department', 'isManager'])
+          }, ['firstName', 'lastName', 'email', 'Department', 'isManager', '_id'])
           if(departmentUsers.length > 0){
             let allUsers = [...departmentUsers]
             res.status(200).json({

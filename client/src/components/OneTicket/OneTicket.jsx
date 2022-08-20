@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from "react";
-import DeleteCancel from "./Modals/DeleteCancel";
-//import SaveCancel from "../Modals/SaveCancel"
-/* 
-  - Tried setting up a modal to check before submitting changes,  but every time the modal popped up updateObject reset to {}
-  - I tried adding updateObject to local storage, in hopes that it would persist, but even then... modal messes it up
-  - So for now... no modal
-
-*/
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Table,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "reactstrap";
+import { Table, Button } from "reactstrap";
 import "./OneTicket.css";
+//import SaveCancel from "../Modals/SaveCancel"
+import DeleteCancel from "./Modals/DeleteCancel";
+import Assign from "./Modals/Assign";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
+  // need data for selected ticket by id
   const [userRole, setUserRole] = useState("");
+  //determine view & options
   const [userId, setUserId] = useState("");
+  // need ID for 'claim ticket'
   const [editDisplay, setEditDisplay] = useState("hide");
   const [readDisplay, setReadDisplay] = useState("show");
-  const [showDelete, setShowDelete] = useState(false);
-  //const [storedObject, setStoredObject] = useState()
-  //const [showCancel, setShowCancel] = useState(false);
-
+  // body changes based on read/edit
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  // modals pop up as onClick of 'delete' and 'assign' buttons
+  //const [showCancelModal, setShowCancelModal] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [modelData, setModelData] = useState([]);
+  // need data from ticket schema to determine input types for 'edit' toggle
   const notEditable = [
     "_id",
     "Requestor",
@@ -35,9 +31,28 @@ function OneTicket(props) {
     "Created At",
     "Updated At",
   ];
-  let updateObject={}
+  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
+  // ticket id passed as params from allTickets
   const id = params.get("id");
+  let updateObject = {};
+  // will be body of put request
+
+  useEffect(() => {
+    async function getData() {
+      let res = await fetch("http://localhost:4000/api/ticket/req/model", {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }),
+      });
+      let data = await res.json();
+      setModelData(data);
+    }
+    getData();
+  }, []);
+  console.log(modelData);
 
   useEffect(() => {
     async function getData() {
@@ -55,10 +70,12 @@ function OneTicket(props) {
 
     setUserRole(localStorage.getItem("role"));
     setUserId(localStorage.getItem("userId"));
+    // grab those guys from local storage
   }, []);
+  console.log(oneTicketData);
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  function handleModifyRequest(e) {
+    e.preventDefault();
     console.log(updateObject);
     setReadDisplay("show");
     setEditDisplay("hide");
@@ -79,6 +96,7 @@ function OneTicket(props) {
         console.log(realData);
       })
       .catch(Error)
+      .then(setTimeout(() => navigate(0), 1000));
   }
   function claimTicket() {
     fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
@@ -88,7 +106,7 @@ function OneTicket(props) {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       }),
       // body: JSON.stringify({ Assessor: userId }),
-      body : localStorage.getItem('updateObject')
+      body: localStorage.getItem("updateObject"),
     })
       .then((data) => {
         console.log(data);
@@ -100,12 +118,8 @@ function OneTicket(props) {
       .catch(Error)
       .then();
   }
-  function assignTicket() {
-    console.log("assigning");
-  }
 
   function deleteTicket() {
-    
     fetch(`http://localhost:4000/api/ticket/delete/${id}`, {
       method: "DELETE",
       headers: {
@@ -122,12 +136,27 @@ function OneTicket(props) {
         console.log(realData);
       })
       .catch(Error)
-      .then(setTimeout(()=>{window.location.reload(false)}, 1000))
+      .then(
+        setTimeout(() => {
+          navigate("/alltickets");
+        }, 1000)
+      );
   }
 
   return (
     <>
-      <DeleteCancel showDelete={showDelete} setShowDelete={setShowDelete} deleteTicket={deleteTicket} />
+      <DeleteCancel
+        showDeleteModal={showDeleteModal}
+        setShowDeleteModal={setShowDeleteModal}
+        deleteTicket={deleteTicket}
+      />
+      <Assign
+        showAssignModal={showAssignModal}
+        setShowAssignModal={setShowAssignModal}
+        isDropdownOpen={isDropdownOpen}
+        setIsDropdownOpen={setIsDropdownOpen}
+        id={id}
+      />
 
       <div className="button-bar">
         {userRole === "3" && !oneTicketData.Assessor ? (
@@ -157,18 +186,21 @@ function OneTicket(props) {
         ) : null}
         {userRole === "4" ? (
           <>
+            {oneTicketData.Assessor ? (
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => {setShowAssignModal(true); setIsDropdownOpen(true)}}
+                outline
+              >
+                Assign Ticket
+              </Button>
+            ) : null}
+
             <Button
               color="info"
               className={readDisplay}
-              onClick={assignTicket}
-              outline
-            >
-              Assign Ticket
-            </Button>
-            <Button
-              color="info"
-              className={readDisplay}
-              onClick={() => setShowDelete(true)}
+              onClick={() => setShowDeleteModal(true)}
               outline
             >
               Delete Ticket
@@ -201,8 +233,8 @@ function OneTicket(props) {
                   {!notEditable.includes(field) ? (
                     <input
                       onChange={(e) => {
-                        updateObject[field] = e.target.value
-                        localStorage.setItem('updateObject', `${updateObject}`)
+                        updateObject[field] = e.target.value;
+                        localStorage.setItem("updateObject", `${updateObject}`);
                       }}
                       defaultValue={oneTicketData[field]}
                     />
@@ -219,15 +251,21 @@ function OneTicket(props) {
         <Button
           color="info"
           className={editDisplay}
-          onClick={handleSubmit}
+          onClick={handleModifyRequest}
         >
           Save
         </Button>
-        <Button color="info" className={editDisplay} onClick={() => {window.location.reload(false)}}>
+        <Button
+          color="info"
+          className={editDisplay}
+          onClick={() => {
+            window.location.reload(false);
+          }}
+        >
           Cancel
         </Button>
       </div>
-      {/* <SaveCancel showCancel={showCancel} handleSubmit={handleSubmit} /> */}
+      {/* <SaveCancel showCancelModal={showCancelModal} handleModifyRequest={handleModifyRequest} /> */}
     </>
   );
 }

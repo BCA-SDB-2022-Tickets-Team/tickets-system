@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Table,
+
   Button,
   Modal,
   ModalHeader,
@@ -10,7 +10,7 @@ import {
 
 function SaveCancel(props) {
   return (
-    <Modal isOpen={props.showCancel}>
+    <Modal isOpen={props.showCancelModal}>
         <ModalHeader>
           Are you sure you want modify a database entry?
         </ModalHeader>

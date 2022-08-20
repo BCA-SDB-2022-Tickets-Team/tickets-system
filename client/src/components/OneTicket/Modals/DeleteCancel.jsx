@@ -7,6 +7,7 @@ import {
     ModalBody,
     ModalFooter,
   } from "reactstrap";
+  
 
 function DeleteCancel(props) {
   return (
@@ -17,7 +18,7 @@ function DeleteCancel(props) {
           <Button variant="secondary" onClick={props.deleteTicket}>
             Delete Ticket
           </Button>
-          <Button variant="primary" onClick={() => props.setShowDelete(false)}>
+          <Button variant="primary" onClick={() => props.setShowDeleteModal(false)}>
             Cancel
           </Button>
         </ModalFooter>

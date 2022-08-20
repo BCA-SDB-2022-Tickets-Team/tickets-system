@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react'
 import { Form, FormGroup, Label, Input, Button, Container, Col, Row } from "reactstrap";
-import { Link } from 'react-router-dom'
 import { LoginContext } from '../../index';
 
 
@@ -118,7 +117,6 @@ function Login() {
             </Button>
           </Form>
           <div style={display}>Invalid Credentials!</div>
-            <Link to="/createUser">Create User</Link>
          
         </Col>
         </Row>

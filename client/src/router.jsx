@@ -46,7 +46,12 @@ function Router() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={
+        sessionToken === null || sessionToken === undefined ?
+          <Login />
+        :
+          <AllTickets setTicketID={setTicketID} sessionRole={sessionRole} />
+      } />
       <Route
         path="/createuser"
         element={

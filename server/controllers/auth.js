@@ -105,7 +105,7 @@ router
   .route("/req")
   // session middleware verifies token
   .post([session], async (req, res, next) => {
-    if (!req.user.isManager) {
+    if (!req.user.isManager && !req.user.isAdmin) {
       // if user making request is not a manager, send forbidden status
       res.status(403).json({
         status: "Forbidden",

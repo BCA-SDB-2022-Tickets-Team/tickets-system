@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
-import "./newTicket.css";
+import "./NewTicket.css";
 
 function NewTicket() {
   const [allData, setAllData] = useState([]);

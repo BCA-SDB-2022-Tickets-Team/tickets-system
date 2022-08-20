@@ -118,13 +118,6 @@ function CreateUser() {
   return (
     <Container fluid className="create-user-container">
       <div className="app">
-        <Switch
-          isOn={asrMakingReq}
-          onColor="#EF476F"
-          handleToggle={
-            setAsrMakingReq(currentValue => !currentValue)
-          }
-        />
       </div>
       <Row className="create-user-row">
         <Col xs="8">
@@ -169,6 +162,11 @@ function CreateUser() {
         </Col>
         <Col className="sidePanel" xs="2">
           <div className="FormContainer">
+            <Switch
+              isOn={asrMakingReq}
+              onColor="#EF476F"
+              handleToggle={ setAsrMakingReq }
+            />
             <Form className="form" inline onSubmit={handleSubmit}>
               <FormGroup className="mb-2 me-sm-2 mb-sm-0">
                 <Label className="me-sm-2" for="exampleEmail">

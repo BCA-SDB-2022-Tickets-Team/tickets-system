@@ -8,9 +8,9 @@ const Switch = (props) => {
         className="react-switch-checkbox"
         id={`react-switch-new`}
         type="checkbox"
-        onChange={()=>(props.handleToggle())}
+        onChange={()=>(props.handleToggle(currentValue => !currentValue))}
       />
-      REQUESTOR/ACCESSOR
+       Make Requestor User?
       <label
         className="react-switch-label"
         htmlFor={`react-switch-new`}

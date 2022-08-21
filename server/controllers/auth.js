@@ -316,6 +316,19 @@ router.route("/login").post(async (req, res, next) => {
   }
 });
 
+router.route('/check-in')
+  .get([session], async (req, res, next) => {
+    try {
+      if(req.user){
+        res.status(200).send("true")
+      } else {
+        throw new Error(`bad auth`)
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
 // universal error handler
 // any error thrown above goes through this
 router.use((err, req, res, next) => {

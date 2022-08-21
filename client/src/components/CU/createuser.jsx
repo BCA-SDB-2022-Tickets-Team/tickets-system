@@ -9,8 +9,6 @@ import {
   Row,
   Table,
   Col,
-} from "reactstrap";
-import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -19,6 +17,7 @@ import {
 import { LoginContext } from '../../index';
 import "./createuser.css";
 import Switch from "./Switch";
+import EditUserModal from "./Edituser";
 
 const departments = [
   "hr",
@@ -43,6 +42,8 @@ function CreateUser() {
   const [role, setRole] = useState(parseInt(sessionRole));
   const [allUsers, setAllUsers] = useState(undefined);
   const [asrMakingReq, setAsrMakingReq] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [userToEdit, setUserToEdit] = useState(undefined)
 
   useEffect(() => {
     setRole(parseInt(sessionRole));
@@ -115,8 +116,24 @@ function CreateUser() {
       .then((res) => res.json())
       .then((data) => console.log(data));
   };
+
+  const handleEditUser = function(user){
+    setUserToEdit(user)
+    setShowModal(val => !val)
+  }
   return (
     <Container fluid className="create-user-container">
+      {
+        showModal && userToEdit ? 
+          <EditUserModal 
+            showModal={showModal}
+            setShowModal={setShowModal}
+            user={userToEdit}
+            departments={departments}
+          />
+          :
+          null
+      }
       <div className="app">
       </div>
       <Row className="create-user-row">
@@ -124,7 +141,6 @@ function CreateUser() {
           <Table responsive striped>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>E-mail</th>
@@ -137,15 +153,14 @@ function CreateUser() {
               {allUsers !== undefined
                 ? allUsers.map((user) => {
                   return (
-                    <tr key={user._id}>
-                      <th scope="row">{user._id}</th>
+                    <tr key={user._id} onClick={() => handleEditUser(user)}>
                       <td>{user.firstName}</td>
                       <td>{user.lastName}</td>
                       <td>{user.email}</td>
                       <td>
                         {user.Department !== undefined
                           ? user.Department
-                          : `n/a`}
+                          : `-`}
                       </td>
                       <td>
                         {user.isManager !== undefined

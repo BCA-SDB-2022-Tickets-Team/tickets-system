@@ -3,10 +3,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Table,
   Button,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
+  Container,
+  Form,
+  Input,
+  FormGroup,
+  InputGroup,
+  InputGroupText,
 } from "reactstrap";
 import "./OneTicket.css";
 import SaveModal from "./Modals/SaveModal";
@@ -36,6 +38,7 @@ function OneTicket(props) {
     "Created At",
     "Updated At",
     "Status",
+    "ID"
   ];
   const nonEditableStatus = [
     "triage",
@@ -84,7 +87,7 @@ function OneTicket(props) {
     // grab those guys from local storage
   }, []);
   console.log(oneTicketData["Status"]);
-  console.log(userId)
+  console.log(userId);
   return (
     <>
       <DeleteModal
@@ -168,21 +171,18 @@ function OneTicket(props) {
             >
               Edit Ticket
             </Button>
-            {oneTicketData['Status']==='in-progress' ? (
-          <Button
-            color="info"
-            className={readDisplay}
-            onClick={() => setShowSubmitModal(true)}
-            outline
-          >
-            Submit For Review
-          </Button>
-        ) : null}
+            {oneTicketData["Status"] === "in-progress" ? (
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => setShowSubmitModal(true)}
+                outline
+              >
+                Submit For Review
+              </Button>
+            ) : null}
           </>
         ) : null}
-        
-
-        
 
         {userRole === "4" ? (
           <>
@@ -209,7 +209,6 @@ function OneTicket(props) {
             </Button>
           </>
         ) : null}
-       
       </div>
       <Table striped className={readDisplay}>
         <tbody>
@@ -232,77 +231,107 @@ function OneTicket(props) {
           })}
         </tbody>
       </Table>
-      <Table striped className={editDisplay}>
-        <tbody>
-          {/* Map over the ticket and display its data in a table */}
+      <Container
+        className={editDisplay}
+        style={{
+          maxWidth: "90vw",
+          padding: "1vw 0",
+        }}
+      >
+        <Form>
           {Object.keys(oneTicketData).map((field) => {
-            let inputType;
-            if (modelData[field].type === "Boolean") {
-              inputType = "checkbox";
-            }
-            if (modelData[field].type === "String") {
-              inputType = "text";
-            }
-
-            return (
-              <>
-                <tr key={field}>
-                  <td>{field}:</td>
-
-                  {!notEditable.includes(field) ? (
-                    <td>
-                      {modelData[field].enum === undefined ? (
-                        <input
-                          type={inputType}
-                          onChange={(e) => {
-                            if (modelData[field].type !== "Boolean") {
-                              updateObject[field] = e.target.value;
-                              console.log(updateObject);
-                            }
-                          }}
-                          onClick={(e) => {
-                            if (modelData[field].type === "Boolean") {
-                              updateObject[field] =
-                              updateObject[field]!==undefined
-                              ? !updateObject[field]
-                               : oneTicketData[field] === true ? false : true;
-                            }
-                          }}
-                          defaultValue={oneTicketData[field]}
+            if (!notEditable.includes(field)) {
+              if (modelData[field].type === "Boolean") {
+                return (
+                  <FormGroup
+                    key={field}
+                    check
+                    className="mb-3"
+                    style={{
+                      paddingLeft: "0",
+                    }}
+                  >
+                    <InputGroup>
+                      <Input
+                        readOnly
+                        value={field}
+                        style={{
+                          pointerEvents: "none",
+                        }}
+                      />
+                      <InputGroupText>
+                        <Input
+                          addon
+                          type="checkbox"
+                          name={field}
                           defaultChecked={oneTicketData[field]}
+                          onClick={() => {
+                            updateObject[field] =
+                              updateObject[field] !== undefined
+                                ? !updateObject[field]
+                                : oneTicketData[field] === true
+                                ? false
+                                : true;
+                          }}
                         />
-                      ) : (
-                        // TODO: make dropdowns visible; possibly Popper js?
-
-                        <UncontrolledDropdown>
-                          <DropdownToggle caret>select</DropdownToggle>
-                          <DropdownMenu
-                            container="body"
-                            className="dropdown"
-                            positionFixed={true}
-                          >
-                            {modelData[field].enum.map((option) => {
-                              <DropdownItem
-                                onClick={(e) => {
-                                  updateObject[field] = e.target.value;
-                                }}
-                              >
-                                {option}
-                              </DropdownItem>;
-                            })}
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      )}
-                    </td>
-                  ) : (
-                    oneTicketData[field]
-                  )}
-                </tr>
-              </>
-            );
+                      </InputGroupText>
+                    </InputGroup>
+                  </FormGroup>
+                );
+              } else if (modelData[field].enum !== undefined) {
+                <FormGroup>
+                  <InputGroup>
+                    <InputGroupText>{field}</InputGroupText>
+                    <Input
+                      addon
+                      type="select"
+                      required
+                      onChange={(e) => {
+                        updateObject[field] = e.target.value;
+                      }}
+                      style={{
+                        flexGrow: 1,
+                      }}
+                    >
+                      {modelData[field].enum.map((item) => {
+                        return (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        );
+                      })}
+                    </Input>
+                  </InputGroup>
+                </FormGroup>;
+              } else {
+                return (
+                  <FormGroup key={field}>
+                    <InputGroup>
+                      <InputGroupText>{field}</InputGroupText>
+                      <Input
+                        name={field}
+                        onChange={(e) => {
+                          updateObject[field] = e.target.value;
+                        }}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                );
+              }
+            } else {
+              return (
+                <FormGroup key={field}>
+                    <InputGroup>
+                      <InputGroupText>{field}</InputGroupText>
+                      <InputGroupText>{oneTicketData[field]}</InputGroupText>
+                    </InputGroup>
+                  </FormGroup>
+              )
+            }
           })}
-        </tbody>
-      </Table>
+        </Form>
+      </Container>
+
       <div className="button-bar">
         <Button
           color="info"

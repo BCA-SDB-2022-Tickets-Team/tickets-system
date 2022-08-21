@@ -12,6 +12,8 @@ const TicketsTable = (props) => {
 
     useEffect(() => {
 
+        console.log(props.filters)
+
         async function getData() {
 
             let res = await fetch("http://localhost:4000/api/ticket/all", {
@@ -25,9 +27,6 @@ const TicketsTable = (props) => {
             res.json()
                 .then(data => {
                     return data.allTicketsData.map(ticket => {
-                        console.log(ticket.Status)
-                        console.log(props.slectedFilters)
-                        //if (props.filters.includes(ticket.Status) === true) {
                         return {
                             _id: ticket._id,
                             'Ticket ID': ticket.ID,
@@ -43,19 +42,36 @@ const TicketsTable = (props) => {
                             'Updated At': ticket['Updated At'],
                             'Status': ticket.Status
                         }
-                        //}
-                    })
+                    }
+                    )
                 })
                 .then(mappedData => {
-                    setTicketData(mappedData)
-                    return mappedData
+                    console.log(props.filters)
+                    if (props.filters.includes('all')) {
+                        setTicketData(mappedData)
+                        console.log(mappedData)
+                        return mappedData
+                    } else {
+                        function filterByStatus(ticket) {
+                            if (props.filters.includes(ticket.Status)) {
+                                return true
+                            } else {
+                                return false
+                            }
+                        }
+                        let filteredData = mappedData.filter(filterByStatus)
+                        setTicketData(filteredData)
+                        return mappedData
+                    }
                 })
                 .then(mappedData => {
                     setTicketFieldHeadings(Object.keys(mappedData[0]))
                 })
         }
         getData();
-    }, []);
+    }, [props.filters]);
+
+    let ticketsToPrint;
 
     return (
         <Table striped responsive hover>
@@ -73,7 +89,6 @@ const TicketsTable = (props) => {
                 {/* Map over the tickets and display their data in a table */}
                 {ticketData.map((ticket) => {
                     let contentKeys = Object.keys(ticket)
-
                     return (
                         <tr key={ticket['Created At']} >
                             {contentKeys.map(field => {
@@ -90,6 +105,7 @@ const TicketsTable = (props) => {
                                 }
                             })}
                         </tr>
+
                     )
 
                 })}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Table,
   Button,
   Modal,
   ModalHeader,
@@ -15,7 +14,7 @@ import {
 import { LoginContext } from "../../../index";
 import "./Assign.css";
 
-function Assign(props) {
+function AssignModal(props) {
   const { sessionToken } = useContext(LoginContext);
   const [newAssessor, setNewAssessor] = useState("");
 
@@ -65,6 +64,7 @@ function Assign(props) {
       // body: JSON.stringify({ Assessor: userId }),
       body: JSON.stringify({
         Assessor: newAssessor,
+        Status: 'in-progress'
       }),
     })
       .then((data) => {
@@ -100,7 +100,6 @@ function Assign(props) {
                     onClick={() => {
                       setNewAssessor(user._id);
                       setOpenDropdown(false);
-                      console.log(newAssessor, "onClick newAssessor");
                     }}
                   >
                     {`${user.firstName} ${user.lastName}`}
@@ -135,4 +134,4 @@ function Assign(props) {
   );
 }
 
-export default Assign;
+export default AssignModal;

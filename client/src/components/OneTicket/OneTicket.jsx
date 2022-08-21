@@ -11,7 +11,9 @@ import {
 import "./OneTicket.css";
 import SaveModal from "./Modals/SaveModal";
 import DeleteModal from "./Modals/DeleteModal";
-import Assign from "./Modals/Assign";
+import AssignModal from "./Modals/AssignModal";
+import ClaimModal from "./Modals/ClaimModal";
+import SubmitModal from "./Modals/SubmitModal";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
@@ -22,6 +24,8 @@ function OneTicket(props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [modelData, setModelData] = useState({});
   const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
@@ -30,6 +34,7 @@ function OneTicket(props) {
     "Assessor",
     "Created At",
     "Updated At",
+    "Status",
   ];
   const params = new URLSearchParams(window.location.search);
   // ticket id passed as params from allTickets
@@ -51,7 +56,6 @@ function OneTicket(props) {
     }
     getData();
   }, []);
-  console.log(modelData);
 
   useEffect(() => {
     async function getData() {
@@ -72,28 +76,6 @@ function OneTicket(props) {
     // grab those guys from local storage
   }, []);
 
-  function claimTicket() {
-    fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
-      method: "PUT",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }),
-      // body: JSON.stringify({ Assessor: userId }),
-      body: JSON.stringify({
-        Assessor: userId,
-      }),
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error)
-      .then();
-  }
-
   return (
     <>
       <DeleteModal
@@ -101,9 +83,22 @@ function OneTicket(props) {
         setShowDeleteModal={setShowDeleteModal}
         id={id}
       />
-      <Assign
-        showAssignModal={showAssignModal}
-        setShowAssignModal={setShowAssignModal}
+      {userRole === "4" ? (
+        <AssignModal
+          showAssignModal={showAssignModal}
+          setShowAssignModal={setShowAssignModal}
+          id={id}
+        />
+      ) : null}
+      <ClaimModal
+        showClaimModal={showClaimModal}
+        setShowClaimModal={setShowClaimModal}
+        userId={userId}
+        id={id}
+      />
+      <SubmitModal
+        showSubmitModal={showSubmitModal}
+        setShowSubmitModal={setShowSubmitModal}
         id={id}
       />
 
@@ -112,7 +107,7 @@ function OneTicket(props) {
           <Button
             color="info"
             className={readDisplay}
-            onClick={claimTicket}
+            onClick={() => setShowClaimModal(true)}
             outline
           >
             Claim Ticket
@@ -121,18 +116,28 @@ function OneTicket(props) {
 
         {(userRole === "3" && userId === oneTicketData.Assessor) ||
         userRole === "4" ? (
-          <Button
-            color="info"
-            className={readDisplay}
-            onClick={() => {
-              setReadDisplay("hide");
-              setEditDisplay("show");
-            }}
-            outline
-          >
-            Edit Ticket
-          </Button>
+          <>
+            <Button
+              color="info"
+              className={readDisplay}
+              onClick={() => {
+                setReadDisplay("hide");
+                setEditDisplay("show");
+              }}
+              disabled={
+                oneTicketData['Status'] === "director-review" ||
+                oneTicketData['Status'] === "requestor-review" ||
+                oneTicketData['Status'] === "completed"
+                  ? true
+                  : false
+              }
+              outline
+            >
+              Edit Ticket
+            </Button>
+          </>
         ) : null}
+
         {userRole === "4" ? (
           <>
             {!oneTicketData.Assessor ? (
@@ -158,6 +163,16 @@ function OneTicket(props) {
             </Button>
           </>
         ) : null}
+        {userRole === "3" ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => setShowSubmitModal(true)}
+            outline
+          >
+            Submit For Review
+          </Button>
+        ) : null}
       </div>
       <Table striped className={readDisplay}>
         <tbody>
@@ -166,7 +181,15 @@ function OneTicket(props) {
             return (
               <tr key={field}>
                 <td>{field}:</td>
-                <td>{oneTicketData[field]}</td>
+                <td>
+                  {modelData[field].type === "Boolean" ? (
+                    oneTicketData[field] === true ? (
+                      <input type="checkbox" defaultChecked={true} disabled />
+                    ) : null
+                  ) : (
+                    oneTicketData[field]
+                  )}
+                </td>
               </tr>
             );
           })}
@@ -195,28 +218,31 @@ function OneTicket(props) {
                         <input
                           type={inputType}
                           onChange={(e) => {
-                            updateObject[field] =
-                              modelData[field].type === "Boolean"
-                                ? !oneTicketData[field]
-                                : e.target.value
+                            if (modelData[field].type !== "Boolean") {
+                              updateObject[field] = e.target.value;
+                              console.log(updateObject);
+                            }
+                          }}
+                          onClick={(e) => {
+                            if (modelData[field].type === "Boolean") {
+                              updateObject[field] =
+                                oneTicketData[field] === true ? false : true;
+                            }
                           }}
                           defaultValue={oneTicketData[field]}
+                          defaultChecked={oneTicketData[field]}
                         />
                       ) : (
                         // TODO: make dropdowns visible; possibly Popper js?
+
                         <UncontrolledDropdown>
-                          <DropdownToggle
-                            caret
-                          >
-                            select
-                          </DropdownToggle>
+                          <DropdownToggle caret>select</DropdownToggle>
                           <DropdownMenu
                             container="body"
                             className="dropdown"
                             positionFixed={true}
                           >
                             {modelData[field].enum.map((option) => {
-                              {console.log(option)}
                               <DropdownItem
                                 onClick={(e) => {
                                   updateObject[field] = e.target.value;
@@ -243,6 +269,7 @@ function OneTicket(props) {
           color="info"
           className={editDisplay}
           onClick={() => {
+            console.log(updateObject);
             setObjectToSend(updateObject);
             setShowCancelModal(true);
           }}

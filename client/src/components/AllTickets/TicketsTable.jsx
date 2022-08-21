@@ -95,6 +95,7 @@ const TicketsTable = (props) => {
                                 if (field !== "_id") {
                                     return (
                                         <td className="all-tickets-data" key={field} >
+                                            {/* //! NEED TO FIX LINK TO ONETICKET */}
                                             {/* <NavLink onClick={props.setTicketID(ticket._id)} to={`/oneticket?id=${ticket['_id']}`}> */}
                                             {field === 'Created At' || field === 'Updated At'
                                                 ? new Date(ticket[field]).toLocaleDateString()

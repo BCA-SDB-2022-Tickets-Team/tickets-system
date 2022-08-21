@@ -8,6 +8,7 @@ import FilterCheckBoxes from './TicketFilters'
 
 
 function AllTickets(props) {
+
     const { sessionRole, sessionToken } = useContext(LoginContext);
     const [role, setRole] = useState(parseInt(sessionRole));
 

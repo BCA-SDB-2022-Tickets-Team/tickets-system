@@ -265,7 +265,7 @@ router
 // Universal error handler
 // Any error thrown above goes through this
 router.use((err, req, res, next) => {
-  if(err._message.includes("ticket validation failed")){
+  if(err._message){
     let missingFields = []
     for(let [name, val] of Object.entries(err.errors)){
       missingFields.push(name)

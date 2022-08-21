@@ -20,7 +20,7 @@ function ClaimModal(props) {
           // body: JSON.stringify({ Assessor: props.userId }),
           body: JSON.stringify({
             Assessor: props.userId,
-            Status: 'in-progress'
+            Status: 'triage'
           }),
         })
           .then((data) => {

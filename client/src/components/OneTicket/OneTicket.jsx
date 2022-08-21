@@ -23,9 +23,10 @@ function OneTicket(props) {
   const [readDisplay, setReadDisplay] = useState("show");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [onSwitch, setOnSwitch] = useState(false);
   const [modelData, setModelData] = useState({});
   const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
@@ -35,6 +36,13 @@ function OneTicket(props) {
     "Created At",
     "Updated At",
     "Status",
+  ];
+  const nonEditableStatus = [
+    "triage",
+    "director-review",
+    "requestor-review",
+    "questionaire-sent",
+    "completed",
   ];
   const params = new URLSearchParams(window.location.search);
   // ticket id passed as params from allTickets
@@ -75,7 +83,8 @@ function OneTicket(props) {
     setUserId(localStorage.getItem("userId"));
     // grab those guys from local storage
   }, []);
-
+  console.log(oneTicketData["Status"]);
+  console.log(userId)
   return (
     <>
       <DeleteModal
@@ -96,6 +105,14 @@ function OneTicket(props) {
         userId={userId}
         id={id}
       />
+      <SaveModal
+        showSaveModal={showSaveModal}
+        setShowSaveModal={setShowSaveModal}
+        id={id}
+        objectToSend={objectToSend}
+        onSwitch={onSwitch}
+        setOnSwitch={setOnSwitch}
+      />
       <SubmitModal
         showSubmitModal={showSubmitModal}
         setShowSubmitModal={setShowSubmitModal}
@@ -113,8 +130,25 @@ function OneTicket(props) {
             Claim Ticket
           </Button>
         ) : null}
+        {userRole === "3" &&
+        oneTicketData["Status"] === "triage" &&
+        userId === oneTicketData["Assessor"] ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => {
+              updateObject["Status"] = "in-progress";
+              setObjectToSend(updateObject);
+              setOnSwitch(true);
+              setShowSaveModal(true);
+            }}
+            outline
+          >
+            Begin Assessment
+          </Button>
+        ) : null}
 
-        {(userRole === "3" && userId === oneTicketData.Assessor) ||
+        {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
         userRole === "4" ? (
           <>
             <Button
@@ -125,9 +159,8 @@ function OneTicket(props) {
                 setEditDisplay("show");
               }}
               disabled={
-                oneTicketData['Status'] === "director-review" ||
-                oneTicketData['Status'] === "requestor-review" ||
-                oneTicketData['Status'] === "completed"
+                nonEditableStatus.includes(oneTicketData["Status"]) &&
+                userRole === "3"
                   ? true
                   : false
               }
@@ -135,8 +168,21 @@ function OneTicket(props) {
             >
               Edit Ticket
             </Button>
+            {oneTicketData['Status']==='in-progress' ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => setShowSubmitModal(true)}
+            outline
+          >
+            Submit For Review
+          </Button>
+        ) : null}
           </>
         ) : null}
+        
+
+        
 
         {userRole === "4" ? (
           <>
@@ -163,16 +209,7 @@ function OneTicket(props) {
             </Button>
           </>
         ) : null}
-        {userRole === "3" ? (
-          <Button
-            color="info"
-            className={readDisplay}
-            onClick={() => setShowSubmitModal(true)}
-            outline
-          >
-            Submit For Review
-          </Button>
-        ) : null}
+       
       </div>
       <Table striped className={readDisplay}>
         <tbody>
@@ -226,7 +263,9 @@ function OneTicket(props) {
                           onClick={(e) => {
                             if (modelData[field].type === "Boolean") {
                               updateObject[field] =
-                                oneTicketData[field] === true ? false : true;
+                              updateObject[field]!==undefined
+                              ? !updateObject[field]
+                               : oneTicketData[field] === true ? false : true;
                             }
                           }}
                           defaultValue={oneTicketData[field]}
@@ -271,7 +310,7 @@ function OneTicket(props) {
           onClick={() => {
             console.log(updateObject);
             setObjectToSend(updateObject);
-            setShowCancelModal(true);
+            setShowSaveModal(true);
           }}
         >
           Save
@@ -286,12 +325,6 @@ function OneTicket(props) {
           Cancel
         </Button>
       </div>
-      <SaveModal
-        showCancelModal={showCancelModal}
-        setShowCancelModal={setShowCancelModal}
-        id={id}
-        objectToSend={objectToSend}
-      />
     </>
   );
 }

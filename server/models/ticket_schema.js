@@ -137,6 +137,7 @@ const asrTicket = new mongoose.Schema({
       default: 'new-request',
       enum: [
               'new-request', 
+              'triage',
               'questionaire-sent', 
               'requestor-review',
               'director-review',

@@ -9,8 +9,7 @@ import {
 } from "reactstrap";
 
 function SaveModal(props) {
-  function handleModifyRequest(e) {
-    e.preventDefault();
+  function handleModifyRequest() {
     fetch(`http://localhost:4000/api/ticket/modify/${props.id}`, {
       method: "PUT",
       headers: new Headers({
@@ -30,14 +29,26 @@ function SaveModal(props) {
       .then(setTimeout(() => window.location.reload(false), 1000));
   }
   return (
-    <Modal isOpen={props.showCancelModal}>
-        <ModalHeader>
-          Are you sure you want modify a database entry?
+    <Modal isOpen={props.showSaveModal}>
+        {
+          
+           <ModalHeader>
+            {props.onSwitch 
+          ? 'Begin assessment'
+          : 'Are you sure you want to modify a database entry?'}
         </ModalHeader>
-        <ModalBody>This action cannot be undone.</ModalBody>
+        }
+        <ModalBody>
+          {props.onSwitch
+          ? 'Ticket status: In Progress'
+          : 'This action cannot be undone.'
+          }
+          </ModalBody>
         <ModalFooter>
-          <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest(e)}}>
-            Modify Ticket
+          <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest()}}>
+            {props.onSwitch
+            ? 'Begin' 
+            : 'Modify Ticket'}
           </Button>
           <Button variant="primary" onClick={() => {window.location.reload(false)}}>
             Cancel

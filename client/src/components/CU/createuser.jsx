@@ -129,10 +129,10 @@ function CreateUser() {
             showModal={showModal}
             setShowModal={setShowModal}
             user={userToEdit}
+            setUser={setUserToEdit}
             departments={departments}
-            style={{
-              zIndex: 2,
-            }}
+            token={sessionToken}
+            className="modify-user-modal"
           />
           :
           null

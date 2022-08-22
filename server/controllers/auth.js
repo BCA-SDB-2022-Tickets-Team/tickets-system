@@ -148,7 +148,7 @@ router
   .put([session], async (req, res, next) => {
     try {
       const { _id } = req.body;
-      if(!req.user.isManager){
+      if(!req.user.isManager && !req.user.isAdmin){
         throw new Error('User is not a manager')
       } else {
         let userToModify = await reqUser.findOne({ _id });

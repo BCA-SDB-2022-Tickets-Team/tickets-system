@@ -235,13 +235,11 @@ async function getRequiredReqSchema(){
 }
 async function getAsrSchema(){
   let asrPaths = {}
-
+ makeModel()
+mergeIntoTicket()
+  
   Ticket.eachPath((name, type) => {
-  //  let thisName=name.toString()
-  //  console.log(thisName)
-    
   let pathObject = {
-      
           type: type.instance,
           enum: type.options.enum ? type.options.enum : undefined
         }

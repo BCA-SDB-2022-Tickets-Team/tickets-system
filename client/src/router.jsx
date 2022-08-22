@@ -62,10 +62,10 @@ function Router() {
       }
       />
       <Route
-        path="/alltickets"
+        path="/alltickets/*"
         element={
           <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
-            <AllTickets sessionRole={sessionRole} />
+            <AllTickets sessionToken={sessionToken} sessionRole={sessionRole} />
           </RequireAuth>
         }
       />

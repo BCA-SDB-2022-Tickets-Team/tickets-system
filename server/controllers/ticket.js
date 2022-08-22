@@ -2,6 +2,7 @@ const router = require("express").Router();
 const session = require("../middlewares/session");
 const { makeModel, getAsrSchema, getRequiredReqSchema } = require("../models/ticket_schema");
 const idcounter = require("../models/idcounter")
+const { User } = require("../models/base-user");
 
 
 //  Create a new ticket

@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table } from "reactstrap"
 import "./AllTickets.css"
+import { LoginContext } from '../../index';
 
 
 const TicketsTable = (props) => {
+
+    const { sessionRole, sessionToken } = useContext(LoginContext);
+    const [role, setRole] = useState(parseInt(sessionRole));
 
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
@@ -20,12 +24,14 @@ const TicketsTable = (props) => {
                 method: "GET",
                 headers: new Headers({
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                    Authorization: sessionToken,
                 })
             });
 
             res.json()
                 .then(data => {
+                    console.log(data)
+                    console.log(data.allTicketsData)
                     return data.allTicketsData.map(ticket => {
                         return {
                             _id: ticket._id,

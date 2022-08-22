@@ -14,7 +14,6 @@ import "./OneTicket.css";
 import SaveModal from "./Modals/SaveModal";
 import DeleteModal from "./Modals/DeleteModal";
 import AssignModal from "./Modals/AssignModal";
-import ClaimModal from "./Modals/ClaimModal";
 import SubmitModal from "./Modals/SubmitModal";
 import UpdateStatusModal from "./Modals/UpdateStatusModal";
 
@@ -146,6 +145,23 @@ function OneTicket(props) {
         {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
         userRole === "4" ? (
           <>
+          <Button
+              color="info"
+              className={readDisplay}
+              onClick={() => {
+                setReadDisplay("hide");
+                setEditDisplay("show");
+              }}
+              disabled={
+                nonEditableStatus.includes(oneTicketData["Status"]) &&
+                userRole === "3"
+                  ? true
+                  : false
+              }
+              outline
+            >
+              Edit Ticket
+            </Button>
           {userId===oneTicketData['Assessor'] ? (
             <>
             {
@@ -176,23 +192,7 @@ function OneTicket(props) {
           )
         : null
         }
-            <Button
-              color="info"
-              className={readDisplay}
-              onClick={() => {
-                setReadDisplay("hide");
-                setEditDisplay("show");
-              }}
-              disabled={
-                nonEditableStatus.includes(oneTicketData["Status"]) &&
-                userRole === "3"
-                  ? true
-                  : false
-              }
-              outline
-            >
-              Edit Ticket
-            </Button>
+            
             
           </>
         ) : null}
@@ -243,18 +243,37 @@ function OneTicket(props) {
           </>
         ) : null}
       </div>
-      <Form>
-      <InputGroup>
-      <InputGroupText>
-      On  hold - awaiting vendor response  
-      </InputGroupText>
-      <Input type="checkbox" defaultChecked={oneTicketData['Status']==='On-Hold (Vendor)' ? true : null}
-      onClick={()=>{
-        updateObject['Status']= oneTicketData['Status']==='On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
-        setObjectToSend(updateObject)
-        setShowUpdateStatusModal(true)}}
-      />
-      </InputGroup>
+      <Form id="vendor-hold-form">
+      <FormGroup 
+                key='vendor-hold' 
+                check
+                className="mb-3" 
+                style={{
+                  paddingLeft: "0"
+                }}
+              >
+                    <InputGroup>
+                      <Input 
+                        readOnly
+                        value={'On hold - awaiting vendor response'}
+                        style={{
+                          pointerEvents: "none"
+                        }}
+                      />
+                      <InputGroupText> 
+                        <Input
+                          addon 
+                          type="checkbox"
+                          
+                          defaultChecked={oneTicketData['Status']==='On-Hold (Vendor)' ? true : null}
+                          onClick={()=>{
+                            updateObject['Status']= oneTicketData['Status']==='On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
+                            setObjectToSend(updateObject)
+                            setShowUpdateStatusModal(true)}}
+                        />
+                      </InputGroupText>
+                    </InputGroup>
+              </FormGroup>
     </Form>
 
       <Table striped className={readDisplay}>
@@ -267,7 +286,7 @@ function OneTicket(props) {
                 <td>
                   {modelData[field].type === "Boolean" ? (
                     oneTicketData[field] === true ? (
-                      <Input type="checkbox" defaultChecked={true} disabled />
+                      <Input type="checkbox" defaultChecked={true} disabled addon />
                     ) : null
                   ) : (
                     oneTicketData[field]
@@ -278,6 +297,7 @@ function OneTicket(props) {
           })}
         </tbody>
       </Table>
+
       <Container
         className={editDisplay}
         style={{
@@ -290,34 +310,41 @@ function OneTicket(props) {
             if (!notEditable.includes(field)) {
               if (modelData[field].type === "Boolean") {
                 return (
-                  <FormGroup
-                    key={field}
-                    check
-                    className="mb-3"
-                    style={{
-                      paddingLeft: "0",
-                    }}
-                  >
+                  <FormGroup 
+                key={field.name} 
+                check
+                className="mb-3" 
+                style={{
+                  paddingLeft: "0"
+                }}
+              >
                     <InputGroup>
-                      <InputGroupText className="boolean-input">
-                        {field}
-                      </InputGroupText>
-                      <Input
-                        addon
-                        type="checkbox"
-                        name={oneTicketData[field]}
-                        defaultChecked={oneTicketData[field]}
-                        onClick={() => {
-                          updateObject[field] =
+                      <Input 
+                        readOnly
+                        value={field}
+                        style={{
+                          pointerEvents: "none"
+                        }}
+                      />
+                      <InputGroupText> 
+                        <Input
+                          addon 
+                          type="checkbox"
+                          name={field}
+                          defaultChecked={oneTicketData[field]}
+                          onClick={() => {
+                            updateObject[field] =
                             updateObject[field] !== undefined
                               ? !updateObject[field]
                               : oneTicketData[field] === true
                               ? false
                               : true;
-                        }}
-                      />
+                          }}
+                        />
+                      </InputGroupText>
                     </InputGroup>
-                  </FormGroup>
+              </FormGroup>
+                
                 );
               } else if (!modelData[field].enum) {
                 return (
@@ -370,8 +397,20 @@ function OneTicket(props) {
               return (
                 <FormGroup key={field}>
                   <InputGroup>
-                    <InputGroupText>{field}</InputGroupText>
-                    <InputGroupText>{oneTicketData[field]}</InputGroupText>
+                  <InputGroupText 
+                        readOnly
+                        value={field}
+                        style={{
+                          pointerEvents: "none"
+                        }}
+                      >{field}</InputGroupText>
+                      <Input 
+                      readOnly
+                      value={oneTicketData[field]}
+                      style={{
+                        pointerEvents: "none"
+                      }}
+                      />
                   </InputGroup>
                 </FormGroup>
               );

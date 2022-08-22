@@ -18,6 +18,20 @@ let reqTicket = new mongoose.Schema(
       type: Number,
       required: true
     },
+    Status: {
+      type: String,
+      default: 'New Request',
+      enum: [
+              'New Request', 
+              'Triage',
+              'Questionaire Sent', 
+              'Review (Requestor)',
+              'Review (Director)',
+              'On-Hold (Vendor)',
+              'In Progress',
+              'Completed'  
+            ]
+    },
     Requestor: {
       type: mongoose.ObjectId,
       required: true
@@ -133,20 +147,7 @@ const asrTicket = new mongoose.Schema({
       required: false,
       enum: ['low', 'medium', 'high']
     },
-    Status: {
-      type: String,
-      default: 'New Request',
-      enum: [
-              'New Request', 
-              'Triage',
-              'Questionaire Sent', 
-              'Review (Requestor)',
-              'Review (Director)',
-              'On-Hold (Vendor)',
-              'In Progress',
-              'Completed'  
-            ]
-    },
+    
     'Date Completed': {
       type: Date,
       required: false,

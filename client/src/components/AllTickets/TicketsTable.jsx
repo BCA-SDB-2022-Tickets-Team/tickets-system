@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Table } from "reactstrap"
@@ -95,12 +95,11 @@ const TicketsTable = (props) => {
                                 if (field !== "_id") {
                                     return (
                                         <td className="all-tickets-data" key={field} >
-                                            {/* //! NEED TO FIX LINK TO ONETICKET */}
-                                            {/* <NavLink onClick={props.setTicketID(ticket._id)} to={`/oneticket?id=${ticket['_id']}`}> */}
-                                            {field === 'Created At' || field === 'Updated At'
-                                                ? new Date(ticket[field]).toLocaleDateString()
-                                                : ticket[field]}
-                                            {/* </NavLink> */}
+                                            <NavLink onClick={props.setTicketId(ticket._id)} to={`/oneticket?id=${ticket['_id']}`}>
+                                                {field === 'Created At' || field === 'Updated At'
+                                                    ? new Date(ticket[field]).toLocaleDateString()
+                                                    : ticket[field]}
+                                            </NavLink>
                                         </td>
                                     )
                                 }

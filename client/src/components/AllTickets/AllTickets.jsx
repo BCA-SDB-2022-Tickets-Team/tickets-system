@@ -26,7 +26,7 @@ function AllTickets(props) {
     const [filters, setFilters] = useState(['All'])
 
     const onChange = (e) => {
-        if (e.target.value !== "All" && allStatus) {
+        if (e.target.checked === true && e.target.value !== "All") {
             setAllStatus(false)
             const filterIndex = filters.indexOf("All")
             filters.splice(filterIndex, 1)
@@ -54,8 +54,8 @@ function AllTickets(props) {
             </Routes>
 
             <Container>
-                <Row>
-                    <Col xs="2" className="ticket-filters">
+                <Row className="ticket-filters">
+                    <Col>
                         <Label>
                             <Input
                                 name="all"
@@ -84,26 +84,6 @@ function AllTickets(props) {
                             />
                             Triage
                         </Label>
-                    </Col>
-                    <Col xs="2" className="ticket-filters">
-                        <Label>
-                            <Input
-                                name="questionaire-sent"
-                                value="Questionaire Sent"
-                                onChange={onChange}
-                                type="checkbox"
-                            />
-                            Questionaire Sent
-                        </Label>
-                        <Label>
-                            <Input
-                                name="questionaire-received"
-                                value="Questionaire Received"
-                                onChange={onChange}
-                                type="checkbox"
-                            />
-                            Questionnaire Received
-                        </Label>
                         <Label>
                             <Input
                                 name="in-progress"
@@ -113,8 +93,6 @@ function AllTickets(props) {
                             />
                             In Progress
                         </Label>
-                    </Col>
-                    <Col xs="2" className="ticket-filters">
                         <Label>
                             <Input
                                 name="on-hold"
@@ -142,8 +120,6 @@ function AllTickets(props) {
                             />
                             Review (Requestor)
                         </Label>
-                    </Col>
-                    <Col xs="2" className="ticket-filters">
                         <Label>
                             <Input
                                 name="completed"

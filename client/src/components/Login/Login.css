@@ -1,10 +1,10 @@
 * {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-
-button {
+.form {
     margin-top: 2vw;
 }
+
 /* div {
     width: 60%;
     margin: auto;

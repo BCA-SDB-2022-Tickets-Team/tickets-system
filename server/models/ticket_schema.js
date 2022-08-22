@@ -134,16 +134,16 @@ const asrTicket = new mongoose.Schema({
     },
     Status: {
       type: String,
-      default: 'new-request',
+      default: 'New Request',
       enum: [
-              'new-request', 
-              'triage',
-              'questionaire-sent', 
-              'requestor-review',
-              'director-review',
-              'on-hold-vendor',
-              'in-progress',
-              'completed'  
+              'New Request', 
+              'Triage',
+              'Questionaire Sent', 
+              'Review (Requestor)',
+              'Review (Director)',
+              'On-Hold (Vendor)',
+              'In Progress',
+              'Completed'  
             ]
     },
     'Date Completed': {

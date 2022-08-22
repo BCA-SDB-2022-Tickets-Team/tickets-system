@@ -53,7 +53,7 @@ const TicketsTable = (props) => {
                 })
                 .then(mappedData => {
                     console.log(props.filters)
-                    if (props.filters.includes('all')) {
+                    if (props.filters.includes('All')) {
                         setTicketData(mappedData)
                         console.log(mappedData)
                         return mappedData

@@ -79,7 +79,13 @@ function Router() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={
+        sessionToken ? 
+        <AllTickets sessionToken={sessionToken} sessionRole={sessionRole}/>
+          :
+        <Login />
+
+      } />
       <Route
         path="/createuser"
         element={

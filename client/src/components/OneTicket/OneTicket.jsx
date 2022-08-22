@@ -28,7 +28,7 @@ function OneTicket(props) {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [onSwitch, setOnSwitch] = useState(false);
+  const [modifyType, setModifyType] = useState('edit');
   const [modelData, setModelData] = useState({});
   const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
@@ -41,11 +41,11 @@ function OneTicket(props) {
     "ID",
   ];
   const nonEditableStatus = [
-    "triage",
-    "director-review",
-    "requestor-review",
-    "questionaire-sent",
-    "completed",
+    "Triage",
+    "Review (Director)",
+    "Review (Requestor)",
+    "Questionaire Sent",
+    "Completed",
   ];
   const params = new URLSearchParams(window.location.search);
   // ticket id passed as params from allTickets
@@ -89,6 +89,7 @@ function OneTicket(props) {
 
   return (
     <>
+    
       <DeleteModal
         showDeleteModal={showDeleteModal}
         setShowDeleteModal={setShowDeleteModal}
@@ -112,8 +113,7 @@ function OneTicket(props) {
         setShowSaveModal={setShowSaveModal}
         id={id}
         objectToSend={objectToSend}
-        onSwitch={onSwitch}
-        setOnSwitch={setOnSwitch}
+        modifyType={modifyType}
       />
       <SubmitModal
         showSubmitModal={showSubmitModal}
@@ -133,16 +133,21 @@ function OneTicket(props) {
           </Button>
         ) : null}
 
-        {userRole === "3" &&
-        oneTicketData["Status"] === "triage" &&
+        
+
+        {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
+        userRole === "4" ? (
+          <>
+          {
+        oneTicketData["Status"] === "Triage" &&
         userId === oneTicketData["Assessor"] ? (
           <Button
             color="info"
             className={readDisplay}
             onClick={() => {
-              updateObject["Status"] = "in-progress";
+              updateObject["Status"] = "In Progress";
               setObjectToSend(updateObject);
-              setOnSwitch(true);
+              setModifyType('begin');
               setShowSaveModal(true);
             }}
             outline
@@ -150,10 +155,6 @@ function OneTicket(props) {
             Begin Assessment
           </Button>
         ) : null}
-
-        {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
-        userRole === "4" ? (
-          <>
             <Button
               color="info"
               className={readDisplay}
@@ -171,7 +172,7 @@ function OneTicket(props) {
             >
               Edit Ticket
             </Button>
-            {oneTicketData["Status"] === "in-progress" ? (
+            {oneTicketData["Status"] === "In Progress" ? (
               <Button
                 color="info"
                 className={readDisplay}
@@ -209,6 +210,20 @@ function OneTicket(props) {
           </>
         ) : null}
       </div>
+      <Form>
+      <InputGroup>
+      <InputGroupText>
+      On  hold - awaiting vendor response  
+      </InputGroupText>
+      <Input type="checkbox" defaultChecked={oneTicketData['Status']==='On-Hold (Vendor)' ? true : null}
+      onClick={()=>{
+        updateObject['Status']= oneTicketData['Status']==='On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
+        setObjectToSend(updateObject)
+        setModifyType('status')
+        setShowSaveModal(true)}}
+      />
+      </InputGroup>
+    </Form>
 
       <Table striped className={readDisplay}>
         <tbody>

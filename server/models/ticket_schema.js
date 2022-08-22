@@ -138,6 +138,7 @@ const asrTicket = new mongoose.Schema({
       default: 'new-request',
       enum: [
               'new-request', 
+              'triage',
               'questionaire-sent', 
               'requestor-review',
               'director-review',
@@ -233,5 +234,21 @@ async function getRequiredReqSchema(){
   }})
   return requiredPaths
 }
+async function getAsrSchema(){
+  let asrPaths = {}
+ makeModel()
+mergeIntoTicket()
+  
+  Ticket.eachPath((name, type) => {
+  let pathObject = {
+          type: type.instance,
+          enum: type.options.enum ? type.options.enum : undefined
+        }
+       
+      asrPaths[name]=pathObject
+  
+})
+return asrPaths
+}
 
-module.exports = {UpdateSchema, makeModel, getRequiredReqSchema, Ticket}
+module.exports = {UpdateSchema, makeModel, getRequiredReqSchema, getAsrSchema, Ticket}

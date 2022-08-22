@@ -123,7 +123,8 @@ function Login() {
                     onChange={e => setPassword(e.target.value)}
                 />
              </FormGroup>
-             <Button className= "loginbutton" type='submit' xs="3">
+             <br></br>
+             <Button className= "button" type='submit' xs="3">
                 Login
             </Button>
           </Form>

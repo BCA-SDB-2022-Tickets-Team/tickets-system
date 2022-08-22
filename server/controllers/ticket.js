@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const session = require("../middlewares/session");
-const { makeModel, makeAsrModel, getRequiredReqSchema } = require("../models/ticket_schema");
-const { User } = require("../models/base-user")
+const { makeModel, getAsrSchema, getRequiredReqSchema } = require("../models/ticket_schema");
 const idcounter = require("../models/idcounter")
+const { User } = require("../models/base-user");
+
 
 //  Create a new ticket
 router
@@ -69,20 +70,23 @@ router
 .route("/all")
 .get([session], async (req, res, next) => {
   try {
-    const Ticket = makeModel()
     // Restrict req user non-manager all tickets view to only show tickets created by that req user
     if (req.user.__type === "reqUser" && !req.user.isManager) {
       const Ticket = makeModel()
-      let allTickets = await Ticket.find({ Requestor: req.user._id });
-      res.json(
-        allTickets
-      );
+      let allTicketsData = await Ticket.find({ Requestor: req.user._id });
+      let allUsers = await User.find({_id: req.user._id});
+      res.json({
+        allTicketsData,
+        allUsers
+      });
     } else {
       const Ticket = makeModel()
-      let allTickets = await Ticket.find({});
-      res.json(
-        allTickets
-      );
+      let allTicketsData = await Ticket.find({});
+      let allUsers = await User.find({});
+      res.json({
+        allTicketsData,
+        allUsers
+      });
     }
   } catch (err) {
     // Pass error to error-handling middleware at the bottom
@@ -159,6 +163,12 @@ router
   res.json(fieldsToSend);
 });
 
+router
+.route("/asr/model")
+.get([session], async (req, res)=>{
+const allFields = await getAsrSchema()
+  res.json(allFields)
+})
 
 // Get one ticket using ticket id as param
 
@@ -168,6 +178,7 @@ router
 .put([session], async (req, res, next) => {
   // Find ticket by document ID passed as parameter
   const { id } = req.params;
+  console.log(req.body)
   try {
     if (req.user.__type === "reqUser") {
       res.status(403).json({
@@ -267,7 +278,7 @@ router
 // Universal error handler
 // Any error thrown above goes through this
 router.use((err, req, res, next) => {
-  if(err._message.includes("ticket validation failed")){
+  if(err._message){
     let missingFields = []
     for(let [name, val] of Object.entries(err.errors)){
       missingFields.push(name)

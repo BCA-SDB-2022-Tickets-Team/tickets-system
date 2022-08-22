@@ -23,7 +23,7 @@ function GlobalNav() {
       {
         /* Add/Modify/Delete custom Fields -- requires Role 4 */
         ["4"].includes(sessionRole) ?
-          <NavItem >
+          <NavItem  >
             <NavLink onClick={
               () => navigate('/add-custom-field')
             }>

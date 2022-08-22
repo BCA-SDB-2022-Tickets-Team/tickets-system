@@ -14,6 +14,19 @@ const TicketsTable = (props) => {
     const [ticketData, setTicketData] = useState([])
     const [ticketFieldHeadings, setTicketFieldHeadings] = useState([])
 
+    //const [color, setColor] = useState("")
+
+    const colorCodes = {
+        'New Request': "#FFE45E",
+        'Triage': "#AACBE1",
+        'Questionaire Sent': "#8CB5CE",
+        'Review (Requestor)': "#6EA0BB",
+        'Review (Director)': "#508AA8",
+        'On-Hold (Vendor)': "#EF798A",
+        'In Progress': "#6C9A8B",
+        'Completed': "#209486"
+    }
+
     useEffect(() => {
 
         console.log(props.filters)
@@ -30,8 +43,6 @@ const TicketsTable = (props) => {
 
             res.json()
                 .then(data => {
-                    console.log(data)
-                    console.log(data.allTicketsData)
                     return data.allTicketsData.map(ticket => {
                         return {
                             _id: ticket._id,
@@ -96,7 +107,7 @@ const TicketsTable = (props) => {
                 {ticketData.map((ticket) => {
                     let contentKeys = Object.keys(ticket)
                     return (
-                        <tr key={ticket['Created At']} >
+                        <tr key={ticket['Created At']} style={{ backgroundColor: colorCodes[ticket.Status] }}>
                             {contentKeys.map(field => {
                                 if (field !== "_id") {
                                     return (

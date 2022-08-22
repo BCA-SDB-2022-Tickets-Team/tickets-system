@@ -1,23 +1,24 @@
 import React from 'react';
+import { FormGroup, Input, Label } from 'reactstrap';
 import './Switch.css';
 
 const Switch = (props) => {
   return (
-    <>
-      <input 
+    <FormGroup check switch>
+      <Input
         className="react-switch-checkbox"
         id={`react-switch-new`}
         type="checkbox"
-        onChange={()=>(props.handleToggle(currentValue => !currentValue))}
+        onChange={() => (props.handleToggle(currentValue => !currentValue))}
       />
-       Make Requestor User?
-      <label
+      Make Requestor User?
+      <Label
         className="react-switch-label"
         htmlFor={`react-switch-new`}
       >
         <span className={`react-switch-button`} />
-      </label>
-    </>
+      </Label>
+    </FormGroup>
   );
 };
 

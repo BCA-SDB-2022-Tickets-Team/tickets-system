@@ -115,6 +115,12 @@ function OneTicket(props) {
       objectToSend={objectToSend}
       id={id}
       />
+      <UpdateStatusModal 
+      showUpdateStatusModal={showUpdateStatusModal}
+      setShowUpdateStatusModal={setShowUpdateStatusModal}
+      objectToSend={objectToSend}
+      id={id}
+      />
       <SaveModal
         showSaveModal={showSaveModal}
         setShowSaveModal={setShowSaveModal}

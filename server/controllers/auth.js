@@ -105,25 +105,26 @@ router
   .route("/req")
   // session middleware verifies token
   .post([session], async (req, res, next) => {
-    if (!req.user.isManager) {
+    if (!req.user.isManager && !req.user.isAdmin) {
       // if user making request is not a manager, send forbidden status
       res.status(403).json({
         status: "Forbidden",
       });
     } else {
-      const { firstName, lastName, email, role, password } = req.body;
+      const { firstName, lastName, email, Department, password } = req.body;
       try {
-        if (!firstName || !lastName || !email || !role || !password) {
+        if (!firstName || !lastName || !email || !Department || !password) {
           throw new Error("Insufficient data");
         } else {
           const newUser = new reqUser({
             firstName,
             lastName,
             email,
-            role,
+            Department,
             password: bcrypt.hashSync(password, parseInt(SALT)),
           });
-          req.body.isManager ? (newUser.isManager = true) : null;
+          newUser.isManager = req.body.isManager ? true : false;
+          req.user.isManager && (newUser.manager = req.user._id)
 
           try {
             await newUser.save();
@@ -147,7 +148,7 @@ router
   .put([session], async (req, res, next) => {
     try {
       const { _id } = req.body;
-      if(!req.user.isManager){
+      if(!req.user.isManager && !req.user.isAdmin){
         throw new Error('User is not a manager')
       } else {
         let userToModify = await reqUser.findOne({ _id });
@@ -216,44 +217,6 @@ router
       next(error)
     }
   })
-//Start
-router
-    .route("/reqcreateuser")
-    .post(async (req, res) => {
-        
-        try {
-            const { firstName, lastName, userName, password, role, isAdmin, isManager } = req.body
-            if (!firstName || !lastName || !userName || !password || role || !isAdmin || !isManager) {
-                throw new Error(`All fields are required`)
-            } else {
-                const newUser = new User({
-                    firstName,
-                    lastName,
-                    username,
-                    password: bcrypt.hashSync(password, 10),
-                    role,
-                    isAdmin,
-                    isManager
-                })
-                newUser.save()
-
-                const token = jwt.sign(
-                    { username: newUser.username },
-                    SECRET_KEY,
-                    { expiresIn: 60 * 60 * 24}
-                )
-
-                res.status(201).json({
-                    status: `User Generated`,
-                    token,
-                    newUser
-                })
-            }
-                
-        } catch(err) {
-            console.log(err)
-        }
-    })
 
 router.route("/allusers")
     .get([session], async (req, res, next) => {
@@ -352,6 +315,19 @@ router.route("/login").post(async (req, res, next) => {
     }
   }
 });
+
+router.route('/check-in')
+  .get([session], async (req, res, next) => {
+    try {
+      if(req.user){
+        res.status(200).send("true")
+      } else {
+        throw new Error(`bad auth`)
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
 
 // universal error handler
 // any error thrown above goes through this

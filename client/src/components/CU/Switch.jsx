@@ -1,15 +1,16 @@
 import React from 'react';
-import './switch.css';
+import './Switch.css';
 
-const Switch = () => {
+const Switch = (props) => {
   return (
     <>
       <input
         className="react-switch-checkbox"
         id={`react-switch-new`}
         type="checkbox"
+        onChange={() => (props.handleToggle(currentValue => !currentValue))}
       />
-      REQUESTOR/ASSESSOR
+      Make Requestor User?
       <label
         className="react-switch-label"
         htmlFor={`react-switch-new`}

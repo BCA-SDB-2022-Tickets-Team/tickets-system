@@ -26,29 +26,29 @@ function SaveModal(props) {
         console.log(realData);
       })
       .catch(Error)
-      .then(setTimeout(() => window.location.reload(false), 1000));
+      .then(setTimeout(() => window.location.reload(false), 500));
   }
   return (
     <Modal isOpen={props.showSaveModal}>
         {
           
            <ModalHeader>
-            {props.onSwitch 
+            {props.modifyType==='begin' 
           ? 'Begin assessment'
-          : 'Are you sure you want to modify a database entry?'}
+          : (props.modifyType==='modify' ? 'Are you sure you want to modify a database entry?' : 'Change ticket status?')}
         </ModalHeader>
         }
         <ModalBody>
-          {props.onSwitch
+          {props.modifyType==='begin'
           ? 'Ticket status: In Progress'
-          : 'This action cannot be undone.'
+          : (props.modifyType==='modify' ? 'This action cannot be undone.' : 'Status: On Hold')
           }
           </ModalBody>
         <ModalFooter>
           <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest()}}>
-            {props.onSwitch
+            {props.modifyType==='begin'
             ? 'Begin' 
-            : 'Modify Ticket'}
+            : (props.modifyType==='modify' ? 'Modify Ticket' : 'Change Status')}
           </Button>
           <Button variant="primary" onClick={() => {window.location.reload(false)}}>
             Cancel

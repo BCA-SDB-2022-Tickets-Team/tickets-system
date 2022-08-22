@@ -277,13 +277,14 @@ function OneTicket(props) {
                     </InputGroup>
                   </FormGroup>
                 );
-              }else if(modelData[field].enum === undefined)  {
+              }else if(field.enum === undefined)  {
                 return (
                   <FormGroup key={field}>
                     <InputGroup>
                       <InputGroupText>{field}</InputGroupText>
                       <Input
                         name={field}
+                        defaultValue={oneTicketData[field]}
                         onChange={(e) => {
                           updateObject[field] = e.target.value;
                         }}
@@ -304,6 +305,7 @@ function OneTicket(props) {
                       style={{
                         flexGrow: 1,
                       }}
+                      defaultValue={oneTicketData[field]}
                     >
                       {modelData[field].enum.map((item) => {
                         console.log(field, item)

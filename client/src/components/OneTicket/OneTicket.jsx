@@ -27,7 +27,6 @@ function OneTicket(props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [showClaimModal, setShowClaimModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false)
   const [modelData, setModelData] = useState({});
@@ -111,12 +110,6 @@ function OneTicket(props) {
           id={id}
         />
       ) : null}
-      <ClaimModal
-        showClaimModal={showClaimModal}
-        setShowClaimModal={setShowClaimModal}
-        userId={userId}
-        id={id}
-      />
       <UpdateStatusModal 
       showUpdateStatusModal={showUpdateStatusModal}
       setShowUpdateStatusModal={setShowUpdateStatusModal}

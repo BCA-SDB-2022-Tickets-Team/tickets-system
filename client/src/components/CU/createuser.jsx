@@ -122,162 +122,167 @@ function CreateUser() {
     setShowModal(val => !val)
   }
   return (
-    <Container fluid className="create-user-container">
-      {
-        showModal && userToEdit ? 
+    <>
+       {
+        userToEdit ? 
           <EditUserModal 
             showModal={showModal}
             setShowModal={setShowModal}
             user={userToEdit}
             departments={departments}
+            style={{
+              zIndex: 2,
+            }}
           />
           :
           null
       }
-      <div className="app">
-      </div>
-      <Row className="create-user-row">
-        <Col xs="8">
-          <Table responsive striped>
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>E-mail</th>
-                <th>Department</th>
-                <th>Admin?</th>
-                {role === 4 ? <th>User Type</th> : null}
-              </tr>
-            </thead>
-            <tbody>
-              {allUsers !== undefined
-                ? allUsers.map((user) => {
-                  return (
-                    <tr key={user._id} onClick={() => handleEditUser(user)}>
-                      <td>{user.firstName}</td>
-                      <td>{user.lastName}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        {user.Department !== undefined
-                          ? user.Department
-                          : `-`}
-                      </td>
-                      <td>
-                        {user.isManager !== undefined
-                          ? `${user.isManager}`
-                          : `${user.isAdmin}`}
-                      </td>
-                      {role === 4 ? <td>{user.__type}</td> : null}
-                    </tr>
-                  );
-                })
-                : null}
-            </tbody>
-          </Table>
-        </Col>
-        <Col className="sidePanel" xs="2">
-          <div className="FormContainer">
-            <Switch
-              isOn={asrMakingReq}
-              onColor="#EF476F"
-              handleToggle={ setAsrMakingReq }
-            />
-            <Form className="form" inline onSubmit={handleSubmit}>
-              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label className="me-sm-2" for="exampleEmail">
-                  First Name
-                </Label>
-                <Input
-                  id="First Name"
-                  name="first name"
-                  type="name"
-                  onChange={(e) => onChangeHndler(e, setFirst)}
-                />
-              </FormGroup>
-              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label className="me-sm-2" for="examplePassword">
-                  Last Name
-                </Label>
-                <Input
-                  id="Last Name"
-                  name="last name"
-                  type="last name"
-                  onChange={(e) => onChangeHndler(e, setLast)}
-                />
-              </FormGroup>
-              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label className="me-sm-2" for="examplePassword">
-                  Email
-                </Label>
-                <Input
-                  id="Email"
-                  name="email"
-                  type="email"
-                  onChange={(e) => onChangeHndler(e, setEmail)}
-                />
-              </FormGroup>
+      <Container fluid className="create-user-container">
+        <div className="app">
+        </div>
+        <Row className="create-user-row">
+          <Col xs="8">
+            <Table responsive striped>
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>E-mail</th>
+                  <th>Department</th>
+                  <th>Admin?</th>
+                  {role === 4 ? <th>User Type</th> : null}
+                </tr>
+              </thead>
+              <tbody>
+                {allUsers !== undefined
+                  ? allUsers.map((user) => {
+                    return (
+                      <tr key={user._id} onClick={() => handleEditUser(user)}>
+                        <td>{user.firstName}</td>
+                        <td>{user.lastName}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          {user.Department !== undefined
+                            ? user.Department
+                            : `-`}
+                        </td>
+                        <td>
+                          {user.isManager !== undefined
+                            ? `${user.isManager}`
+                            : `${user.isAdmin}`}
+                        </td>
+                        {role === 4 ? <td>{user.__type}</td> : null}
+                      </tr>
+                    );
+                  })
+                  : null}
+              </tbody>
+            </Table>
+          </Col>
+          <Col className="sidePanel" xs="2">
+            <div className="FormContainer">
+              <Switch
+                isOn={asrMakingReq}
+                onColor="#EF476F"
+                handleToggle={ setAsrMakingReq }
+              />
+              <Form className="form" inline onSubmit={handleSubmit}>
+                <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                  <Label className="me-sm-2" for="exampleEmail">
+                    First Name
+                  </Label>
+                  <Input
+                    id="First Name"
+                    name="first name"
+                    type="name"
+                    onChange={(e) => onChangeHndler(e, setFirst)}
+                  />
+                </FormGroup>
+                <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                  <Label className="me-sm-2" for="examplePassword">
+                    Last Name
+                  </Label>
+                  <Input
+                    id="Last Name"
+                    name="last name"
+                    type="last name"
+                    onChange={(e) => onChangeHndler(e, setLast)}
+                  />
+                </FormGroup>
+                <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                  <Label className="me-sm-2" for="examplePassword">
+                    Email
+                  </Label>
+                  <Input
+                    id="Email"
+                    name="email"
+                    type="email"
+                    onChange={(e) => onChangeHndler(e, setEmail)}
+                  />
+                </FormGroup>
 
-              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label className="me-sm-2" for="examplePassword">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  onChange={(e) => onChangeHndler(e, setPassword)}
-                />
-              </FormGroup>
-              <div className="d-flex p-5">
-                {(role === 2 || asrMakingReq) ? (
-                  <Dropdown
-                    toggle={toggle}
-                    direction={"down"}
-                    isOpen={dropdownOpen}
-                  >
-                    <DropdownToggle caret>{department}</DropdownToggle>
-                    <DropdownMenu container="body">
-                      {departments.map((department) => {
-                        return (
-                          <DropdownItem
-                            onClick={() => setdepartment(department)}
-                          >
-                            {department}
-                          </DropdownItem>
-                        );
-                      })}
-                    </DropdownMenu>
-                  </Dropdown>
-                ) : null}
-              </div>
+                <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                  <Label className="me-sm-2" for="examplePassword">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    onChange={(e) => onChangeHndler(e, setPassword)}
+                  />
+                </FormGroup>
+                <div className="d-flex p-5">
+                  {(role === 2 || asrMakingReq) ? (
+                    <Dropdown
+                      toggle={toggle}
+                      direction={"down"}
+                      isOpen={dropdownOpen}
+                    >
+                      <DropdownToggle caret>{department}</DropdownToggle>
+                      <DropdownMenu container="body">
+                        {departments.map((department) => {
+                          return (
+                            <DropdownItem
+                              onClick={() => setdepartment(department)}
+                            >
+                              {department}
+                            </DropdownItem>
+                          );
+                        })}
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : null}
+                </div>
 
-              <br></br>
-              <FormGroup className="checkbox" check inline>
-                {(role === 2 || asrMakingReq) ? (
-                  <>
-                    <Input
-                      type="checkbox"
-                      onClick={() => setIsManager(!isManager)}
-                    />
-                    <Label check>Is Manager</Label>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <Input
-                      type="checkbox"
-                      onClick={() => setIsAdmin(!isAdmin)}
-                    />
-                    <Label check>Is Admin</Label>
-                  </>
-                )}
-              </FormGroup>
-              <Button id="button" type="submit">Submit</Button>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                <br></br>
+                <FormGroup className="checkbox" check inline>
+                  {(role === 2 || asrMakingReq) ? (
+                    <>
+                      <Input
+                        type="checkbox"
+                        onClick={() => setIsManager(!isManager)}
+                      />
+                      <Label check>Is Manager</Label>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <Input
+                        type="checkbox"
+                        onClick={() => setIsAdmin(!isAdmin)}
+                      />
+                      <Label check>Is Admin</Label>
+                    </>
+                  )}
+                </FormGroup>
+                <Button id="button" type="submit">Submit</Button>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 

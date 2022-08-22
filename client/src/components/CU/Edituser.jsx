@@ -22,7 +22,11 @@ function EditUserModal(props) {
   const [isManager, setIsManager] = useState(props.user.isManager ? props.user.isManager : false);
   const [isAdmin, setIsAdmin] = useState(props.user.isAdmin ? props.user.isAdmin : false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const toggleModal = () => props.setShowModal(val => !val)
+  const [modalIsOpen, setModalIsOpen] = useState(true)
+  const toggleModal = () => {
+    props.setShowModal(val => !val)
+    setModalIsOpen(props.showModal)
+  }
   const toggleDropdown = () => setDropdownOpen(val => !val)
   const onChangeHndler = (e, setter) => {
     setter(e.target.value);
@@ -32,7 +36,7 @@ function EditUserModal(props) {
   }
   return (
     <Modal 
-      isOpen={props.showmodal}
+      isOpen={modalIsOpen}
       toggle={toggleModal}
     >
       <ModalBody>

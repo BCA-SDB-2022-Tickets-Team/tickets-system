@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import Router from './router';
 import GlobalNav from './components/GlobalNav/GlobalNav';
@@ -11,6 +12,7 @@ function App() {
   const [sessionToken, setSessionToken] = useState(LoginCtx.sessionToken)
   const [sessionRole, setSessionRole] = useState(LoginCtx.sessionRole)
   const [sessionId, setSessionId] = useState(LoginCtx.sessionId)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

@@ -1,5 +1,6 @@
 .create-user-container {
     padding: 1vw;
+    margin-top: 1vw;
 }
 
 .create-user-row {
@@ -9,4 +10,5 @@
 tbody{
     background-color: white;
 }
+
 

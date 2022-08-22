@@ -1,8 +1,21 @@
+tbody {
+    background-color: white;
+}
+
 .ticket-filters {
     margin-top: 1em;
 }
 
+.ticket-filters Input {
+    margin: 0 .5em 0 1em;
+}
+
+.ticket-filters Label {
+    font-size: 11pt;
+}
+
 .ticket-filters h4 {
+    font-size: 15pt;
     margin-bottom: 1em;
 }
 

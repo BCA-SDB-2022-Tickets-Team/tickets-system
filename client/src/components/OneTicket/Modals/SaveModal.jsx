@@ -26,29 +26,23 @@ function SaveModal(props) {
         console.log(realData);
       })
       .catch(Error)
-      .then(setTimeout(() => window.location.reload(false), 1000));
+      .then(setTimeout(() => window.location.reload(false), 500));
   }
   return (
     <Modal isOpen={props.showSaveModal}>
         {
           
            <ModalHeader>
-            {props.onSwitch 
-          ? 'Begin assessment'
-          : 'Are you sure you want to modify a database entry?'}
+           'Are you sure you want to modify a database entry?'
         </ModalHeader>
         }
         <ModalBody>
-          {props.onSwitch
-          ? 'Ticket status: In Progress'
-          : 'This action cannot be undone.'
-          }
+          'This action cannot be undone.'
+          
           </ModalBody>
         <ModalFooter>
           <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest()}}>
-            {props.onSwitch
-            ? 'Begin' 
-            : 'Modify Ticket'}
+            Modify Ticket
           </Button>
           <Button variant="primary" onClick={() => {window.location.reload(false)}}>
             Cancel

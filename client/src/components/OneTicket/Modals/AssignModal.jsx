@@ -64,7 +64,7 @@ function AssignModal(props) {
       // body: JSON.stringify({ Assessor: userId }),
       body: JSON.stringify({
         Assessor: newAssessor,
-        Status: 'triage'
+        Status: 'Triage'
       }),
     })
       .then((data) => {

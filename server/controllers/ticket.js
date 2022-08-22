@@ -10,12 +10,7 @@ router
 .route("/create")
 .post([session], async (req, res, next) => {
   try {
-    // Only req users and isAdmin asr users can make new tickets
-    if (req.user.__type === "asrUser" && !req.user.isAdmin) {
-      res.status(403).json({
-        status: "Forbidden. Only requestors and admins can create tickets.",
-      });
-    } else {
+    
       // Create Ticket from most recent paths (including all custom fields)
       const Ticket = makeModel();
       
@@ -33,7 +28,7 @@ router
       const bodyFields = Object.keys(req.body.newTicketBody);
       let tickerManager
       if(req.user.manager){
-        ticketManager = req.user.manager
+        tickerManager = req.user.manager
       } else if (req.user.isManager) {
         tickerManager = req.user._id
       } else {
@@ -42,8 +37,8 @@ router
       console.log(tickerManager)
       const newTicket = new Ticket({
         Requestor: req.user._id,
-        Department: req.user.isAdmin ? "n/a" : req.user.Department,
-        'Project Manager': ticketManager,
+        Department: req.user.__type==='asrUser' ? "n/a" : req.user.Department,
+        'Project Manager': tickerManager,
         ID: newID.COUNT
         //TODO: Change this so that if an ASR isAdmin is creating a ticket, they need to choose the department from a drop-down
       });
@@ -59,7 +54,7 @@ router
         newTicket,
       });
     }
-  } catch (err) {
+   catch (err) {
     // Pass error to error-handling middleware at the bottom
     next(err);
   }
@@ -86,66 +81,6 @@ router
       res.json({
         allTicketsData,
         allUsers
-      });
-    }
-  } catch (err) {
-    // Pass error to error-handling middleware at the bottom
-    next(err);
-  }
-});
-
-// Get all tickets by the status filters set (passed through as queries in url)
-router
-.route("/status-filter")
-.get([session], async (req, res, next) => {
-  const { status } = req.body;
-  statusArray = status.split(",");
-  try {
-    const Ticket = makeModel();
-    if (req.user.__type === "reqUser" && statusArray.includes("in-progress")) {
-      // For all req users, include "questionaire-sent", "director-review", "on-hold-vendor" statuses when they select "in-progress".
-      statusArray.push(
-        "questionaire-sent",
-        "director-review",
-        "on-hold-vendor"
-      );
-      // Restrict req user non-manager filtered tickets view to only show tickets belonging to that req user
-      if (!req.user.isManager) {
-        let allTickets = await Ticket.find({
-          Status: { $in: statusArray },
-          Requestor: req.user._id,
-        });
-        res.send(
-          allTickets.map(ticket => {
-            return {
-              _id: ticket._id,
-              'Created At': ticket['Created At'],
-              'Vendor Name': ticket['Vendor Name'],
-              'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-              'Updated At': ticket['Updated At'],
-            }
-          })
-        );
-      } else {
-        let allTickets = await Ticket.find({ Status: { $in: statusArray } });
-        res.send(
-          allTickets.map(ticket => {
-            return {
-              _id: ticket._id,
-              'Created At': ticket['Created At'],
-              'Vendor Name': ticket['Vendor Name'],
-              'Assessor': !ticket.Assessor ?'Unassigned' : users.find({_id:ticket[Assessor]},{firstName:1, lastName:1}),
-              'Updated At': ticket['Updated At'],
-            }
-          }),
-
-        );
-      }
-    } else {
-      // Asr
-      let tickets = await Ticket.find({ Status: { $in: statusArray } });
-      res.status(200).json({
-        tickets,
       });
     }
   } catch (err) {

@@ -148,7 +148,7 @@ router
   .put([session], async (req, res, next) => {
     try {
       const { _id } = req.body;
-      if(!req.user.isManager){
+      if(!req.user.isManager && !req.user.isAdmin){
         throw new Error('User is not a manager')
       } else {
         let userToModify = await reqUser.findOne({ _id });
@@ -198,7 +198,7 @@ router
   })
   .delete([session], async (req, res, next) => {
     try {
-      if(!req.user.isManager){
+      if(!req.user.isManager && !req.user.isAdmin){
         throw new Error("user must be a manager")
       } else {
         const { _id } = req.body
@@ -315,6 +315,19 @@ router.route("/login").post(async (req, res, next) => {
     }
   }
 });
+
+router.route('/check-in')
+  .get([session], async (req, res, next) => {
+    try {
+      if(req.user){
+        res.status(200).send("true")
+      } else {
+        throw new Error(`bad auth`)
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
 
 // universal error handler
 // any error thrown above goes through this

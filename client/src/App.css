@@ -12,7 +12,18 @@ nav {
   justify-content: flex-end;
 }
 
-.table-hover tbody tr:hover td,
-.table-hover tbody tr:hover th {
-  background-color: #d2ebe4;
+.table-hover tbody tr th {
+  background-color: #FFFFFF;
+}
+
+.table-hover tbody tr:hover td {
+  background-color: #0f4c5c;
+}
+
+.table-hover tbody tr:hover td a {
+  color: #FFFFFF;
+}
+
+.table-hover tbody tr:hover td {
+  color: #FFFFFF;
 }

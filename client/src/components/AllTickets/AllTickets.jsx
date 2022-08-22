@@ -9,8 +9,13 @@ import OneTicket from '../OneTicket/OneTicket';
 
 
 function AllTickets(props) {
+
     const { sessionRole, sessionToken, sessionId } = useContext(LoginContext);
     const [role, setRole] = useState(parseInt(sessionRole));
+
+    const [ticketId, setTicketId] = useState("");
+
+    const [allStatus, setAllStatus] = useState(true)
 
     useEffect(() => {
 
@@ -18,10 +23,17 @@ function AllTickets(props) {
 
     }, []);
 
-    const [filters, setFilters] = useState(['all'])
+    const [filters, setFilters] = useState(['All'])
 
-    // reference: https://medium.com/codex/handling-checkboxes-in-react-3a2514b140d2
     const onChange = (e) => {
+        if (e.target.value !== "All" && allStatus) {
+            setAllStatus(false)
+            const filterIndex = filters.indexOf("All")
+            filters.splice(filterIndex, 1)
+            setFilters([...filters, filters])
+        } else if (e.target.value === "All") {
+            setAllStatus(true)
+        }
         const isChecked = e.target.checked
         if (isChecked) {
             setFilters([...filters, e.target.value])
@@ -31,8 +43,6 @@ function AllTickets(props) {
             setFilters([...filters, filters])
         }
     }
-
-    const [ticketId, setTicketId] = useState("");
 
     return (
         <>
@@ -45,13 +55,12 @@ function AllTickets(props) {
 
             <Container>
                 <Row>
-                    <Col className="ticket-filters" xs="2">
-                        <h4>Filter Tickets</h4>
+                    <Col xs="2" className="ticket-filters">
                         <Label>
                             <Input
                                 name="all"
-                                value="all"
-                                defaultChecked={true}
+                                value="All"
+                                checked={allStatus}
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -60,7 +69,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="new-request"
-                                value="new-request"
+                                value="New Request"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -68,8 +77,19 @@ function AllTickets(props) {
                         </Label>
                         <Label>
                             <Input
+                                name="triage"
+                                value="Triage"
+                                onChange={onChange}
+                                type="checkbox"
+                            />
+                            Triage
+                        </Label>
+                    </Col>
+                    <Col xs="2" className="ticket-filters">
+                        <Label>
+                            <Input
                                 name="questionaire-sent"
-                                value="questionaire-sent"
+                                value="Questionaire Sent"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -78,7 +98,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="questionaire-received"
-                                value="questionaire-received"
+                                value="Questionaire Received"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -87,16 +107,18 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="in-progress"
-                                value="in-progress"
+                                value="In Progress"
                                 onChange={onChange}
                                 type="checkbox"
                             />
                             In Progress
                         </Label>
+                    </Col>
+                    <Col xs="2" className="ticket-filters">
                         <Label>
                             <Input
                                 name="on-hold"
-                                value="on-hold"
+                                value="On Hold (Vendor)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -105,7 +127,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="director-review'"
-                                value="director-review'"
+                                value="Review (Director)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -114,22 +136,26 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="requestor-review'"
-                                value="requestor-review'"
+                                value="Review (Requestor)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
                             Review (Requestor)
                         </Label>
+                    </Col>
+                    <Col xs="2" className="ticket-filters">
                         <Label>
                             <Input
                                 name="completed"
-                                value="completed"
+                                value="Completed"
                                 onChange={onChange}
                                 type="checkbox"
                             />
                             Completed
                         </Label>
                     </Col>
+                </Row>
+                <Row>
                     <Col>
                         <TicketsTable filters={filters} setTicketId={setTicketId} />
                     </Col>

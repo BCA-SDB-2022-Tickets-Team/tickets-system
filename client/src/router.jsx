@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import CreateUser from "./components/CU/createuser";
 import Login from "./components/Login/Login";
@@ -14,13 +14,46 @@ import TicketsTable from "./components/AllTickets/TicketsTable";
 //? permittedRoles <Array>
 //and compares them. If the comparison fails, it redirects to "/"
 function RequireAuth(props) {
-  const { sessionRole } = useContext(LoginContext);
-  const [auth] = useState(props.permittedRoles.includes(sessionRole));
-
+  const { sessionRole, sessionToken } = useContext(LoginContext);
+  const [auth, setAuth] = useState(props.permittedRoles.includes(sessionRole));
   let location = useLocation();
+  //check for a stale token, and alert/re-route the user if its found
+  useEffect(() => {
+    async function checkin(){
+      if(sessionRole){
+        try {
+          fetch('http://localhost:4000/api/user/check-in', {
+            method: "GET",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: sessionToken,
+            }),
+          })
+          .then(res => {
+            if(!res.ok){
+              if(res.status === 406 && location.pathname !== '/'){
+                window.alert('Your token has expired, please log in again to continue.')
+                setAuth(false)
+              }
+            } 
+          })
+        } catch (error) {
+          console.log(`check-in failed`)
+          console.log(error)
+        }
+      } else {
+        setAuth(false)
+      }
+    }
+    checkin()
+  }, [])
 
   if (!auth) {
-    return <Navigate to="/" replace state={{ from: location }} />;
+    if(location.pathname === '/'){
+      return null
+    } else {
+      return <Navigate to="/" replace state={{ from: location }} />;
+    }
   }
   /*
    * the props object includes a few internal properties
@@ -46,7 +79,13 @@ function Router() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={
+        sessionToken ? 
+        <AllTickets sessionToken={sessionToken} sessionRole={sessionRole}/>
+          :
+        <Login />
+
+      } />
       <Route
         path="/createuser"
         element={

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
 import { Form, FormGroup, Label, Input, Button, Table, Container, Row, Col } from "reactstrap";
 import "./AddCustomField.css"
+import { LoginContext } from '../../index';
 
 //TODO: Add enum list-maker for drop-downs?
 
@@ -9,7 +9,8 @@ const fieldTypes = ["Text", "Drop-down", "Checkbox", "Date", "Number"]
 
 
 function AddCustomField(props) {
-
+    const { sessionRole, sessionToken } = useContext(LoginContext);
+    const [role, setRole] = useState(parseInt(sessionRole));
     const [ticketFields, setTicketFields] = useState([])
     const [name, setName] = useState("")
     const [fieldType, setFieldType] = useState("")
@@ -18,12 +19,15 @@ function AddCustomField(props) {
     const [reqOrAsr, setReqOrAsr] = useState(false)
 
     useEffect(() => {
+
+        setRole(parseInt(sessionRole));
+
         async function getData() {
             let res = await fetch("http://localhost:4000/api/fields/view-all-fields", {
                 method: "GET",
                 headers: new Headers({
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                    Authorization: sessionToken,
                 })
             });
             let data = await res.json();
@@ -36,8 +40,8 @@ function AddCustomField(props) {
         setter(e.target.value)
     }
 
-    const handleSubmit = e => {
-
+    const handleSubmit = (e) => {
+        console.log("submit")
         let newCustomField = {
             name: name,
             fieldType: fieldType,
@@ -52,7 +56,7 @@ function AddCustomField(props) {
             body: JSON.stringify(newCustomField),
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": props.sessionToken
+                Authorization: sessionToken,
             })
         })
             .then(res => res.json())
@@ -71,7 +75,7 @@ function AddCustomField(props) {
                                 <th>Field Type</th>
                             </tr>
                             {ticketFields.map(field => {
-                                if (field['Field Name'] !== "_id") {
+                                if (field['Field Name'] !== "_id" && field['Field Name'] !== "__v") {
                                     return (
                                         <tr>
                                             <td>{field['Field Name']}</td>

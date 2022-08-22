@@ -16,6 +16,7 @@ import DeleteModal from "./Modals/DeleteModal";
 import AssignModal from "./Modals/AssignModal";
 import ClaimModal from "./Modals/ClaimModal";
 import SubmitModal from "./Modals/SubmitModal";
+import UpdateStatusModal from "./Modals/UpdateStatusModal";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
@@ -28,7 +29,7 @@ function OneTicket(props) {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [modifyType, setModifyType] = useState('edit');
+  const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false)
   const [modelData, setModelData] = useState({});
   const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
@@ -108,12 +109,17 @@ function OneTicket(props) {
         userId={userId}
         id={id}
       />
+      <UpdateStatusModal 
+      showUpdateStatusModal={showUpdateStatusModal}
+      setShowUpdateStatusModal={setShowUpdateStatusModal}
+      objectToSend={objectToSend}
+      id={id}
+      />
       <SaveModal
         showSaveModal={showSaveModal}
         setShowSaveModal={setShowSaveModal}
         id={id}
         objectToSend={objectToSend}
-        modifyType={modifyType}
       />
       <SubmitModal
         showSubmitModal={showSubmitModal}
@@ -147,7 +153,6 @@ function OneTicket(props) {
             onClick={() => {
               updateObject["Status"] = "In Progress";
               setObjectToSend(updateObject);
-              setModifyType('begin');
               setShowSaveModal(true);
             }}
             outline
@@ -199,6 +204,14 @@ function OneTicket(props) {
                 Assign Ticket
               </Button>
             ) : null}
+            {
+              oneTicketData['Status']==="Director Review"  
+              ? <>
+              <Button>Reopen Assessment</Button>
+              <Button>Submit to Client</Button>
+              </>
+              : null
+            }
             <Button
               color="info"
               className={readDisplay}
@@ -219,8 +232,7 @@ function OneTicket(props) {
       onClick={()=>{
         updateObject['Status']= oneTicketData['Status']==='On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
         setObjectToSend(updateObject)
-        setModifyType('status')
-        setShowSaveModal(true)}}
+        setShowUpdateStatusModal(true)}}
       />
       </InputGroup>
     </Form>
@@ -311,7 +323,8 @@ function OneTicket(props) {
                     addon
                     type="select"
                     onChange={(e) => {
-                      updateObject[oneTicketData[field]] = e.target.value
+  
+                      updateObject[field] = e.target.value
                     }}
                     style={{
                       flexGrow: 1,

@@ -33,22 +33,16 @@ function SaveModal(props) {
         {
           
            <ModalHeader>
-            {props.modifyType==='begin' 
-          ? 'Begin assessment'
-          : (props.modifyType==='modify' ? 'Are you sure you want to modify a database entry?' : 'Change ticket status?')}
+           'Are you sure you want to modify a database entry?'
         </ModalHeader>
         }
         <ModalBody>
-          {props.modifyType==='begin'
-          ? 'Ticket status: In Progress'
-          : (props.modifyType==='modify' ? 'This action cannot be undone.' : 'Status: On Hold')
-          }
+          'This action cannot be undone.'
+          
           </ModalBody>
         <ModalFooter>
           <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest()}}>
-            {props.modifyType==='begin'
-            ? 'Begin' 
-            : (props.modifyType==='modify' ? 'Modify Ticket' : 'Change Status')}
+            Modify Ticket
           </Button>
           <Button variant="primary" onClick={() => {window.location.reload(false)}}>
             Cancel

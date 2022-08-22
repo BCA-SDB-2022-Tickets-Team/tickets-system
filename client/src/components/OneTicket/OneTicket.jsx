@@ -1,26 +1,72 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {
+  Table,
+  Button,
+  Container,
+  Form,
+  Input,
+  FormGroup,
+  InputGroup,
+  InputGroupText,
+} from "reactstrap";
 import "./OneTicket.css";
+import SaveModal from "./Modals/SaveModal";
+import DeleteModal from "./Modals/DeleteModal";
+import AssignModal from "./Modals/AssignModal";
+import ClaimModal from "./Modals/ClaimModal";
+import SubmitModal from "./Modals/SubmitModal";
 
 function OneTicket(props) {
   const [oneTicketData, setOneTicketData] = useState([]);
   const [userRole, setUserRole] = useState("");
-  const [userId, setUserId ] = useState("")
+  const [userId, setUserId] = useState("");
   const [editDisplay, setEditDisplay] = useState("hide");
   const [readDisplay, setReadDisplay] = useState("show");
-  const [show, setShow] = useState(false)
-  
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [onSwitch, setOnSwitch] = useState(false);
+  const [modelData, setModelData] = useState({});
+  const [objectToSend, setObjectToSend] = useState({});
   const notEditable = [
     "_id",
     "Requestor",
     "Assessor",
     "Created At",
     "Updated At",
+    "Status",
+    "ID",
   ];
-  let updateTicketBody = {};
+  const nonEditableStatus = [
+    "triage",
+    "director-review",
+    "requestor-review",
+    "questionaire-sent",
+    "completed",
+  ];
   const params = new URLSearchParams(window.location.search);
+  // ticket id passed as params from allTickets
   const id = params.get("id");
+  let updateObject = {};
+  // will be body of put request
+
+  useEffect(() => {
+    async function getData() {
+      let res = await fetch("http://localhost:4000/api/ticket/asr/model", {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        }),
+      });
+      let data = await res.json();
+      setModelData(data);
+    }
+    getData();
+  }, []);
 
   useEffect(() => {
     async function getData() {
@@ -37,171 +83,145 @@ function OneTicket(props) {
     getData();
 
     setUserRole(localStorage.getItem("role"));
-    setUserId(localStorage.getItem("userId"))
+    setUserId(localStorage.getItem("userId"));
+    // grab those guys from local storage
   }, []);
-
-  function handleSubmit(e) {
-    setReadDisplay("show");
-    setEditDisplay("hide");
-    console.log(updateTicketBody);
-    fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
-      method: "PUT",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }),
-      body: JSON.stringify(updateTicketBody),
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error);
-  }
-function claimTicket(){
-  fetch(`http://localhost:4000/api/ticket/modify/${id}`, {
-      method: "PUT",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }),
-      body: JSON.stringify({'Assessor': userId}),
-    })
-      .then((data) => {
-        console.log(data);
-        return data.json();
-      })
-      .then((realData) => {
-        console.log(realData);
-      })
-      .catch(Error)
-      .then(window.location.reload(false))
-    }     
-function assignTicket(){
-  console.log('assigning')
-}
-
-function deleteTicket(){
-  
-  fetch(`http://localhost:4000/api/ticket/delete/${id}`,
-  {method: 'DELETE',
-  headers: {
-    'Content-type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-     // Indicates the content 
-   }
-  }
-  )
-  .then((data) => {
-    console.log(data);
-    return data.json();
-  })
-  .then((realData) => {
-    console.log(realData);
-  })
-  .catch(Error)
-}
-
 
   return (
     <>
-    <Modal isOpen={show}>
-      
-       <ModalHeader>Are you sure you want to delete ticket?</ModalHeader>
-      <ModalBody>This action cannot be undone.</ModalBody>
-      <ModalFooter>
-        <Button variant="secondary" onClick={deleteTicket}>Delete User</Button>
-        <Button variant="primary" onClick={()=>setShow(false)}>Cancel</Button>
-        </ModalFooter>
-    </Modal>
-  
-    <div className="button-bar">
-    {userRole === "3"
-      && !oneTicketData.Assessor
-      ? (
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={claimTicket}
-          outline
-        >
-          Claim Ticket
-        </Button>)
-       : null}
-
-      {(userRole === "3" 
-      && userId===oneTicketData.Assessor)
-      || userRole === "4" ? (
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={() => {
-            setReadDisplay("hide");
-            setEditDisplay("show");
-          }}
-          outline
-        >
-          Edit Ticket
-        </Button>
+      <DeleteModal
+        showDeleteModal={showDeleteModal}
+        setShowDeleteModal={setShowDeleteModal}
+        id={id}
+      />
+      {userRole === "4" ? (
+        <AssignModal
+          showAssignModal={showAssignModal}
+          setShowAssignModal={setShowAssignModal}
+          id={id}
+        />
       ) : null}
-    {
-      userRole==="4"
-      ? (
-        <>
-        <Button
-          color="info"
-          className={readDisplay}
-          onClick={assignTicket}
-          outline
-        >
-          Assign Ticket
-        </Button>
-        <Button
-        color="info"
-        className={readDisplay}
-        onClick={()=>setShow(true)}
-        outline
-      >
-        Delete Ticket
-      </Button>
-        </>
-      ) : null
-      }
+      <ClaimModal
+        showClaimModal={showClaimModal}
+        setShowClaimModal={setShowClaimModal}
+        userId={userId}
+        id={id}
+      />
+      <SaveModal
+        showSaveModal={showSaveModal}
+        setShowSaveModal={setShowSaveModal}
+        id={id}
+        objectToSend={objectToSend}
+        onSwitch={onSwitch}
+        setOnSwitch={setOnSwitch}
+      />
+      <SubmitModal
+        showSubmitModal={showSubmitModal}
+        setShowSubmitModal={setShowSubmitModal}
+        id={id}
+      />
 
-      
+      <div className="button-bar">
+        {userRole === "3" && !oneTicketData.Assessor ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => setShowClaimModal(true)}
+            outline
+          >
+            Claim Ticket
+          </Button>
+        ) : null}
+
+        {userRole === "3" &&
+        oneTicketData["Status"] === "triage" &&
+        userId === oneTicketData["Assessor"] ? (
+          <Button
+            color="info"
+            className={readDisplay}
+            onClick={() => {
+              updateObject["Status"] = "in-progress";
+              setObjectToSend(updateObject);
+              setOnSwitch(true);
+              setShowSaveModal(true);
+            }}
+            outline
+          >
+            Begin Assessment
+          </Button>
+        ) : null}
+
+        {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
+        userRole === "4" ? (
+          <>
+            <Button
+              color="info"
+              className={readDisplay}
+              onClick={() => {
+                setReadDisplay("hide");
+                setEditDisplay("show");
+              }}
+              disabled={
+                nonEditableStatus.includes(oneTicketData["Status"]) &&
+                userRole === "3"
+                  ? true
+                  : false
+              }
+              outline
+            >
+              Edit Ticket
+            </Button>
+            {oneTicketData["Status"] === "in-progress" ? (
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => setShowSubmitModal(true)}
+                outline
+              >
+                Submit For Review
+              </Button>
+            ) : null}
+          </>
+        ) : null}
+
+        {userRole === "4" ? (
+          <>
+            {!oneTicketData.Assessor ? (
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => {
+                  setShowAssignModal(true);
+                }}
+                outline
+              >
+                Assign Ticket
+              </Button>
+            ) : null}
+            <Button
+              color="info"
+              className={readDisplay}
+              onClick={() => setShowDeleteModal(true)}
+              outline
+            >
+              Delete Ticket
+            </Button>
+          </>
+        ) : null}
       </div>
 
       <Table striped className={readDisplay}>
         <tbody>
           {/* Map over the ticket and display its data in a table */}
-          {Object.keys(oneTicketData).map((field) => {
-            return (
-              <tr key={field}>
-                <td>{field}:</td>
-                <td>{oneTicketData[field]}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-      <Table striped className={editDisplay}>
-        <tbody>
-          {/* Map over the ticket and display its data in a table */}
-          {Object.keys(oneTicketData).map((field) => {
+          {Object.keys(modelData).map((field) => {
             return (
               <tr key={field}>
                 <td>{field}:</td>
                 <td>
-                  {!notEditable.includes(field) ? (
-                    <input
-                      onChange={(e) => {
-                        updateTicketBody[field] = e.target.value;
-                      }}
-                      placeholder={oneTicketData[field]}
-                    />
+                  {modelData[field].type === "Boolean" ? (
+                    oneTicketData[field] === true ? (
+                      <Input type="checkbox" defaultChecked={true} disabled />
+                    ) : null
                   ) : (
                     oneTicketData[field]
                   )}
@@ -211,9 +231,129 @@ function deleteTicket(){
           })}
         </tbody>
       </Table>
-      <Button color="info" className={editDisplay} onClick={handleSubmit}>
-        Save
-      </Button>
+      <Container
+        className={editDisplay}
+        style={{
+          maxWidth: "90vw",
+          padding: "1vw 0",
+        }}
+      >
+        <Form>
+          {Object.keys(modelData).map((field) => {
+            if (!notEditable.includes(field)) {
+              if (modelData[field].type === "Boolean") {
+                return (
+                  <FormGroup
+                    key={field}
+                    check
+                    className="mb-3"
+                    style={{
+                      paddingLeft: "0",
+                    }}
+                  >
+                    <InputGroup>
+                      <InputGroupText className="boolean-input">
+                        {field}
+                      </InputGroupText>
+                      <Input
+                        addon
+                        type="checkbox"
+                        name={oneTicketData[field]}
+                        defaultChecked={oneTicketData[field]}
+                        onClick={() => {
+                          updateObject[field] =
+                            updateObject[field] !== undefined
+                              ? !updateObject[field]
+                              : oneTicketData[field] === true
+                              ? false
+                              : true;
+                        }}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                );
+              } else if (!modelData[field].enum) {
+                return (
+                  <FormGroup key={field}>
+                    <InputGroup>
+                      <InputGroupText>{field}</InputGroupText>
+                      <Input
+                        name={field}
+                        defaultValue={oneTicketData[field]}
+                        onChange={(e) => {
+                          updateObject[field] = e.target.value;
+                        }}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                );
+              } else {
+                return (
+                <FormGroup>
+                  <InputGroup>
+                    <InputGroupText>{field}</InputGroupText>
+                    <Input
+                    addon
+                    type="select"
+                    onChange={(e) => {
+                      updateObject[oneTicketData[field]] = e.target.value
+                    }}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  >
+                    {
+                      modelData[field].enum.map((item) => {
+                        return (
+                          <option 
+                            key={item}
+                            value={item}
+                          >
+                            {item}
+                          </option>
+                        )
+                      })
+                    }
+                  </Input>
+                  </InputGroup>
+                </FormGroup>)
+              }
+            } else {
+              return (
+                <FormGroup key={field}>
+                  <InputGroup>
+                    <InputGroupText>{field}</InputGroupText>
+                    <InputGroupText>{oneTicketData[field]}</InputGroupText>
+                  </InputGroup>
+                </FormGroup>
+              );
+            }
+          })}
+        </Form>
+      </Container>
+
+      <div className="button-bar">
+        <Button
+          color="info"
+          className={editDisplay}
+          onClick={() => {
+            console.log(updateObject);
+            setObjectToSend(updateObject);
+            setShowSaveModal(true);
+          }}
+        >
+          Save
+        </Button>
+        <Button
+          color="info"
+          className={editDisplay}
+          onClick={() => {
+            window.location.reload(false);
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
     </>
   );
 }

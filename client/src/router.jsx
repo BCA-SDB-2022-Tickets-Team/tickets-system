@@ -7,6 +7,7 @@ import AllTickets from "./components/AllTickets/AllTickets";
 import OneTicket from "./components/OneTicket/OneTicket";
 import { LoginContext } from './index';
 import AddCustomField from './components/AddCustomField/AddCustomField';
+import TicketsTable from "./components/AllTickets/TicketsTable";
 
 //* THIS IS HOW TO AUTHENTICATE ROUTES *\\
 //this returns a "pass-through" component that takes:
@@ -75,7 +76,6 @@ function RequireAuth(props) {
 
 function Router() {
   const { sessionRole, sessionToken, sessionId } = useContext(LoginContext);
-  const [ticketID, setTicketID] = useState("");
 
   return (
     <Routes>
@@ -95,14 +95,17 @@ function Router() {
       }
       />
       <Route
-        path="/alltickets"
+        path="/alltickets/*"
         element={
           <RequireAuth permittedRoles={["1", "2", "3", "4"]}>
-            <AllTickets setTicketID={setTicketID} sessionRole={sessionRole} />
+            <AllTickets sessionToken={sessionToken} sessionRole={sessionRole} />
           </RequireAuth>
         }
       />
-      <Route path="/oneticket" element={<OneTicket ticketID={ticketID} sessionId={sessionId} />} />
+      <Route
+        path="/oneticket"
+        element={
+          <OneTicket sessionId={sessionId} />} />
       <Route path=
         '/add-custom-field'
         element={

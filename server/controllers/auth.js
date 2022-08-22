@@ -198,7 +198,7 @@ router
   })
   .delete([session], async (req, res, next) => {
     try {
-      if(!req.user.isManager){
+      if(!req.user.isManager && !req.user.isAdmin){
         throw new Error("user must be a manager")
       } else {
         const { _id } = req.body

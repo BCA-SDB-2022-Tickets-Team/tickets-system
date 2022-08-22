@@ -75,6 +75,32 @@ function EditUserModal(props) {
         }
       });
   }
+
+  const handleDelete = function(e) {
+    e.preventDefault()
+    let url = `http://localhost:4000/api/user/${props.user.__type === 'reqUser' ? 'req' : 'asr'}`
+    fetch(url, {
+      method: "DELETE",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: props.token,
+      }),
+      body: JSON.stringify({
+        _id: props.user._id
+      })
+    })
+      .then(res => {
+        if(res.ok){
+          toggleModal()
+        } else {
+          res.json()
+            .then(data => {
+              setShowAlert(true)
+              setAlertMessage(data.status)
+            })
+        }
+      })
+  }
   return (
     <Modal 
       isOpen={modalIsOpen}
@@ -150,7 +176,7 @@ function EditUserModal(props) {
                   direction={"down"}
                   isOpen={dropdownOpen}
                 >
-                  <DropdownToggle caret>{department}</DropdownToggle>
+                  <DropdownToggle caret block>{department}</DropdownToggle>
                   <DropdownMenu>
                     {props.departments.map((dept) => {
                       return (
@@ -167,7 +193,7 @@ function EditUserModal(props) {
                 </Dropdown>
               ) : null}
             </FormGroup>
-            <FormGroup className="checkbox" check inline>
+            <FormGroup className="checkbox" check inline switch>
               {props.user.__type === "reqUser" ? (
                 <>
                   <Input
@@ -189,7 +215,14 @@ function EditUserModal(props) {
                 </>
               )}
             </FormGroup>
-            <Button id="button" type="submit">Submit</Button>
+            <FormGroup style={{
+              justifyContent: 'space-around'
+            }}>
+              <Button id="button" type="submit">Submit</Button>
+              <Button color="danger" onClick={handleDelete}>
+                Delete User
+              </Button>
+            </FormGroup>
           </Form>
       </ModalBody>
     </Modal>

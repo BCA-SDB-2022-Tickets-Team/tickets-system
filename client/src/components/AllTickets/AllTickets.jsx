@@ -18,7 +18,7 @@ function AllTickets(props) {
 
     }, []);
 
-    const [filters, setFilters] = useState(['all'])
+    const [filters, setFilters] = useState(['All'])
 
     // reference: https://medium.com/codex/handling-checkboxes-in-react-3a2514b140d2
     const onChange = (e) => {
@@ -60,7 +60,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="new-request"
-                                value="new-request"
+                                value="New Request"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -69,7 +69,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="questionaire-sent"
-                                value="questionaire-sent"
+                                value="Questionaire Sent"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -78,7 +78,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="questionaire-received"
-                                value="questionaire-received"
+                                value="Questionaire Received"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -87,7 +87,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="in-progress"
-                                value="in-progress"
+                                value="In Progress"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -96,7 +96,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="on-hold"
-                                value="on-hold"
+                                value="On Hold (Vendor)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -105,7 +105,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="director-review'"
-                                value="director-review'"
+                                value="Review (Director)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -114,7 +114,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="requestor-review'"
-                                value="requestor-review'"
+                                value="Review (Requestor)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
@@ -123,7 +123,7 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="completed"
-                                value="completed"
+                                value="Completed"
                                 onChange={onChange}
                                 type="checkbox"
                             />

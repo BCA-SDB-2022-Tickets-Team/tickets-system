@@ -87,6 +87,14 @@ function OneTicket(props) {
     setUserId(localStorage.getItem("userId"));
     // grab those guys from local storage
   }, []);
+  function updateStatus(status, type){
+   if (type==='claim') {
+     updateObject['Assessor']=userId
+   } 
+    updateObject['Status']=status;
+    setObjectToSend(updateObject)
+    setShowUpdateStatusModal(true)
+  }
 
   return (
     <>
@@ -132,34 +140,49 @@ function OneTicket(props) {
           <Button
             color="info"
             className={readDisplay}
-            onClick={() => setShowClaimModal(true)}
+            onClick={() => 
+              {
+                updateStatus('Triage', 'claim')
+              }}
             outline
           >
             Claim Ticket
           </Button>
         ) : null}
 
-        
-
         {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
         userRole === "4" ? (
           <>
-          {
-        oneTicketData["Status"] === "Triage" &&
-        userId === oneTicketData["Assessor"] ? (
-          <Button
-            color="info"
-            className={readDisplay}
-            onClick={() => {
-              updateObject["Status"] = "In Progress";
-              setObjectToSend(updateObject);
-              setShowSaveModal(true);
-            }}
-            outline
-          >
-            Begin Assessment
-          </Button>
-        ) : null}
+          {userId===oneTicketData['Assessor'] ? (
+            <>
+            {
+              oneTicketData["Status"] === "Triage"  ? (
+                <Button
+                  color="info"
+                  className={readDisplay}
+                  onClick={() => {
+                    updateStatus('In Progress')
+                  }}
+                  outline
+                >
+                  Begin Assessment
+                </Button>
+              ) : null}
+              {oneTicketData["Status"] === "In Progress" ? (
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => updateStatus('Review (Director)')}
+                outline
+              >
+                Submit For Review
+              </Button>
+            ) : null}
+              </>
+              
+          )
+        : null
+        }
             <Button
               color="info"
               className={readDisplay}
@@ -177,16 +200,7 @@ function OneTicket(props) {
             >
               Edit Ticket
             </Button>
-            {oneTicketData["Status"] === "In Progress" ? (
-              <Button
-                color="info"
-                className={readDisplay}
-                onClick={() => setShowSubmitModal(true)}
-                outline
-              >
-                Submit For Review
-              </Button>
-            ) : null}
+            
           </>
         ) : null}
 
@@ -205,10 +219,23 @@ function OneTicket(props) {
               </Button>
             ) : null}
             {
-              oneTicketData['Status']==="Director Review"  
+              oneTicketData['Status']==="Review (Director)"  
               ? <>
-              <Button>Reopen Assessment</Button>
-              <Button>Submit to Client</Button>
+              <Button
+              color="info"
+              className={readDisplay}
+              onClick={ ()=>{
+                updateStatus('In Progress', "assign")
+              }}
+              >Reopen Assessment</Button>
+
+              <Button 
+              color="info" 
+              className={readDisplay}
+              onClick={ ()=>{
+                updateStatus('Review (Requestor)')
+              }}
+              >Submit to Client</Button>
               </>
               : null
             }

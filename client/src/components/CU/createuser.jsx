@@ -45,11 +45,8 @@ function CreateUser() {
   const [showModal, setShowModal] = useState(false)
   const [userToEdit, setUserToEdit] = useState(undefined)
 
-  useEffect(() => {
-    setRole(parseInt(sessionRole));
-    async function getAllUsers() {
-      try {
-        let allUsersResponse = await fetch(
+  const fetchAllUsers = async function(){
+    let allUsersResponse = await fetch(
           `http://localhost:4000/api/user/allusers`,
           {
             method: "GET",
@@ -73,6 +70,12 @@ function CreateUser() {
           console.log(`error getting /allusers: `, allUsersResponse);
           throw new Error(errorMsg.status);
         }
+  }
+  useEffect(() => {
+    setRole(parseInt(sessionRole));
+    async function getAllUsers() {
+      try {
+        await fetchAllUsers()
       } catch (error) {
         console.log(`awww shucks: `, error);
       }
@@ -121,6 +124,12 @@ function CreateUser() {
     setUserToEdit(user)
     setShowModal(val => !val)
   }
+
+  const handleCloseEditUser = async function(){
+    setUserToEdit(undefined)
+    setShowModal()
+    await fetchAllUsers()
+  }
   return (
     <>
        {
@@ -129,7 +138,7 @@ function CreateUser() {
             showModal={showModal}
             setShowModal={setShowModal}
             user={userToEdit}
-            setUser={setUserToEdit}
+            closeModal={handleCloseEditUser}
             departments={departments}
             token={sessionToken}
             className="modify-user-modal"
@@ -138,11 +147,12 @@ function CreateUser() {
           null
       }
       <Container fluid className="create-user-container">
-        <div className="app">
-        </div>
         <Row className="create-user-row">
           <Col xs="8">
-            <Table responsive striped>
+            <Table 
+              responsive 
+              hover
+            >
               <thead>
                 <tr>
                   <th>First Name</th>

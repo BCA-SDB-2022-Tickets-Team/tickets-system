@@ -28,9 +28,7 @@ function EditUserModal(props) {
   const [alertMessage, setAlertMessage] = useState('')
   const toggleModal = () => {
     props.setShowModal(val => !val)
-    if(!props.showModal){
-      props.setUser(undefined)
-    }
+    props.closeModal()
     setModalIsOpen(props.showModal)
   }
   const toggleDropdown = () => setDropdownOpen(val => !val)
@@ -69,12 +67,12 @@ function EditUserModal(props) {
         if(res.ok){
           toggleModal()
         } else {
-          return res.json()
+          res.json()
+            .then((data) => {
+              setShowAlert(true)
+              setAlertMessage(data.status)
+            });
         }
-      })
-      .then((data) => {
-        setShowAlert(true)
-        setAlertMessage(data.status)
       });
   }
   return (

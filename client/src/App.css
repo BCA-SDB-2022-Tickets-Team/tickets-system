@@ -18,5 +18,8 @@ nav {
 
 .table-hover tbody tr:hover td a {
   color: #FFFFFF;
-  font-size: 12pt;
+}
+
+.table-hover tbody tr:hover td {
+  color: #FFFFFF;
 }

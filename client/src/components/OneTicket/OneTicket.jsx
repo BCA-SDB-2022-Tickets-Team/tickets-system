@@ -32,6 +32,7 @@ function OneTicket(props) {
   const [objectToSend, setObjectToSend] = useState({});
   const [ticketAssessor, setTicketAssessor] = useState('')
   const [ticketRequestor, setTicketRequestor] = useState('')
+  const [ticketManager, setTicketManager] = useState('')
   const colorCodes = {
     'New Request': "#FFE45E",
     'Triage': "#AACBE1",
@@ -51,6 +52,7 @@ function OneTicket(props) {
     "Status",
     "ID",
     "__v",
+    "Project Manager"
   ];
   const nonEditableStatus = [
     "Triage",
@@ -58,6 +60,7 @@ function OneTicket(props) {
     "Review (Requestor)",
     "Questionaire Sent",
     "Completed",
+    
   ];
 
   const params = new URLSearchParams(window.location.search);
@@ -96,6 +99,14 @@ function OneTicket(props) {
       for (let user of data.allUsers){
         if (user._id===data.ticket.Assessor){
           setTicketAssessor(`${user.firstName} ${user.lastName}`)
+        } else if (user._id===data.ticket.Requestor){
+          setTicketRequestor(`${user.firstName} ${user.lastName}`)
+        } else if (user._id===data.ticket['Project Manager']){
+          if (data.ticket['Project Manager']==='n/a'){
+            setTicketManager('N/A')
+          } else {
+          setTicketManager(`${user.firstName} ${user.lastName}`)
+          }
         }
       }
     }
@@ -333,7 +344,12 @@ function OneTicket(props) {
                       ) : (
                         field==='Assessor'
                           ? ticketAssessor
-                          : oneTicketData[field]
+                          : ( field==='Requestor'
+                            ? ticketRequestor
+                           : (field==='Project Manager'
+                            ? (oneTicketData[field]==='n/a' ? 'N/A' : ticketManager)
+                             : oneTicketData[field]
+                             ))
                       )}
                     </td>
                   </tr>
@@ -450,7 +466,16 @@ function OneTicket(props) {
                       </InputGroupText>
                       <Input
                         readOnly
-                        value={oneTicketData[field]}
+                        value={(
+                          field==='Assessor'
+                            ? ticketAssessor
+                            : ( field==='Requestor'
+                              ? ticketRequestor
+                             : (field==='Project Manager'
+                              ? (oneTicketData[field]==='n/a' ? 'N/A' : ticketManager)
+                               : oneTicketData[field]
+                               ))
+                        )}
                         style={field === 'Status' ? {
                           pointerEvents: "none",
                           backgroundColor: "#F8F8F8",

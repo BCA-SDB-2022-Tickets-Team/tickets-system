@@ -72,27 +72,14 @@ let reqTicket = new mongoose.Schema(
       default: 'none',
       enum: ['none', 'gxp', 'sox', 'gdpr']
     },
-    PHI: {
-      type: Boolean,
-      required: true,
-    },
     'Vendor Service': {
       type: String,
       default: '',
       required: true,
     },
-    'Custom Code Required': {
-      type: Boolean,
-      required: true,
-      default: false
-    },
     'Submitted To Security': {
       type: Date,
       required: false
-    },
-    Integrations: {
-      type: Boolean,
-      default: true,
     },
     'System Level Access': {
       type: String,
@@ -108,6 +95,19 @@ let reqTicket = new mongoose.Schema(
       type: String,
       default: '',
       required: true
+    },
+    PHI: {
+      type: Boolean,
+      required: true,
+    },
+    'Custom Code Required': {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    Integrations: {
+      type: Boolean,
+      default: true,
     },
     'Need MFA': {
       type: Boolean,

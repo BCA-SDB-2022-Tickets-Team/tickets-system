@@ -30,6 +30,8 @@ function OneTicket(props) {
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(false);
   const [modelData, setModelData] = useState({});
   const [objectToSend, setObjectToSend] = useState({});
+  const [ticketAssessor, setTicketAssessor] = useState('')
+  const [ticketRequestor, setTicketRequestor] = useState('')
   const colorCodes = {
     'New Request': "#FFE45E",
     'Triage': "#AACBE1",
@@ -89,7 +91,13 @@ function OneTicket(props) {
         }),
       });
       let data = await res.json();
-      setOneTicketData(data);
+      console.log(data)
+      setOneTicketData(data.ticket);
+      for (let user of data.allUsers){
+        if (user._id===data.ticket.Assessor){
+          setTicketAssessor(`${user.firstName} ${user.lastName}`)
+        }
+      }
     }
     getData();
 
@@ -303,7 +311,6 @@ function OneTicket(props) {
           <tbody>
             {/* Map over the ticket and display its data in a table */}
             {Object.keys(modelData).map((field) => {
-              console.log(field);
               if (field !== "_id" && field !== "__v") {
                 return (
                   <tr key={field}>
@@ -324,7 +331,9 @@ function OneTicket(props) {
                           />
                         ) : null
                       ) : (
-                        oneTicketData[field]
+                        field==='Assessor'
+                          ? ticketAssessor
+                          : oneTicketData[field]
                       )}
                     </td>
                   </tr>

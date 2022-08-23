@@ -254,7 +254,8 @@ function OneTicket(props) {
           </>
         ) : null}
       </div>
-      <Form id="vendor-hold-form">
+      {(userRole==="3" || userRole==="4") && oneTicketData['Status']==="In Progress"
+      ? <Form id="vendor-hold-form">
         <FormGroup
           key="vendor-hold"
           check
@@ -292,6 +293,8 @@ function OneTicket(props) {
           </InputGroup>
         </FormGroup>
       </Form>
+      : null
+}
       <Table striped className={readDisplay}>
         <tbody>
           {/* Map over the ticket and display its data in a table */}

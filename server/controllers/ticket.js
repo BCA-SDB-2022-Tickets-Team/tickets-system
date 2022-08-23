@@ -198,10 +198,11 @@ router
         Notes:0,
         Timeline:0
       })
-      
+      let allUsers = await User.find({})
       //TODO: change Requestor & Assessor to be names instead of object IDs
-      res.send(
-        ticket,
+      res.json(
+        {ticket,
+        allUsers}
         
       )
     } else {

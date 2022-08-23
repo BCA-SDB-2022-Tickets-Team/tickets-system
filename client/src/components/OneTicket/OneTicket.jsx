@@ -34,13 +34,13 @@ function OneTicket(props) {
   const [ticketRequestor, setTicketRequestor] = useState('')
   const [ticketManager, setTicketManager] = useState('')
   const colorCodes = {
-    'New Request': "#FFE45E",
-    'Triage': "#AACBE1",
+    'New Request': "#f7b731",
+    'Triage': "##1e90ff",
     'Questionaire Sent': "#8CB5CE",
     'Review (Requestor)': "#6EA0BB",
-    'Review (Director)': "#508AA8",
-    'On-Hold (Vendor)': "#EF798A",
-    'In Progress': "#6C9A8B",
+    'Review (Director)': "#487eb0",
+    'On-Hold (Vendor)': "#ff6b81",
+    'In Progress': "##079992",
     'Completed': "#209486"
   }
   const notEditable = [
@@ -94,7 +94,6 @@ function OneTicket(props) {
         }),
       });
       let data = await res.json();
-      console.log(data)
       setOneTicketData(data.ticket);
       for (let user of data.allUsers){
         if (user._id===data.ticket.Assessor){
@@ -167,6 +166,7 @@ function OneTicket(props) {
         padding: '1vw 0'
       }}>
         <div className="button-bar">
+          
           {userRole === "3" && !oneTicketData.Assessor ? (
             <Button
               color="info"
@@ -194,7 +194,7 @@ function OneTicket(props) {
                   nonEditableStatus.includes(oneTicketData["Status"]) &&
                     userRole === "3"
                     ? true
-                    : false
+                    : (oneTicketData['Status']==='Completed' ? true : false)
                 }
                 outline
               >
@@ -266,18 +266,27 @@ function OneTicket(props) {
                   </Button>
                 </>
               ) : null}
-              <Button
+              {<Button
                 color="info"
                 className={readDisplay}
                 onClick={() => setShowDeleteModal(true)}
                 outline
               >
                 Delete Ticket
-              </Button>
+              </Button>}
+              {oneTicketData['Status']==='Review (Requestor)'
+          ? <Button
+            style={{backgroundColor: '#6ab04c', color: "white"}}
+            className={readDisplay}
+            onClick={()=>updateStatus('Completed')}
+            >Ticket Complete</Button>
+            : null
+          }
             </>
           ) : null}
+          
         </div>
-        {(userRole === "4" || oneTicketData['Assessor'] === userId) && oneTicketData['Status'] === "In Progress"
+        {(userRole === "4" || oneTicketData['Assessor'] === userId) && ["In Progress", "On-Hold (Vendor)"].includes(oneTicketData['Status'])
           ? <Form id="vendor-hold-form">
             <FormGroup
               key="vendor-hold"

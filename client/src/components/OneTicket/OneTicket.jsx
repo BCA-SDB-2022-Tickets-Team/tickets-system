@@ -254,7 +254,7 @@ function OneTicket(props) {
           </>
         ) : null}
       </div>
-      {(userRole==="3" || userRole==="4") && oneTicketData['Status']==="In Progress"
+      {(userRole==="4" || oneTicketData['Assessor']===userId) && oneTicketData['Status']==="In Progress" 
       ? <Form id="vendor-hold-form">
         <FormGroup
           key="vendor-hold"

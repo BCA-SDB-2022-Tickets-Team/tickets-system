@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useNavigate } from "react";
 import {
+  Alert,
   Form,
   FormGroup,
   Label,
@@ -44,32 +45,44 @@ function CreateUser() {
   const [asrMakingReq, setAsrMakingReq] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const [userToEdit, setUserToEdit] = useState(undefined)
+  const [allData, setAllData] = useState([]);
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertMessage, setAlertMessage] = useState(undefined)
+  const [alertType, setAlertType] = useState("warning")
 
-  const fetchAllUsers = async function(){
+
+  const onDismiss = () => {
+    setAlertVisible(false)
+    setAlertMessage(undefined)
+    setAlertType("warning")
+  }
+
+
+  const fetchAllUsers = async function () {
     let allUsersResponse = await fetch(
-          `http://localhost:4000/api/user/allusers`,
-          {
-            method: "GET",
-            headers: new Headers({
-              "Content-Type": "application/json",
-              Authorization: sessionToken,
-            }),
-          }
-        );
-        if (allUsersResponse.ok) {
-          console.log(`allusers response:`, allUsersResponse);
-          await allUsersResponse
-            .json()
-            .then((data) => {
-              console.log(data);
-              setAllUsers(data.allUsers);
-            })
-            .catch((err) => console.log(err));
-        } else {
-          let errorMsg = await allUsersResponse.json();
-          console.log(`error getting /allusers: `, allUsersResponse);
-          throw new Error(errorMsg.status);
-        }
+      `http://localhost:4000/api/user/allusers`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: sessionToken,
+        }),
+      }
+    );
+    if (allUsersResponse.ok) {
+      console.log(`allusers response:`, allUsersResponse);
+      await allUsersResponse
+        .json()
+        .then((data) => {
+          console.log(data);
+          setAllUsers(data.allUsers);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      let errorMsg = await allUsersResponse.json();
+      console.log(`error getting /allusers: `, allUsersResponse);
+      throw new Error(errorMsg.status);
+    }
   }
   useEffect(() => {
     setRole(parseInt(sessionRole));
@@ -89,7 +102,7 @@ function CreateUser() {
   const onChangeHndler = (e, setter) => {
     setter(e.target.value);
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let url
@@ -116,25 +129,45 @@ function CreateUser() {
         Authorization: sessionToken,
       }),
     })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((res) => {
+        if (!res.ok) {
+          res.json()
+            .then(error => {
+              setAlertVisible(true)
+              if (error.missingFields) {
+                let message = `The new user is missing the following fields ${error.missingFields}`
+                setAlertMessage(message)
+              } else {
+                setAlertMessage(error.status)
+              }
+            })
+        } else {
+          setAlertVisible(true)
+          setAlertType("success")
+          setAlertMessage("ticket successfully created")
+          e.target.reset();
+          console.log("ticket created");
+        }
+      })
+
+
   };
 
-  const handleEditUser = function(user){
+  const handleEditUser = function (user) {
     setUserToEdit(user)
     setShowModal(val => !val)
   }
 
-  const handleCloseEditUser = async function(){
+  const handleCloseEditUser = async function () {
     setUserToEdit(undefined)
     setShowModal()
     await fetchAllUsers()
   }
   return (
     <>
-       {
-        userToEdit ? 
-          <EditUserModal 
+      {
+        userToEdit ?
+          <EditUserModal
             showModal={showModal}
             setShowModal={setShowModal}
             user={userToEdit}
@@ -146,11 +179,14 @@ function CreateUser() {
           :
           null
       }
+      <Alert color={alertType} isOpen={alertVisible} toggle={onDismiss}>
+        {alertMessage}
+      </Alert>
       <Container fluid className="create-user-container">
         <Row className="create-user-row">
           <Col xs="8">
-            <Table 
-              responsive 
+            <Table
+              responsive
               hover
             >
               <thead>
@@ -194,7 +230,7 @@ function CreateUser() {
               <Switch
                 isOn={asrMakingReq}
                 onColor="#EF476F"
-                handleToggle={ setAsrMakingReq }
+                handleToggle={setAsrMakingReq}
               />
               <Form className="form" inline onSubmit={handleSubmit}>
                 <FormGroup className="mb-2 me-sm-2 mb-sm-0">

@@ -51,7 +51,7 @@ function NewTicket() {
           let error = await res.json()
           setAlertVisible(true)
           if(error.missingFields){
-            let message = `${error.status} \n ${error.missingFields.join(' ')}`
+            let message = `Invalid Entry`
             setAlertMessage(message)
           }
           console.log(error)

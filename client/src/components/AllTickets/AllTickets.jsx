@@ -96,11 +96,11 @@ function AllTickets(props) {
                         <Label>
                             <Input
                                 name="on-hold"
-                                value="On Hold (Vendor)"
+                                value="On-Hold (Vendor)"
                                 onChange={onChange}
                                 type="checkbox"
                             />
-                            On Hold (Vendor)
+                            On-Hold (Vendor)
                         </Label>
                         <Label>
                             <Input

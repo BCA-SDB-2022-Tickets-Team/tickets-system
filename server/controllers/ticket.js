@@ -34,7 +34,7 @@ router
       } else {
         tickerManager = 'n/a'
       }
-      console.log(tickerManager)
+      
       const newTicket = new Ticket({
         Requestor: req.user._id,
         Department: req.user.__type==='asrUser' ? "n/a" : req.user.Department,

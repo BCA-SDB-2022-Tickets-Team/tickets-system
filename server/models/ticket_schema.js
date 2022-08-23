@@ -3,6 +3,7 @@ const CustomFieldsSchema = require('./custom_fields_schema')
 
 const FieldsToIgnore = [
   '_id',
+  'Status',
   '__v',
   'ID',
   'Department',

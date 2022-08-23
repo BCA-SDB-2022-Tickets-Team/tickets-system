@@ -60,7 +60,7 @@ function OneTicket(props) {
     "Review (Requestor)",
     "Questionaire Sent",
     "Completed",
-    
+
   ];
 
   const params = new URLSearchParams(window.location.search);
@@ -95,16 +95,16 @@ function OneTicket(props) {
       });
       let data = await res.json();
       setOneTicketData(data.ticket);
-      for (let user of data.allUsers){
-        if (user._id===data.ticket.Assessor){
+      for (let user of data.allUsers) {
+        if (user._id === data.ticket.Assessor) {
           setTicketAssessor(`${user.firstName} ${user.lastName}`)
-        } else if (user._id===data.ticket.Requestor){
+        } else if (user._id === data.ticket.Requestor) {
           setTicketRequestor(`${user.firstName} ${user.lastName}`)
-        } else if (user._id===data.ticket['Project Manager']){
-          if (data.ticket['Project Manager']==='n/a'){
+        } else if (user._id === data.ticket['Project Manager']) {
+          if (data.ticket['Project Manager'] === 'n/a') {
             setTicketManager('N/A')
           } else {
-          setTicketManager(`${user.firstName} ${user.lastName}`)
+            setTicketManager(`${user.firstName} ${user.lastName}`)
           }
         }
       }
@@ -351,14 +351,14 @@ function OneTicket(props) {
                           />
                         ) : null
                       ) : (
-                        field==='Assessor'
+                        field === 'Assessor'
                           ? ticketAssessor
-                          : ( field==='Requestor'
+                          : (field === 'Requestor'
                             ? ticketRequestor
-                           : (field==='Project Manager'
-                            ? (oneTicketData[field]==='n/a' ? 'N/A' : ticketManager)
-                             : oneTicketData[field]
-                             ))
+                            : (field === 'Project Manager'
+                              ? (oneTicketData[field] === 'n/a' ? 'N/A' : ticketManager)
+                              : oneTicketData[field]
+                            ))
                       )}
                     </td>
                   </tr>
@@ -476,14 +476,14 @@ function OneTicket(props) {
                       <Input
                         readOnly
                         value={(
-                          field==='Assessor'
+                          field === 'Assessor'
                             ? ticketAssessor
-                            : ( field==='Requestor'
+                            : (field === 'Requestor'
                               ? ticketRequestor
-                             : (field==='Project Manager'
-                              ? (oneTicketData[field]==='n/a' ? 'N/A' : ticketManager)
-                               : oneTicketData[field]
-                               ))
+                              : (field === 'Project Manager'
+                                ? (oneTicketData[field] === 'n/a' ? 'N/A' : ticketManager)
+                                : oneTicketData[field]
+                              ))
                         )}
                         style={field === 'Status' ? {
                           pointerEvents: "none",

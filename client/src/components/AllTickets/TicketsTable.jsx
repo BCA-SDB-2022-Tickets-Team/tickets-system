@@ -18,13 +18,12 @@ const TicketsTable = (props) => {
 
     const colorCodes = {
         'New Request': "#FFE45E",
-        'Triage': "#AACBE1",
-        'Questionaire Sent': "#8CB5CE",
-        'Review (Requestor)': "#6EA0BB",
-        'Review (Director)': "#508AA8",
+        'Triage': "#2D7D90",
+        'In Progress': "#58C4C6",
         'On-Hold (Vendor)': "#EF798A",
-        'In Progress': "#6C9A8B",
-        'Completed': "#209486"
+        'Review (Director)': "#48B89F",
+        'Review (Requestor)': "#88E1B0",
+        'Completed': "#C7f9CC"
     }
 
     useEffect(() => {
@@ -91,7 +90,7 @@ const TicketsTable = (props) => {
     let ticketsToPrint;
 
     return (
-        <Table striped responsive hover>
+        <Table responsive hover>
             <tbody>
                 <tr>
                     {/* Map over the ticket field headings and display as table headings */}

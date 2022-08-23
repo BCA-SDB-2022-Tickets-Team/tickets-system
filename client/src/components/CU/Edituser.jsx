@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import {
   Modal,
   ModalBody,
@@ -35,7 +35,7 @@ function EditUserModal(props) {
   const onChangeHndler = (e, setter) => {
     setter(e.target.value);
   }
-  const handleSubmit = function(e){
+  const handleSubmit = function (e) {
     e.preventDefault()
     let url
     let modifiedUser = {
@@ -44,7 +44,7 @@ function EditUserModal(props) {
       lastName: lastName,
       email: email,
     };
-    if(password !== undefined){
+    if (password !== undefined) {
       modifiedUser['password'] = password
     }
     if (props.user.__type === "reqUser") {
@@ -64,7 +64,7 @@ function EditUserModal(props) {
       }),
     })
       .then((res) => {
-        if(res.ok){
+        if (res.ok) {
           toggleModal()
         } else {
           res.json()
@@ -76,7 +76,7 @@ function EditUserModal(props) {
       });
   }
 
-  const handleDelete = function(e) {
+  const handleDelete = function (e) {
     e.preventDefault()
     let url = `http://localhost:4000/api/user/${props.user.__type === 'reqUser' ? 'req' : 'asr'}`
     fetch(url, {
@@ -90,7 +90,7 @@ function EditUserModal(props) {
       })
     })
       .then(res => {
-        if(res.ok){
+        if (res.ok) {
           toggleModal()
         } else {
           res.json()
@@ -102,7 +102,7 @@ function EditUserModal(props) {
       })
   }
   return (
-    <Modal 
+    <Modal
       isOpen={modalIsOpen}
       toggle={toggleModal}
     >
@@ -117,113 +117,113 @@ function EditUserModal(props) {
           {alertMessage}
         </Alert>
         <Form className="form" inline onSubmit={handleSubmit}>
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-              <Label className="me-sm-2" for="exampleEmail">
-                First Name
-              </Label>
-              <Input
-                id="First Name"
-                name="first name"
-                value={firstName}
-                autoComplete="off"
-                onChange={(e) => onChangeHndler(e, setFirst)}
-              />
-            </FormGroup>
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-              <Label className="me-sm-2" for="examplePassword">
-                Last Name
-              </Label>
-              <Input
-                id="Last Name"
-                name="last name"
-                type="last name"
-                value={lastName}
-                autoComplete="off"
-                onChange={(e) => onChangeHndler(e, setLast)}
-              />
-            </FormGroup>
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-              <Label className="me-sm-2" for="examplePassword">
-                Email
-              </Label>
-              <Input
-                id="Email"
-                name="email"
-                type="email"
-                value={email}
-                autoComplete="off"
-                onChange={(e) => onChangeHndler(e, setEmail)}
-              />
-            </FormGroup>
+          <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+            <Label className="me-sm-2" for="exampleEmail">
+              First Name
+            </Label>
+            <Input
+              id="First Name"
+              name="first name"
+              value={firstName}
+              autoComplete="off"
+              onChange={(e) => onChangeHndler(e, setFirst)}
+            />
+          </FormGroup>
+          <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+            <Label className="me-sm-2" for="examplePassword">
+              Last Name
+            </Label>
+            <Input
+              id="Last Name"
+              name="last name"
+              type="last name"
+              value={lastName}
+              autoComplete="off"
+              onChange={(e) => onChangeHndler(e, setLast)}
+            />
+          </FormGroup>
+          <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+            <Label className="me-sm-2" for="examplePassword">
+              Email
+            </Label>
+            <Input
+              id="Email"
+              name="email"
+              type="email"
+              value={email}
+              autoComplete="off"
+              onChange={(e) => onChangeHndler(e, setEmail)}
+            />
+          </FormGroup>
 
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-              <Label className="me-sm-2" for="examplePassword">
-                Change Password
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                autoComplete="off"
-                onChange={(e) => onChangeHndler(e, setPassword)}
-              />
-            </FormGroup>
-            <FormGroup>
-              {props.user.__type === "reqUser" ? (
-                <Dropdown
-                  toggle={toggleDropdown}
-                  direction={"down"}
-                  isOpen={dropdownOpen}
-                >
-                  <DropdownToggle caret block>{department}</DropdownToggle>
-                  <DropdownMenu>
-                    {props.departments.map((dept) => {
-                      return (
-                        <DropdownItem
-                          key={dept}
-                          onClick={() => setDepartment(dept)}
-                          active={dept === department}
-                        >
-                          {dept}
-                        </DropdownItem>
-                      );
-                    })}
-                  </DropdownMenu>
-                </Dropdown>
-              ) : null}
-            </FormGroup>
-            <FormGroup className="checkbox" check inline switch>
-              {props.user.__type === "reqUser" ? (
-                <>
-                  <Input
-                    type="checkbox"
-                    defaultChecked={isManager}
-                    onClick={() => setIsManager(!isManager)}
-                  />
-                  <Label check>Is Manager</Label>
-                </>
-              ) : (
-                <>
-                  {" "}
-                  <Input
-                    type="checkbox"
-                    defaultChecked={isAdmin}
-                    onClick={() => setIsAdmin(!isAdmin)}
-                  />
-                  <Label check>Is Admin</Label>
-                </>
-              )}
-            </FormGroup>
-            <FormGroup style={{
-              justifyContent: 'space-around'
-            }}>
-              <Button id="button" type="submit">Submit</Button>
-              <Button color="danger" onClick={handleDelete}>
-                Delete User
-              </Button>
-            </FormGroup>
-          </Form>
+          <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+            <Label className="me-sm-2" for="examplePassword">
+              Change Password
+            </Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              value={password}
+              autoComplete="off"
+              onChange={(e) => onChangeHndler(e, setPassword)}
+            />
+          </FormGroup>
+          <FormGroup>
+            {props.user.__type === "reqUser" ? (
+              <Dropdown
+                toggle={toggleDropdown}
+                direction={"down"}
+                isOpen={dropdownOpen}
+              >
+                <DropdownToggle caret block>{department}</DropdownToggle>
+                <DropdownMenu>
+                  {props.departments.map((dept) => {
+                    return (
+                      <DropdownItem
+                        key={dept}
+                        onClick={() => setDepartment(dept)}
+                        active={dept === department}
+                      >
+                        {dept}
+                      </DropdownItem>
+                    );
+                  })}
+                </DropdownMenu>
+              </Dropdown>
+            ) : null}
+          </FormGroup>
+          <FormGroup className="checkbox" check inline switch>
+            {props.user.__type === "reqUser" ? (
+              <>
+                <Input
+                  type="checkbox"
+                  defaultChecked={isManager}
+                  onClick={() => setIsManager(!isManager)}
+                />
+                <Label check>Is Manager</Label>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Input
+                  type="checkbox"
+                  defaultChecked={isAdmin}
+                  onClick={() => setIsAdmin(!isAdmin)}
+                />
+                <Label check>Is Admin</Label>
+              </>
+            )}
+          </FormGroup>
+          <FormGroup style={{
+            justifyContent: 'space-around'
+          }}>
+            <Button id="button" type="submit">Submit</Button>
+            <Button color="danger" onClick={handleDelete}>
+              Delete User
+            </Button>
+          </FormGroup>
+        </Form>
       </ModalBody>
     </Modal>
   );

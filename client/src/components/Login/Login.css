@@ -2,24 +2,22 @@
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-/* div {
-    width: 60%;
-    margin: auto;
+#login-container {
     text-align: center;
-    vertical-align: center;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#login-container Label {
+    margin-top: 4vh;
+    text-align: center;
 }
 
-input {
-    margin: .5vw 0 2vw 0;
+#login-container Input {
+    margin-top: 1vh;
+    text-align: center;
 }
 
-button {
-    margin: 1vw 0 1vw 0;
-    width: 100px;
-} */
+#login-button {
+    margin-top: 4vh;
+    background-color: #0f4c5c;
+    color: #FFFFFF;
+}

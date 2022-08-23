@@ -248,30 +248,30 @@ function CreateUser() {
                     onChange={(e) => onChangeHndler(e, setPassword)}
                   />
                 </FormGroup>
-
-                {(role === 2 || asrMakingReq) ? (
-                  <div className="d-flex p-5">
-                    <Dropdown
-                      toggle={toggle}
-                      direction={"down"}
-                      isOpen={dropdownOpen}
-                    >
-                      <DropdownToggle caret>{department}</DropdownToggle>
-                      <DropdownMenu container="body">
-                        {departments.map((department) => {
-                          return (
-                            <DropdownItem
-                              onClick={() => setdepartment(department)}
-                            >
-                              {department}
-                            </DropdownItem>
-                          );
-                        })}
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                ) : null}
-                <br /><br />
+                {(role === 2 || asrMakingReq)
+                  ? (
+                    <div className="d-flex p-5">
+                      <Dropdown
+                        toggle={toggle}
+                        direction={"down"}
+                        isOpen={dropdownOpen}
+                      >
+                        <DropdownToggle caret>{department}</DropdownToggle>
+                        <DropdownMenu container="body">
+                          {departments.map((department) => {
+                            return (
+                              <DropdownItem
+                                onClick={() => setdepartment(department)}
+                              >
+                                {department}
+                              </DropdownItem>
+                            );
+                          })}
+                        </DropdownMenu>
+                      </Dropdown>
+                    </div>
+                  )
+                  : (<br />)}
                 <FormGroup className="checkbox" check inline>
                   {(role === 2 || asrMakingReq) ? (
                     <>

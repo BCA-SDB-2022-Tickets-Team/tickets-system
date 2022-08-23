@@ -76,61 +76,60 @@ function Login() {
         }
     }
     return (
-<Container fluid className="login-container">
-<Row style={{ justifyContent: 'center' }}>
-    <Alert
-        isOpen={displayError}
-        toggle={(e) => setDisplayError(false)}
-        color="warning"
-    >
-        {invalidMessage}
-    </Alert>
-</Row>
-<Row className="loginRow" style={{ justifyContent: 'center' }}>
-<Col xs="2">
+        <Container id="login-container">
+            <Row style={{ justifyContent: 'center' }}>
+                <Alert
+                    isOpen={displayError}
+                    toggle={(e) => setDisplayError(false)}
+                    color="warning"
+                >
+                    {invalidMessage}
+                </Alert>
+            </Row>
+            <Row className="loginRow" style={{ justifyContent: 'center' }}>
+                <Col xs="4">
+                    <Form inline className="form"
+                        onSubmit={handleSubmit}>
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                            <Label
+                                className="me-sm-2"
+                                for="exampleEmail"
+                            >
+                                Email
+                            </Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                placeholder="email"
+                                type="text"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                            />
+                        </FormGroup>
+                        <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                            <Label
+                                className="me-sm-2"
+                                for="examplePassword"
+                            >
+                                Password
+                            </Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                placeholder="password"
+                                type="password"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                            />
+                        </FormGroup>
+                        <Button id="login-button" type='submit' xs="3">
+                            Login
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </Container>
 
-        <Form inline className="form"
-            onSubmit={handleSubmit}>
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label
-                    className="me-sm-2"
-                    for="exampleEmail"
-                >
-                    Email
-                </Label>
-                <Input
-                    id="email"
-                    name="email"
-                    placeholder="email"
-                    type="text"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                />
-            </FormGroup>
-            <FormGroup className="mb-2 me-sm-2 mb-sm-0">
-                <Label
-                    className="me-sm-2"
-                    for="examplePassword"
-                >
-                    Password
-                </Label>
-                <Input
-                    id="password"
-                    name="password"
-                    placeholder="password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
-             </FormGroup>
-             <Button className= "loginbutton" type='submit' xs="3">
-                Login
-            </Button>
-          </Form>
-        </Col>
-        </Row>
-       </Container>
-       
     )
 }
 

@@ -10,3 +10,11 @@
 tbody {
     background-color: white;
 }
+
+#display-only-checkbox:checked {
+    background-color: black;
+}
+
+#display-only-checkbox-2:checked {
+    background-color: black;
+}

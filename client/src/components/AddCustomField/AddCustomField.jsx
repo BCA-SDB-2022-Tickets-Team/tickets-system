@@ -66,9 +66,9 @@ function AddCustomField(props) {
     return (
         <Container>
             <Row className="edit-add-fields-row">
-                <Col xs="6">
-                    <h4>Existing Fields</h4>
-                    <Table striped responsive>
+                <Col xs="4">
+                    <h4>Existing Ticket Fields</h4>
+                    <Table bordered striped responsive>
                         <tbody>
                             <tr>
                                 <th>Field</th>
@@ -87,7 +87,7 @@ function AddCustomField(props) {
                         </tbody>
                     </Table>
                 </Col>
-                <Col className="sidePanel" xs="2">
+                <Col className="sidePanel" xs="6">
                     <h4>Add a Field</h4>
                     <div className="FormContainer">
                         <Form className="add-field-form"
@@ -161,9 +161,11 @@ function AddCustomField(props) {
                                     Required Field
                                 </Label>
                             </FormGroup>
-                            <Button className="add-custom-field-button" type='submit'>
-                                Create Field
-                            </Button>
+                            <FormGroup id="add-custom-field-button">
+                                <Button type='submit'>
+                                    Create Field
+                                </Button>
+                            </FormGroup>
                         </Form>
                     </div>
                 </Col>

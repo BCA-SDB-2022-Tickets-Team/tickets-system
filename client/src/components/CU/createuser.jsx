@@ -20,13 +20,13 @@ import Switch from "./Switch";
 import EditUserModal from "./Edituser";
 
 const departments = [
-  "hr",
-  "it",
-  "legal",
-  "manufacturing",
-  "marketing",
-  "ops",
-  "procurement",
+  "HR",
+  "IT",
+  "Legal",
+  "Manufacturing",
+  "Marketing",
+  "Ops",
+  "Procurement",
 ];
 
 function CreateUser() {
@@ -185,8 +185,8 @@ function CreateUser() {
                         {role === 4 ? <td>{roleNames[user.__type]}</td> : null}
                         <td>
                           {user.isManager !== undefined
-                            ? <Input type="checkbox" checked={user.isManager} />//`${user.isManager}`
-                            : <Input type="checkbox" checked={user.isAdmin} />}
+                            ? <Input type="checkbox" disabled id="display-only-checkbox" checked={user.isManager} />//`${user.isManager}`
+                            : <Input type="checkbox" disabled id="display-only-checkbox-2" checked={user.isAdmin} />}
                         </td>
                       </tr>
                     );
@@ -248,8 +248,9 @@ function CreateUser() {
                     onChange={(e) => onChangeHndler(e, setPassword)}
                   />
                 </FormGroup>
-                <div className="d-flex p-5">
-                  {(role === 2 || asrMakingReq) ? (
+
+                {(role === 2 || asrMakingReq) ? (
+                  <div className="d-flex p-5">
                     <Dropdown
                       toggle={toggle}
                       direction={"down"}
@@ -268,10 +269,9 @@ function CreateUser() {
                         })}
                       </DropdownMenu>
                     </Dropdown>
-                  ) : null}
-                </div>
-
-                <br></br>
+                  </div>
+                ) : null}
+                <br /><br />
                 <FormGroup className="checkbox" check inline>
                   {(role === 2 || asrMakingReq) ? (
                     <>

@@ -19,10 +19,8 @@ function GlobalNav(props) {
     navigate('/')
   }
 
-  const [activeTab, setActiveTab] = useState('in_progress');
-
   return (
-    <Nav tabs pills>
+    <Nav tabs>
       {
         /* Add/Modify/Delete custom Fields -- requires Role 4 */
         ["4"].includes(sessionRole) ?

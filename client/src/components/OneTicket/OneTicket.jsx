@@ -85,18 +85,18 @@ function OneTicket(props) {
     setUserId(localStorage.getItem("userId"));
     // grab those guys from local storage
   }, []);
-  function updateStatus(status, type){
-   if (type==='claim') {
-     updateObject['Assessor']=userId
-   } 
-    updateObject['Status']=status;
+  function updateStatus(status, type) {
+    if (type === 'claim') {
+      updateObject['Assessor'] = userId
+    }
+    updateObject['Status'] = status;
     setObjectToSend(updateObject)
     setShowUpdateStatusModal(true)
   }
 
   return (
     <>
-    
+
       <DeleteModal
         showDeleteModal={showDeleteModal}
         setShowDeleteModal={setShowDeleteModal}
@@ -109,17 +109,17 @@ function OneTicket(props) {
           id={id}
         />
       ) : null}
-      <UpdateStatusModal 
-      showUpdateStatusModal={showUpdateStatusModal}
-      setShowUpdateStatusModal={setShowUpdateStatusModal}
-      objectToSend={objectToSend}
-      id={id}
+      <UpdateStatusModal
+        showUpdateStatusModal={showUpdateStatusModal}
+        setShowUpdateStatusModal={setShowUpdateStatusModal}
+        objectToSend={objectToSend}
+        id={id}
       />
-      <UpdateStatusModal 
-      showUpdateStatusModal={showUpdateStatusModal}
-      setShowUpdateStatusModal={setShowUpdateStatusModal}
-      objectToSend={objectToSend}
-      id={id}
+      <UpdateStatusModal
+        showUpdateStatusModal={showUpdateStatusModal}
+        setShowUpdateStatusModal={setShowUpdateStatusModal}
+        objectToSend={objectToSend}
+        id={id}
       />
       <SaveModal
         showSaveModal={showSaveModal}
@@ -138,10 +138,9 @@ function OneTicket(props) {
           <Button
             color="info"
             className={readDisplay}
-            onClick={() => 
-              {
-                updateStatus('Triage', 'claim')
-              }}
+            onClick={() => {
+              updateStatus('Triage', 'claim')
+            }}
             outline
           >
             Claim Ticket
@@ -149,9 +148,9 @@ function OneTicket(props) {
         ) : null}
 
         {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
-        userRole === "4" ? (
+          userRole === "4" ? (
           <>
-          <Button
+            <Button
               color="info"
               className={readDisplay}
               onClick={() => {
@@ -160,7 +159,7 @@ function OneTicket(props) {
               }}
               disabled={
                 nonEditableStatus.includes(oneTicketData["Status"]) &&
-                userRole === "3"
+                  userRole === "3"
                   ? true
                   : false
               }
@@ -168,38 +167,38 @@ function OneTicket(props) {
             >
               Edit Ticket
             </Button>
-          {userId===oneTicketData['Assessor'] ? (
-            <>
-            {
-              oneTicketData["Status"] === "Triage"  ? (
-                <Button
-                  color="info"
-                  className={readDisplay}
-                  onClick={() => {
-                    updateStatus('In Progress')
-                  }}
-                  outline
-                >
-                  Begin Assessment
-                </Button>
-              ) : null}
-              {oneTicketData["Status"] === "In Progress" ? (
-              <Button
-                color="info"
-                className={readDisplay}
-                onClick={() => updateStatus('Review (Director)')}
-                outline
-              >
-                Submit For Review
-              </Button>
-            ) : null}
+            {userId === oneTicketData['Assessor'] ? (
+              <>
+                {
+                  oneTicketData["Status"] === "Triage" ? (
+                    <Button
+                      color="info"
+                      className={readDisplay}
+                      onClick={() => {
+                        updateStatus('In Progress')
+                      }}
+                      outline
+                    >
+                      Begin Assessment
+                    </Button>
+                  ) : null}
+                {oneTicketData["Status"] === "In Progress" ? (
+                  <Button
+                    color="info"
+                    className={readDisplay}
+                    onClick={() => updateStatus('Review (Director)')}
+                    outline
+                  >
+                    Submit For Review
+                  </Button>
+                ) : null}
               </>
-              
-          )
-        : null
-        }
-            
-            
+
+            )
+              : null
+            }
+
+
           </>
         ) : null}
 
@@ -218,25 +217,25 @@ function OneTicket(props) {
               </Button>
             ) : null}
             {
-              oneTicketData['Status']==="Review (Director)"  
-              ? <>
-              <Button
-              color="info"
-              className={readDisplay}
-              onClick={ ()=>{
-                updateStatus('In Progress', "assign")
-              }}
-              >Reopen Assessment</Button>
+              oneTicketData['Status'] === "Review (Director)"
+                ? <>
+                  <Button
+                    color="info"
+                    className={readDisplay}
+                    onClick={() => {
+                      updateStatus('In Progress', "assign")
+                    }}
+                  >Reopen Assessment</Button>
 
-              <Button 
-              color="info" 
-              className={readDisplay}
-              onClick={ ()=>{
-                updateStatus('Review (Requestor)')
-              }}
-              >Submit to Client</Button>
-              </>
-              : null
+                  <Button
+                    color="info"
+                    className={readDisplay}
+                    onClick={() => {
+                      updateStatus('Review (Requestor)')
+                    }}
+                  >Submit to Client</Button>
+                </>
+                : null
             }
             <Button
               color="info"
@@ -250,56 +249,60 @@ function OneTicket(props) {
         ) : null}
       </div>
       <Form id="vendor-hold-form">
-      <FormGroup 
-                key='vendor-hold' 
-                check
-                className="mb-3" 
-                style={{
-                  paddingLeft: "0"
+        <FormGroup
+          key='vendor-hold'
+          check
+          className="mb-3"
+          style={{
+            paddingLeft: "0"
+          }}
+        >
+          <InputGroup>
+            <Input
+              readOnly
+              value={'On hold - awaiting vendor response'}
+              style={{
+                pointerEvents: "none"
+              }}
+            />
+            <InputGroupText>
+              <Input
+                addon
+                type="checkbox"
+
+                defaultChecked={oneTicketData['Status'] === 'On-Hold (Vendor)' ? true : null}
+                onClick={() => {
+                  updateObject['Status'] = oneTicketData['Status'] === 'On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
+                  setObjectToSend(updateObject)
+                  setShowUpdateStatusModal(true)
                 }}
-              >
-                    <InputGroup>
-                      <Input 
-                        readOnly
-                        value={'On hold - awaiting vendor response'}
-                        style={{
-                          pointerEvents: "none"
-                        }}
-                      />
-                      <InputGroupText> 
-                        <Input
-                          addon 
-                          type="checkbox"
-                          
-                          defaultChecked={oneTicketData['Status']==='On-Hold (Vendor)' ? true : null}
-                          onClick={()=>{
-                            updateObject['Status']= oneTicketData['Status']==='On-Hold (Vendor)' ? 'In Progress' : 'On-Hold (Vendor)'
-                            setObjectToSend(updateObject)
-                            setShowUpdateStatusModal(true)}}
-                        />
-                      </InputGroupText>
-                    </InputGroup>
-              </FormGroup>
-    </Form>
+              />
+            </InputGroupText>
+          </InputGroup>
+        </FormGroup>
+      </Form>
 
       <Table striped className={readDisplay}>
         <tbody>
           {/* Map over the ticket and display its data in a table */}
           {Object.keys(modelData).map((field) => {
-            return (
-              <tr key={field}>
-                <td>{field}:</td>
-                <td>
-                  {modelData[field].type === "Boolean" ? (
-                    oneTicketData[field] === true ? (
-                      <Input type="checkbox" defaultChecked={true} disabled addon />
-                    ) : null
-                  ) : (
-                    oneTicketData[field]
-                  )}
-                </td>
-              </tr>
-            );
+            console.log(field)
+            if (field !== '_id' && field !== '__v') {
+              return (
+                <tr key={field}>
+                  <td>{field}:</td>
+                  <td>
+                    {modelData[field].type === "Boolean" ? (
+                      oneTicketData[field] === true ? (
+                        <Input type="checkbox" defaultChecked={true} disabled addon />
+                      ) : null
+                    ) : (
+                      oneTicketData[field]
+                    )}
+                  </td>
+                </tr>
+              );
+            }
           })}
         </tbody>
       </Table>
@@ -316,41 +319,41 @@ function OneTicket(props) {
             if (!notEditable.includes(field)) {
               if (modelData[field].type === "Boolean") {
                 return (
-                  <FormGroup 
-                key={field.name} 
-                check
-                className="mb-3" 
-                style={{
-                  paddingLeft: "0"
-                }}
-              >
+                  <FormGroup
+                    key={field.name}
+                    check
+                    className="mb-3"
+                    style={{
+                      paddingLeft: "0"
+                    }}
+                  >
                     <InputGroup>
-                      <Input 
+                      <Input
                         readOnly
                         value={field}
                         style={{
                           pointerEvents: "none"
                         }}
                       />
-                      <InputGroupText> 
+                      <InputGroupText>
                         <Input
-                          addon 
+                          addon
                           type="checkbox"
                           name={field}
                           defaultChecked={oneTicketData[field]}
                           onClick={() => {
                             updateObject[field] =
-                            updateObject[field] !== undefined
-                              ? !updateObject[field]
-                              : oneTicketData[field] === true
-                              ? false
-                              : true;
+                              updateObject[field] !== undefined
+                                ? !updateObject[field]
+                                : oneTicketData[field] === true
+                                  ? false
+                                  : true;
                           }}
                         />
                       </InputGroupText>
                     </InputGroup>
-              </FormGroup>
-                
+                  </FormGroup>
+
                 );
               } else if (!modelData[field].enum) {
                 return (
@@ -369,54 +372,54 @@ function OneTicket(props) {
                 );
               } else {
                 return (
-                <FormGroup>
-                  <InputGroup>
-                    <InputGroupText>{field}</InputGroupText>
-                    <Input
-                    addon
-                    type="select"
-                    onChange={(e) => {
-  
-                      updateObject[field] = e.target.value
-                    }}
-                    style={{
-                      flexGrow: 1,
-                    }}
-                  >
-                    {
-                      modelData[field].enum.map((item) => {
-                        return (
-                          <option 
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </option>
-                        )
-                      })
-                    }
-                  </Input>
-                  </InputGroup>
-                </FormGroup>)
+                  <FormGroup>
+                    <InputGroup>
+                      <InputGroupText>{field}</InputGroupText>
+                      <Input
+                        addon
+                        type="select"
+                        onChange={(e) => {
+
+                          updateObject[field] = e.target.value
+                        }}
+                        style={{
+                          flexGrow: 1,
+                        }}
+                      >
+                        {
+                          modelData[field].enum.map((item) => {
+                            return (
+                              <option
+                                key={item}
+                                value={item}
+                              >
+                                {item}
+                              </option>
+                            )
+                          })
+                        }
+                      </Input>
+                    </InputGroup>
+                  </FormGroup>)
               }
             } else {
               return (
                 <FormGroup key={field}>
                   <InputGroup>
-                  <InputGroupText 
-                        readOnly
-                        value={field}
-                        style={{
-                          pointerEvents: "none"
-                        }}
-                      >{field}</InputGroupText>
-                      <Input 
+                    <InputGroupText
+                      readOnly
+                      value={field}
+                      style={{
+                        pointerEvents: "none"
+                      }}
+                    >{field}</InputGroupText>
+                    <Input
                       readOnly
                       value={oneTicketData[field]}
                       style={{
                         pointerEvents: "none"
                       }}
-                      />
+                    />
                   </InputGroup>
                 </FormGroup>
               );

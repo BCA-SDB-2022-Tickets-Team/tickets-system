@@ -47,6 +47,10 @@ const TicketsTable = (props) => {
                         return {
                             _id: ticket._id,
                             'Ticket ID': ticket.ID,
+                            'Status': ticket.Status,
+                            'Vendor Name': ticket['Vendor Name'],
+                            'Created': ticket['Created At'],
+                            'Updated': ticket['Updated At'],
                             'Assessor': !ticket.Assessor
                                 ? <em>Unassigned</em>
                                 : data.allUsers.map(user => {
@@ -54,10 +58,6 @@ const TicketsTable = (props) => {
                                         return `${user.firstName} ${user.lastName}`
                                     }
                                 }),
-                            'Created At': ticket['Created At'],
-                            'Vendor Name': ticket['Vendor Name'],
-                            'Updated At': ticket['Updated At'],
-                            'Status': ticket.Status
                         }
                     }
                     )
@@ -113,8 +113,11 @@ const TicketsTable = (props) => {
                                     return (
                                         <td className="all-tickets-data" key={field} >
                                             <NavLink onClick={props.setTicketId(ticket._id)} to={`/oneticket?id=${ticket['_id']}`}>
-                                                {field === 'Created At' || field === 'Updated At'
-                                                    ? new Date(ticket[field]).toLocaleDateString()
+                                                {field === 'Created' || field === 'Updated'
+                                                    ? <span style={{ fontSize: '10pt' }}>{new Date(ticket[field]).toLocaleDateString()} - {new Date(ticket[field]).toLocaleTimeString(navigator.language, {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })}</span>
                                                     : ticket[field]}
                                             </NavLink>
                                         </td>

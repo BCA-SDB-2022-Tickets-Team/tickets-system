@@ -2,10 +2,9 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-nav {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+#logout-button {
+  background-color: #0f4c5c;
+  color: #FFFFFF;
 }
 
 .table-hover tbody tr th {

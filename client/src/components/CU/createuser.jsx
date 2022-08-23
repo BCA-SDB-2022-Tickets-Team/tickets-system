@@ -45,31 +45,36 @@ function CreateUser() {
   const [showModal, setShowModal] = useState(false)
   const [userToEdit, setUserToEdit] = useState(undefined)
 
-  const fetchAllUsers = async function(){
+  const roleNames = {
+    reqUser: "Requestor",
+    asrUser: "Assessor"
+  }
+
+  const fetchAllUsers = async function () {
     let allUsersResponse = await fetch(
-          `http://localhost:4000/api/user/allusers`,
-          {
-            method: "GET",
-            headers: new Headers({
-              "Content-Type": "application/json",
-              Authorization: sessionToken,
-            }),
-          }
-        );
-        if (allUsersResponse.ok) {
-          console.log(`allusers response:`, allUsersResponse);
-          await allUsersResponse
-            .json()
-            .then((data) => {
-              console.log(data);
-              setAllUsers(data.allUsers);
-            })
-            .catch((err) => console.log(err));
-        } else {
-          let errorMsg = await allUsersResponse.json();
-          console.log(`error getting /allusers: `, allUsersResponse);
-          throw new Error(errorMsg.status);
-        }
+      `http://localhost:4000/api/user/allusers`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: sessionToken,
+        }),
+      }
+    );
+    if (allUsersResponse.ok) {
+      console.log(`allusers response:`, allUsersResponse);
+      await allUsersResponse
+        .json()
+        .then((data) => {
+          console.log(data);
+          setAllUsers(data.allUsers);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      let errorMsg = await allUsersResponse.json();
+      console.log(`error getting /allusers: `, allUsersResponse);
+      throw new Error(errorMsg.status);
+    }
   }
   useEffect(() => {
     setRole(parseInt(sessionRole));
@@ -89,7 +94,7 @@ function CreateUser() {
   const onChangeHndler = (e, setter) => {
     setter(e.target.value);
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let url
@@ -120,21 +125,21 @@ function CreateUser() {
       .then((data) => console.log(data));
   };
 
-  const handleEditUser = function(user){
+  const handleEditUser = function (user) {
     setUserToEdit(user)
     setShowModal(val => !val)
   }
 
-  const handleCloseEditUser = async function(){
+  const handleCloseEditUser = async function () {
     setUserToEdit(undefined)
     setShowModal()
     await fetchAllUsers()
   }
   return (
     <>
-       {
-        userToEdit ? 
-          <EditUserModal 
+      {
+        userToEdit ?
+          <EditUserModal
             showModal={showModal}
             setShowModal={setShowModal}
             user={userToEdit}
@@ -149,9 +154,10 @@ function CreateUser() {
       <Container fluid className="create-user-container">
         <Row className="create-user-row">
           <Col xs="8">
-            <Table 
-              responsive 
+            <Table
+              responsive
               hover
+              striped
             >
               <thead>
                 <tr>
@@ -159,8 +165,8 @@ function CreateUser() {
                   <th>Last Name</th>
                   <th>E-mail</th>
                   <th>Department</th>
-                  <th>Admin?</th>
                   {role === 4 ? <th>User Type</th> : null}
+                  <th>Admin?</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,12 +182,12 @@ function CreateUser() {
                             ? user.Department
                             : `-`}
                         </td>
+                        {role === 4 ? <td>{roleNames[user.__type]}</td> : null}
                         <td>
                           {user.isManager !== undefined
-                            ? `${user.isManager}`
-                            : `${user.isAdmin}`}
+                            ? <Input type="checkbox" checked={user.isManager} />//`${user.isManager}`
+                            : <Input type="checkbox" checked={user.isAdmin} />}
                         </td>
-                        {role === 4 ? <td>{user.__type}</td> : null}
                       </tr>
                     );
                   })
@@ -194,7 +200,7 @@ function CreateUser() {
               <Switch
                 isOn={asrMakingReq}
                 onColor="#EF476F"
-                handleToggle={ setAsrMakingReq }
+                handleToggle={setAsrMakingReq}
               />
               <Form className="form" inline onSubmit={handleSubmit}>
                 <FormGroup className="mb-2 me-sm-2 mb-sm-0">

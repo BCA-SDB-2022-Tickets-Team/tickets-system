@@ -3,11 +3,11 @@ tbody {
 }
 
 .ticket-filters {
-    margin: 3em 0 2em 0;
+    margin: 5vh 0 2vh 0;
 }
 
 .ticket-filters Input {
-    margin: 0 .5em 0 1em;
+    margin: .25em .5em 0 1.5em;
 }
 
 .ticket-filters Label {
@@ -17,14 +17,6 @@ tbody {
 .ticket-filters h4 {
     font-size: 15pt;
     margin-bottom: 1em;
-}
-
-.all-tickets-headings {
-    font-size: 11pt;
-}
-
-.all-tickets-data {
-    font-size: 10pt;
 }
 
 .all-tickets-data a {

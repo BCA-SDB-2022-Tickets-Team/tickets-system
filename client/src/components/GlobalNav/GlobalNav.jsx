@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from '../../index';
@@ -9,68 +9,71 @@ import { LoginContext } from '../../index';
  * but change its appearance / allowed links depending on Role
  * @returns {JSX Component} 
  */
-function GlobalNav() {
-  const {logoutAndClearSession, sessionRole } = useContext(LoginContext)
-  // const [active, setActive] = useState(true)
+function GlobalNav(props) {
+  const { logoutAndClearSession, sessionRole } = useContext(LoginContext)
+
   const navigate = useNavigate()
   const logout = (e) => {
     e.preventDefault()
     logoutAndClearSession()
     navigate('/')
   }
+
+  const [activeTab, setActiveTab] = useState('in_progress');
+
   return (
-    <Nav tabs>
+    <Nav tabs pills>
       {
         /* Add/Modify/Delete custom Fields -- requires Role 4 */
         ["4"].includes(sessionRole) ?
-          <NavItem >
-            <NavLink onClick={
-              () => navigate('/add-custom-field')
-            }>
+          <NavItem>
+            <NavLink
+              onClick={() => navigate('/add-custom-field')}>
               Modify Ticket Fields
             </NavLink>
           </NavItem>
-        :
+          :
           null
       }
       {
         /* Add/Modify User -- requires Role 2 or Role 4 */
         ["2", "4"].includes(sessionRole) ?
-          <NavItem 
+          <NavItem
             active={true}
           >
             <NavLink onClick={() => navigate('/createuser')}>
               Users
             </NavLink>
           </NavItem>
-        :
+          :
           null
       }
       {
         /* View and Add Tickets -- requires ANY session Role [1-4] */
         sessionRole !== undefined ?
           <>
-          <NavItem>
-            <NavLink onClick={() => navigate('/alltickets')}>
-              View Tickets
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink onClick={() => navigate('/newticket')}>
-              New Ticket
-            </NavLink>
-          </NavItem>
+            <NavItem>
+              <NavLink onClick={() => navigate('/alltickets')}>
+                View Tickets
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink onClick={() => navigate('/newticket')}>
+                New Ticket
+              </NavLink>
+            </NavItem>
           </>
-        : 
+          :
           null
       }
       {/* Logout Button */}
       <NavItem>
-        <NavLink 
+        <NavLink
+          id="logout-button"
           onClick={logout}
           href="#"
-        > 
-          Logout 
+        >
+          Logout
         </NavLink>
       </NavItem>
     </Nav>

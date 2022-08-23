@@ -23,8 +23,6 @@ router
         upsert: true
       });
 
-      console.log(newID)
-
       const bodyFields = Object.keys(req.body.newTicketBody);
       let tickerManager
       if(req.user.manager){
@@ -69,11 +67,19 @@ router
     if (req.user.__type === "reqUser" && !req.user.isManager) {
       const Ticket = makeModel()
       let allTicketsData = await Ticket.find({ Requestor: req.user._id });
-      let allUsers = await User.find({_id: req.user._id});
+      let allUsers = await User.find({});
       res.json({
         allTicketsData,
         allUsers
       });
+    } else if (req.user.__type === "reqUser" && req.user.isManager) {
+        const Ticket = makeModel()
+        let allTicketsData = await Ticket.find({ Department: req.user.Department });
+        let allUsers = await User.find({});
+        res.json({
+          allTicketsData,
+          allUsers
+        });
     } else {
       const Ticket = makeModel()
       let allTicketsData = await Ticket.find({});

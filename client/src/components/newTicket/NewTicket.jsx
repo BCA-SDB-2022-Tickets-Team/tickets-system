@@ -107,6 +107,7 @@ function NewTicket() {
                 <FormGroup
                   key={field.name}
                   check
+                  switch
                   className="mb-3"
                   style={{
                     paddingLeft: "0"

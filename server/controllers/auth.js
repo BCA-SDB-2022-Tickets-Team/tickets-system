@@ -329,6 +329,43 @@ router.route('/check-in')
     }
   })
 
+router.route('/get-one-user')
+  .get([session], async (req,res,next) => {
+    try {
+      const { _id } = req.body
+      if(!_id){
+        throw new Error(`request to api/user/get-one-user must include a user _id in the request body`)
+      } else {
+        let user = await User.findById(_id)
+        if(!user){
+          throw new Error(`no user with that _id could be found`)
+        } else {
+          res.status(200).json({
+            user
+          })
+        }
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+router.route('/get-self')
+  .get([session], async (req,res,next) => {
+    try {
+        let user = await User.findById(req.user._id)
+        if(!user){
+          throw new Error(`no user with that _id could be found`)
+        } else {
+          res.status(200).json({
+            user
+          })
+        }
+    } catch (error) {
+      next(error)
+    }
+  })
+
 // universal error handler
 // any error thrown above goes through this
 router.use((err, req, res, next) => {

@@ -35,7 +35,7 @@ function CreateUser() {
   const [lastName, setLast] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [department, setdepartment] = useState("department");
+  const [department, setdepartment] = useState("Department");
   const [isManager, setIsManager] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -85,8 +85,34 @@ function CreateUser() {
         console.log(`awww shucks: `, error);
       }
     }
+    async function getSelf(){
+      try {
+        let userResponse = await fetch(
+          `http://localhost:4000/api/user/get-self`,
+          {
+            method: "GET",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: sessionToken,
+            }),
+          }
+        );
+        if(!userResponse.ok){
+          userResponse.json()
+            .then(data => console.log(data))
+        } else {
+          let userDepartment = await userResponse.json()
+          setdepartment(userDepartment.user.Department)
+          console.log(userDepartment)
+        }
+      } catch (error) {
+        console.log(`oh noes, an error getting self: `, error)
+      }
+    }
     getAllUsers();
-    // }
+    if(role === 2){
+      getSelf()
+    }
   }, []);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
@@ -121,8 +147,16 @@ function CreateUser() {
         Authorization: sessionToken,
       }),
     })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then(async (res) => {
+        if(!res.ok){
+          res.json()
+            .then(data => {
+              console.log(data)
+            })
+        } else {
+          await fetchAllUsers()
+        }
+      })
   };
 
   const handleEditUser = function (user) {
@@ -197,11 +231,13 @@ function CreateUser() {
           </Col>
           <Col className="sidePanel" xs="2">
             <div className="FormContainer">
-              <Switch
-                isOn={asrMakingReq}
-                onColor="#EF476F"
-                handleToggle={setAsrMakingReq}
-              />
+              {role === 4 && 
+                <Switch
+                  isOn={asrMakingReq}
+                  onColor="#EF476F"
+                  handleToggle={setAsrMakingReq}
+                />
+              }
               <Form className="form" inline onSubmit={handleSubmit}>
                 <FormGroup className="mb-2 me-sm-2 mb-sm-0">
                   <Label className="me-sm-2" for="exampleEmail">
@@ -233,6 +269,7 @@ function CreateUser() {
                     id="Email"
                     name="email"
                     type="email"
+                    autoComplete="off"
                     onChange={(e) => onChangeHndler(e, setEmail)}
                   />
                 </FormGroup>
@@ -245,6 +282,7 @@ function CreateUser() {
                     id="password"
                     name="password"
                     type="password"
+                    autoComplete="new-password"
                     onChange={(e) => onChangeHndler(e, setPassword)}
                   />
                 </FormGroup>

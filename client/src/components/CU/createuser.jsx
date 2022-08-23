@@ -13,6 +13,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Alert
 } from "reactstrap";
 import { LoginContext } from '../../index';
 import "./createuser.css";
@@ -44,6 +45,15 @@ function CreateUser() {
   const [asrMakingReq, setAsrMakingReq] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const [userToEdit, setUserToEdit] = useState(undefined)
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [alertMessage, setAlertMessage] = useState(undefined)
+  const [alertType, setAlertType] = useState("warning")
+
+  const onDismiss = () => {
+    setAlertVisible(false)
+    setAlertMessage(undefined)
+    setAlertType("warning")
+  }
 
   const roleNames = {
     reqUser: "Requestor",
@@ -147,16 +157,26 @@ function CreateUser() {
         Authorization: sessionToken,
       }),
     })
-      .then(async (res) => {
-        if (!res.ok) {
-          res.json()
-            .then(data => {
-              console.log(data)
-            })
-        } else {
-          await fetchAllUsers()
-        }
-      })
+    .then((res) => {
+      if (!res.ok) {
+        res.json()
+          .then(error => {
+            setAlertVisible(true)
+            if (error.missingFields) {
+              let message = `The new user is missing the following fields ${error.missingFields}`
+              setAlertMessage(message)
+            } else {
+              setAlertMessage(error.status)
+            }
+          })
+      } else {
+        setAlertVisible(true)
+        setAlertType("success")
+        setAlertMessage("ticket successfully created")
+        e.target.reset();
+        console.log("ticket created");
+      }
+    })
   };
 
   const handleEditUser = function (user) {
@@ -185,6 +205,9 @@ function CreateUser() {
           :
           null
       }
+       <Alert color={alertType} isOpen={alertVisible} toggle={onDismiss}>
+        {alertMessage}
+      </Alert>
       <Container fluid className="create-user-container">
         <Row className="create-user-row">
           <Col xs="8">

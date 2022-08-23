@@ -65,7 +65,7 @@ function AddCustomField(props) {
 
     return (
         <Container>
-            <Row className="edit-add-fields-row">
+            <Row id="edit-add-fields-row">
                 <Col xs="4">
                     <h4>Existing Ticket Fields</h4>
                     <Table bordered striped responsive>
@@ -87,87 +87,85 @@ function AddCustomField(props) {
                         </tbody>
                     </Table>
                 </Col>
-                <Col className="sidePanel" xs="6">
-                    <h4>Add a Field</h4>
-                    <div className="FormContainer">
-                        <Form className="add-field-form"
+                <Col className="sidePanel" xs="5">
+                    <Form className="add-field-form"
+                        inline
+                        onSubmit={handleSubmit}>
+                        <h4>Add a Field</h4>
+                        <FormGroup>
+                            <Label for="name">
+                                Field Name
+                            </Label>
+                            <Input
+                                required
+                                id="name"
+                                name="name"
+                                type="text"
+                                placeholder="Must be unique"
+                                onChange={(e) => onChangeHandler(e, setName)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="fieldType">
+                                Field Type
+                            </Label>
+                            <Input
+                                required
+                                id="fieldType"
+                                name="fieldType"
+                                type="select"
+                                onChange={(e) => onChangeHandler(e, setFieldType)}
+                            >
+                                <option disabled selected value>-- select --</option>
+                                {fieldTypes.map(type => {
+                                    return <option>{type}</option>
+                                })}
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="defaultValue">
+                                Default Field Value
+                            </Label>
+                            <Input
+                                id="defaultValue"
+                                name="defaultValue"
+                                type="text"
+                                onChange={(e) => onChangeHandler(e, setDefaultValue)}
+                            />
+                        </FormGroup>
+                        <br />
+                        <FormGroup
+                            className="checkbox"
+                            check
                             inline
-                            onSubmit={handleSubmit}>
-                            <FormGroup>
-                                <Label for="name">
-                                    Field Name
-                                </Label>
-                                <Input
-                                    required
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    placeholder="Must be unique"
-                                    onChange={(e) => onChangeHandler(e, setName)}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="fieldType">
-                                    Field Type
-                                </Label>
-                                <Input
-                                    required
-                                    id="fieldType"
-                                    name="fieldType"
-                                    type="select"
-                                    onChange={(e) => onChangeHandler(e, setFieldType)}
-                                >
-                                    <option disabled selected value>-- select --</option>
-                                    {fieldTypes.map(type => {
-                                        return <option>{type}</option>
-                                    })}
-                                </Input>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="defaultValue">
-                                    Default Field Value
-                                </Label>
-                                <Input
-                                    id="defaultValue"
-                                    name="defaultValue"
-                                    type="text"
-                                    onChange={(e) => onChangeHandler(e, setDefaultValue)}
-                                />
-                            </FormGroup>
-                            <br />
-                            <FormGroup
-                                className="checkbox"
-                                check
-                                inline
-                            >
-                                <Input
-                                    type="checkbox"
-                                    onClick={() => setReqOrAsr(!reqOrAsr)} />
-                                <Label check>
-                                    Assessors Only
-                                </Label>
+                        >
+                            <Input
+                                type="checkbox"
+                                onClick={() => setReqOrAsr(!reqOrAsr)} />
+                            <Label check>
+                                Assessors Only
+                            </Label>
 
-                            </FormGroup>
-                            <br />
-                            <FormGroup
-                                className="checkbox"
-                                check
-                                inline
-                            >
-                                <Input
-                                    type="checkbox"
-                                    onClick={() => setIsRequired(!isRequired)} />
-                                <Label check>
-                                    Required Field
-                                </Label>
-                            </FormGroup>
-                            <FormGroup id="add-custom-field-button">
-                                <Button type='submit'>
-                                    Create Field
-                                </Button>
-                            </FormGroup>
-                        </Form>
-                    </div>
+                        </FormGroup>
+                        <br />
+                        <FormGroup
+                            className="checkbox"
+                            check
+                            inline
+                        >
+                            <Input
+                                type="checkbox"
+                                onClick={() => setIsRequired(!isRequired)} />
+                            <Label check>
+                                Required Field
+                            </Label>
+                        </FormGroup>
+                        <FormGroup id="add-custom-field-button">
+                            <Button type='submit'>
+                                Create Field
+                            </Button>
+                        </FormGroup>
+                    </Form>
                 </Col>
             </Row>
         </Container>

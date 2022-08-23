@@ -216,7 +216,9 @@ function EditUserModal(props) {
             )}
           </FormGroup>
           <FormGroup style={{
-            justifyContent: 'space-around'
+            display: 'flex',
+            justifyContent: 'space-around',
+            marginTop: '2vh'
           }}>
             <Button id="button" type="submit">Submit</Button>
             <Button color="danger" onClick={handleDelete}>

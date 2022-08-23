@@ -39,7 +39,7 @@ function OneTicket(props) {
     'On-Hold (Vendor)': "#EF798A",
     'In Progress': "#6C9A8B",
     'Completed': "#209486"
-}
+  }
   const notEditable = [
     "_id",
     "Requestor",
@@ -57,7 +57,7 @@ function OneTicket(props) {
     "Questionaire Sent",
     "Completed",
   ];
-  
+
   const params = new URLSearchParams(window.location.search);
   // ticket id passed as params from allTickets
   const id = params.get("id");
@@ -143,193 +143,198 @@ function OneTicket(props) {
         setShowSubmitModal={setShowSubmitModal}
         id={id}
       />
-      <div className="button-bar">
-        {userRole === "3" && !oneTicketData.Assessor ? (
-          <Button
-            color="info"
-            className={readDisplay}
-            onClick={() => {
-              updateStatus("Triage", "claim");
-            }}
-            outline
-          >
-            Claim Ticket
-          </Button>
-        ) : null}
-
-        {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
-        userRole === "4" ? (
-          <>
+      <Container style={{
+        maxWidth: '90vw',
+        padding: '1vw 0'
+      }}>
+        <div className="button-bar">
+          {userRole === "3" && !oneTicketData.Assessor ? (
             <Button
               color="info"
               className={readDisplay}
               onClick={() => {
-                setReadDisplay("hide");
-                setEditDisplay("show");
+                updateStatus("Triage", "claim");
               }}
-              disabled={
-                nonEditableStatus.includes(oneTicketData["Status"]) &&
-                userRole === "3"
-                  ? true
-                  : false
-              }
               outline
             >
-              Edit Ticket
+              Claim Ticket
             </Button>
-            {userId === oneTicketData["Assessor"] ? (
-              <>
-                {oneTicketData["Status"] === "Triage" ? (
-                  <Button
-                    color="info"
-                    className={readDisplay}
-                    onClick={() => {
-                      updateStatus("In Progress");
-                    }}
-                    outline
-                  >
-                    Begin Assessment
-                  </Button>
-                ) : null}
-                {oneTicketData["Status"] === "In Progress" ? (
-                  <Button
-                    color="info"
-                    className={readDisplay}
-                    onClick={() => updateStatus("Review (Director)")}
-                    outline
-                  >
-                    Submit For Review
-                  </Button>
-                ) : null}
-              </>
-            ) : null}
-          </>
-        ) : null}
+          ) : null}
 
-        {userRole === "4" ? (
-          <>
-            {!oneTicketData.Assessor ? (
+          {(userRole === "3" && userId === oneTicketData["Assessor"]) ||
+            userRole === "4" ? (
+            <>
               <Button
                 color="info"
                 className={readDisplay}
                 onClick={() => {
-                  setShowAssignModal(true);
+                  setReadDisplay("hide");
+                  setEditDisplay("show");
                 }}
+                disabled={
+                  nonEditableStatus.includes(oneTicketData["Status"]) &&
+                    userRole === "3"
+                    ? true
+                    : false
+                }
                 outline
               >
-                Assign Ticket
+                Edit Ticket
               </Button>
-            ) : null}
-            {oneTicketData["Status"] === "Review (Director)" ? (
-              <>
-                <Button
-                  color="info"
-                  className={readDisplay}
-                  onClick={() => {
-                    updateStatus("In Progress", "assign");
-                  }}
-                >
-                  Reopen Assessment
-                </Button>
+              {userId === oneTicketData["Assessor"] ? (
+                <>
+                  {oneTicketData["Status"] === "Triage" ? (
+                    <Button
+                      color="info"
+                      className={readDisplay}
+                      onClick={() => {
+                        updateStatus("In Progress");
+                      }}
+                      outline
+                    >
+                      Begin Assessment
+                    </Button>
+                  ) : null}
+                  {oneTicketData["Status"] === "In Progress" ? (
+                    <Button
+                      color="info"
+                      className={readDisplay}
+                      onClick={() => updateStatus("Review (Director)")}
+                      outline
+                    >
+                      Submit For Review
+                    </Button>
+                  ) : null}
+                </>
+              ) : null}
+            </>
+          ) : null}
 
+          {userRole === "4" ? (
+            <>
+              {!oneTicketData.Assessor ? (
                 <Button
                   color="info"
                   className={readDisplay}
                   onClick={() => {
-                    updateStatus("Review (Requestor)");
+                    setShowAssignModal(true);
                   }}
+                  outline
                 >
-                  Submit to Client
+                  Assign Ticket
                 </Button>
-              </>
-            ) : null}
-            <Button
-              color="info"
-              className={readDisplay}
-              onClick={() => setShowDeleteModal(true)}
-              outline
-            >
-              Delete Ticket
-            </Button>
-          </>
-        ) : null}
-      </div>
-      {(userRole==="4" || oneTicketData['Assessor']===userId) && oneTicketData['Status']==="In Progress" 
-      ? <Form id="vendor-hold-form">
-        <FormGroup
-          key="vendor-hold"
-          check
-          className="mb-3"
-          style={{
-            paddingLeft: "0",
-          }}
-        >
-          <InputGroup>
-            <Input
-              readOnly
-              value={"On hold - awaiting vendor response"}
-              style={oneTicketData['Status']==='On-Hold (Vendor)' ? {
-                pointerEvents: "none",
-                backgroundColor: "#fa8072"
-              }: {pointerEvents: "none"}}
-            />
-            <InputGroupText>
-              <Input
-                addon
-                type="checkbox"
-                defaultChecked={
-                  oneTicketData["Status"] === "On-Hold (Vendor)" ? true : null
-                }
-                onClick={() => {
-                  updateObject["Status"] =
-                    oneTicketData["Status"] === "On-Hold (Vendor)"
-                      ? "In Progress"
-                      : "On-Hold (Vendor)";
-                  setObjectToSend(updateObject);
-                  setShowUpdateStatusModal(true);
-                }}
-              />
-            </InputGroupText>
-          </InputGroup>
-        </FormGroup>
-      </Form>
-      : null
-}
-      <Table striped className={readDisplay}>
-        <tbody>
-          {/* Map over the ticket and display its data in a table */}
-          {Object.keys(modelData).map((field) => {
-            console.log(field);
-            if (field !== "_id" && field !== "__v") {
-              return (
-                <tr key={field}>
-                  <td>{field}:</td>
-                  <td
-                  style={field==='Status' ? {
-                    fontWeight: "bold",
-                    color: `${colorCodes[oneTicketData['Status']]}`
-                  } : null}
+              ) : null}
+              {oneTicketData["Status"] === "Review (Director)" ? (
+                <>
+                  <Button
+                    color="info"
+                    className={readDisplay}
+                    onClick={() => {
+                      updateStatus("In Progress", "assign");
+                    }}
                   >
-                    {modelData[field].type === "Boolean" ? (
-                      oneTicketData[field] === true ? (
-                        <Input
-                          type="checkbox"
-                          defaultChecked={true}
-                          disabled
-                          addon
-                        />
-                      ) : null
-                    ) : (
-                      oneTicketData[field]
-                    )}
-                  </td>
-                </tr>
-              );
-            }
-          })}
-        </tbody>
-      </Table>
-{/*-----------------------------------------------------------------------------------*/}
+                    Reopen Assessment
+                  </Button>
+
+                  <Button
+                    color="info"
+                    className={readDisplay}
+                    onClick={() => {
+                      updateStatus("Review (Requestor)");
+                    }}
+                  >
+                    Submit to Client
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                color="info"
+                className={readDisplay}
+                onClick={() => setShowDeleteModal(true)}
+                outline
+              >
+                Delete Ticket
+              </Button>
+            </>
+          ) : null}
+        </div>
+        {(userRole === "4" || oneTicketData['Assessor'] === userId) && oneTicketData['Status'] === "In Progress"
+          ? <Form id="vendor-hold-form">
+            <FormGroup
+              key="vendor-hold"
+              check
+              className="mb-3"
+              style={{
+                paddingLeft: "0",
+              }}
+            >
+              <InputGroup>
+                <Input
+                  readOnly
+                  value={"On hold - awaiting vendor response"}
+                  style={oneTicketData['Status'] === 'On-Hold (Vendor)' ? {
+                    pointerEvents: "none",
+                    backgroundColor: "#fa8072"
+                  } : { pointerEvents: "none" }}
+                />
+                <InputGroupText>
+                  <Input
+                    addon
+                    type="checkbox"
+                    defaultChecked={
+                      oneTicketData["Status"] === "On-Hold (Vendor)" ? true : null
+                    }
+                    onClick={() => {
+                      updateObject["Status"] =
+                        oneTicketData["Status"] === "On-Hold (Vendor)"
+                          ? "In Progress"
+                          : "On-Hold (Vendor)";
+                      setObjectToSend(updateObject);
+                      setShowUpdateStatusModal(true);
+                    }}
+                  />
+                </InputGroupText>
+              </InputGroup>
+            </FormGroup>
+          </Form>
+          : null
+        }
+        <Table striped bordered responsive className={readDisplay}>
+          <tbody>
+            {/* Map over the ticket and display its data in a table */}
+            {Object.keys(modelData).map((field) => {
+              console.log(field);
+              if (field !== "_id" && field !== "__v") {
+                return (
+                  <tr key={field}>
+                    <td className="one-ticket-table-fieldname">{field}:</td>
+                    <td
+                      style={field === 'Status' ? {
+                        fontWeight: "bold",
+                        color: `${colorCodes[oneTicketData['Status']]}`
+                      } : null}
+                    >
+                      {modelData[field].type === "Boolean" ? (
+                        oneTicketData[field] === true ? (
+                          <Input
+                            type="checkbox"
+                            defaultChecked={true}
+                            disabled
+                            addon
+                          />
+                        ) : null
+                      ) : (
+                        oneTicketData[field]
+                      )}
+                    </td>
+                  </tr>
+                );
+              }
+            })}
+          </tbody>
+        </Table>
+      </Container>
+      {/*-----------------------------------------------------------------------------------*/}
       <Container
         className={editDisplay}
         style={{
@@ -369,8 +374,8 @@ function OneTicket(props) {
                               updateObject[field] !== undefined
                                 ? !updateObject[field]
                                 : oneTicketData[field] === true
-                                ? false
-                                : true;
+                                  ? false
+                                  : true;
                           }}
                         />
                       </InputGroupText>
@@ -437,14 +442,16 @@ function OneTicket(props) {
                       <Input
                         readOnly
                         value={oneTicketData[field]}
-                        style={field==='Status' ? {
+                        style={field === 'Status' ? {
                           pointerEvents: "none",
                           backgroundColor: "#F8F8F8",
                           color: `${colorCodes[oneTicketData['Status']]}`,
                           fontWeight: "bold"
                         }
-                         : {pointerEvents: "none",
-                         backgroundColor: "#F8F8F8",}}
+                          : {
+                            pointerEvents: "none",
+                            backgroundColor: "#F8F8F8",
+                          }}
                       />
                     </InputGroup>
                   </FormGroup>

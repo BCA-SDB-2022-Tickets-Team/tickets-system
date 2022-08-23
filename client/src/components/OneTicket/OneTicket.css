@@ -1,14 +1,18 @@
-.hide{
+.hide {
     display: none;
 }
-.show{
+
+.show {
     display: table;
 }
-.button-bar{
+
+.button-bar {
     display: flex;
     justify-content: space-around;
+    margin: 3vh 0 5vh 0;
 }
-#vendor-hold-form{
+
+#vendor-hold-form {
     width: 60vw;
     color: gray;
 }

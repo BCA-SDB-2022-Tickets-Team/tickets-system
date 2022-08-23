@@ -85,7 +85,7 @@ function CreateUser() {
         console.log(`awww shucks: `, error);
       }
     }
-    async function getSelf(){
+    async function getSelf() {
       try {
         let userResponse = await fetch(
           `http://localhost:4000/api/user/get-self`,
@@ -97,7 +97,7 @@ function CreateUser() {
             }),
           }
         );
-        if(!userResponse.ok){
+        if (!userResponse.ok) {
           userResponse.json()
             .then(data => console.log(data))
         } else {
@@ -110,7 +110,7 @@ function CreateUser() {
       }
     }
     getAllUsers();
-    if(role === 2){
+    if (role === 2) {
       getSelf()
     }
   }, []);
@@ -148,7 +148,7 @@ function CreateUser() {
       }),
     })
       .then(async (res) => {
-        if(!res.ok){
+        if (!res.ok) {
           res.json()
             .then(data => {
               console.log(data)
@@ -188,10 +188,12 @@ function CreateUser() {
       <Container fluid className="create-user-container">
         <Row className="create-user-row">
           <Col xs="8">
+            <h4>System Users</h4>
             <Table
               responsive
               hover
               striped
+              bordered
             >
               <thead>
                 <tr>
@@ -230,8 +232,9 @@ function CreateUser() {
             </Table>
           </Col>
           <Col className="sidePanel" xs="2">
+            <h4>Add User</h4>
             <div className="FormContainer">
-              {role === 4 && 
+              {role === 4 &&
                 <Switch
                   isOn={asrMakingReq}
                   onColor="#EF476F"

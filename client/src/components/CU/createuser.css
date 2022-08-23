@@ -3,6 +3,10 @@
     padding: 1vw;
 }
 
+.create-user-container h4 {
+    margin-bottom: 2vh;
+}
+
 .create-user-row {
     justify-content: space-evenly;
 }
@@ -17,4 +21,8 @@ tbody {
 
 #display-only-checkbox-2:checked {
     background-color: black;
+}
+
+#edit-delete-user-buttons button {
+    margin: 0 2vw 0 2vw;
 }

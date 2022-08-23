@@ -1,3 +1,18 @@
+#new-ticket-container {
+    max-width: 90vw;
+    padding: 1vw 0;
+}
+
+#new-ticket-container h4 {
+    margin: 2vh 0 4vh 0;
+}
+
 #project-description-textarea {
     height: 30vh;
+}
+
+#create-new-ticket-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
 }

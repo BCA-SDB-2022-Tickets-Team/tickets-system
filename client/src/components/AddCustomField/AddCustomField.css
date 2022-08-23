@@ -1,14 +1,9 @@
-.edit-add-fields-row {
-    margin-top: 1vh;
-    padding: 3vw;
+#edit-add-fields-row {
+    margin-top: 5vh;
 }
 
-.edit-add-fields-row h4 {
-    text-align: center;
-}
-
-.FormContainer h4 {
-    text-align: center;
+#edit-add-fields-row h4 {
+    margin-bottom: 2vh;
 }
 
 .add-field-form {
@@ -17,7 +12,7 @@
 }
 
 .add-field-form input:not(:nth-last-of-type(-n+2)) {
-    min-width: 200px;
+    min-width: 150px;
 }
 
 #fieldType {

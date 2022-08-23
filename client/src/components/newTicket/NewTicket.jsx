@@ -70,14 +70,11 @@ function NewTicket() {
   }
 
   return (
-    <Container style={{
-      maxWidth: '90vw',
-      padding: '1vw 0'
-    }}>
+    <Container id="new-ticket-container">
       <Alert color={alertType} isOpen={alertVisible} toggle={onDismiss}>
         {alertMessage}
       </Alert>
-
+      <h4>Create a New Ticket</h4>
       <Form onSubmit={handleSubmit}>
         {
           allData.map((field) => {
@@ -225,9 +222,11 @@ function NewTicket() {
             }
           })
         }
-        <Button type="submit" color="primary">
-          Submit Ticket
-        </Button>
+        <FormGroup id="create-new-ticket-button">
+          <Button size="lg" type="submit" color="primary">
+            Submit Ticket
+          </Button>
+        </FormGroup>
       </Form>
     </Container>
   );

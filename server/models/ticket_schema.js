@@ -57,6 +57,15 @@ let reqTicket = new mongoose.Schema(
     Department: {
       type: String,
       required: true,
+      enum: [
+        'HR',
+        'IT',
+        'Legal',
+        'Manufacturing',
+        'Marketing',
+        'Ops',
+        'Procurement'
+      ]
     },
     'Data Sensitivity': {
       type: String,

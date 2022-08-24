@@ -273,6 +273,7 @@ function OneTicket(props) {
                       </FormGroup>
                     );
                   } else {
+                    let currentValue=oneTicketData[field]
                     return (
                       <FormGroup>
                         <InputGroup>
@@ -280,7 +281,9 @@ function OneTicket(props) {
                           <Input
                             addon
                             type="select"
+                            value={currentValue}
                             onChange={(e) => {
+                              currentValue=e.target.value
                               updateObject[field] = e.target.value;
                             }}
                             style={{

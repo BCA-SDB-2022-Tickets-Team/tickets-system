@@ -17,6 +17,7 @@ import "./Assign.css";
 function AssignModal(props) {
   const { sessionToken } = useContext(LoginContext);
   const [newAssessor, setNewAssessor] = useState("");
+  const [newAssessorName, setNewAssessorName] = useState("All Assessors")
 
   const [allUsers, setAllUsers] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -90,7 +91,7 @@ function AssignModal(props) {
             }}
             caret
           >
-            All Assessors
+            {newAssessorName}
           </DropdownToggle>
           <DropdownMenu container="body" className="dropdown">
             {allUsers.map((user) => {
@@ -99,6 +100,7 @@ function AssignModal(props) {
                   <DropdownItem
                     onClick={() => {
                       setNewAssessor(user._id);
+                      setNewAssessorName(`${user.firstName} ${user.lastName}`)
                       setOpenDropdown(false);
                     }}
                   >

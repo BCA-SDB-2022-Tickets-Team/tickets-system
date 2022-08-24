@@ -171,26 +171,40 @@ function EditUserModal(props) {
           </FormGroup>
           <FormGroup>
             {props.user.__type === "reqUser" ? (
-              <Dropdown
-                toggle={toggleDropdown}
-                direction={"down"}
-                isOpen={dropdownOpen}
-              >
-                <DropdownToggle caret block>{department}</DropdownToggle>
-                <DropdownMenu>
-                  {props.departments.map((dept) => {
-                    return (
-                      <DropdownItem
-                        key={dept}
-                        onClick={() => setDepartment(dept)}
-                        active={dept === department}
-                      >
-                        {dept}
-                      </DropdownItem>
-                    );
-                  })}
-                </DropdownMenu>
-              </Dropdown>
+              <FormGroup>
+                <Label>Department</Label>
+                <Dropdown
+                  toggle={toggleDropdown}
+                  direction={"down"}
+                  isOpen={dropdownOpen}
+                  style={{
+                    minWidth: '100%',
+                  }} 
+                >
+                  <DropdownToggle 
+                    caret 
+                    block
+                    style={{
+                      minWidth: '100%',
+                    }} 
+                  >
+                    {department}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    {props.departments.map((dept) => {
+                      return (
+                        <DropdownItem
+                          key={dept}
+                          onClick={() => setDepartment(dept)}
+                          active={dept === department}
+                        >
+                          {dept}
+                        </DropdownItem>
+                      );
+                    })}
+                  </DropdownMenu>
+                </Dropdown>
+              </FormGroup>
             ) : null}
           </FormGroup>
           <FormGroup className="checkbox" check inline switch>

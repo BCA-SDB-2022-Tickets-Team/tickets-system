@@ -491,7 +491,7 @@ function OneTicket(props) {
                     Assign Ticket
                   </Button>
                 ) : null}
-                {oneTicketData["Status"] === "Review (Director)" ? (
+                {(oneTicketData["Status"] === "Review (Director)") || (oneTicketData["Status"] === "Review (Requestor)") ? (
                   <>
                     <Button
                       color="warning"

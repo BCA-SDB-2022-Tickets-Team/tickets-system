@@ -60,6 +60,14 @@ function CreateUser() {
     asrUser: "Assessor"
   }
 
+  const checkForAdmin = function(user){
+    if(user.__type === 'reqUser'){
+      return user.isManager
+    } else {
+      return user.isAdmin
+    }
+  }
+
   const fetchAllUsers = async function () {
     let allUsersResponse = await fetch(
       `http://localhost:4000/api/user/allusers`,
@@ -157,7 +165,7 @@ function CreateUser() {
         Authorization: sessionToken,
       }),
     })
-    .then((res) => {
+    .then(async (res) => {
       if (!res.ok) {
         res.json()
           .then(error => {
@@ -173,9 +181,10 @@ function CreateUser() {
       } else {
         setAlertVisible(true)
         setAlertType("success")
-        setAlertMessage("ticket successfully created")
+        setAlertMessage("User successfully created")
         e.target.reset();
         console.log("ticket created");
+        await fetchAllUsers()
       }
     })
   };
@@ -217,7 +226,6 @@ function CreateUser() {
               responsive
               hover
               striped
-              bordered
             >
               <thead>
                 <tr>
@@ -226,7 +234,7 @@ function CreateUser() {
                   <th>E-mail</th>
                   <th>Department</th>
                   {role === 4 ? <th>User Type</th> : null}
-                  <th>Admin?</th>
+                  <th>{role === 4 ? `Admin?` : `Manager`}</th>
                 </tr>
               </thead>
               <tbody>
@@ -244,9 +252,11 @@ function CreateUser() {
                         </td>
                         {role === 4 ? <td>{roleNames[user.__type]}</td> : null}
                         <td>
-                          {user.isManager !== undefined
-                            ? <Input type="checkbox" disabled id="display-only-checkbox" checked={user.isManager} />//`${user.isManager}`
-                            : <Input type="checkbox" disabled id="display-only-checkbox-2" checked={user.isAdmin} />}
+                          {
+                            checkForAdmin(user)
+                              ? `✓`
+                              : `-`
+                          }
                         </td>
                       </tr>
                     );
@@ -315,29 +325,45 @@ function CreateUser() {
                 </FormGroup>
                 {(role === 2 || asrMakingReq)
                   ? (
-                    <div className="d-flex p-5">
-                      <Dropdown
-                        toggle={toggle}
-                        direction={"down"}
-                        isOpen={dropdownOpen}
-                      >
-                        <DropdownToggle caret>{department}</DropdownToggle>
-                        <DropdownMenu container="body">
-                          {departments.map((department) => {
-                            return (
-                              <DropdownItem
-                                onClick={() => setdepartment(department)}
-                              >
-                                {department}
-                              </DropdownItem>
-                            );
-                          })}
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
+                    <>
+                      <FormGroup>
+                        <Label>Department</Label>
+                        <Dropdown
+                          toggle={toggle}
+                          direction={"down"}
+                          isOpen={dropdownOpen}
+                          style={{
+                            minWidth: '100%',
+                          }} 
+                        >
+                          <DropdownToggle 
+                            caret
+                            style={{
+                              minWidth: '100%',
+                            }} 
+                          >
+                            {department}
+                          </DropdownToggle>
+                          <DropdownMenu 
+                            container="body"
+                             
+                          >
+                            {departments.map((department) => {
+                              return (
+                                <DropdownItem
+                                  onClick={() => setdepartment(department)}
+                                >
+                                  {department}
+                                </DropdownItem>
+                              );
+                            })}
+                          </DropdownMenu>
+                        </Dropdown>
+                      </FormGroup>
+                    </>
                   )
                   : (<br />)}
-                <FormGroup className="checkbox" check inline>
+                <FormGroup className="checkbox" check inline switch>
                   {(role === 2 || asrMakingReq) ? (
                     <>
                       <Input

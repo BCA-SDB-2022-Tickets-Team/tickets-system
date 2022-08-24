@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
+import { useNavigate } from "react-router";
 import "./newTicket.css";
 
 function NewTicket() {
@@ -7,6 +8,7 @@ function NewTicket() {
   const [alertVisible, setAlertVisible] = useState(false)
   const [alertMessage, setAlertMessage] = useState(undefined)
   const [alertType, setAlertType] = useState("warning")
+  const navigate = useNavigate()
   let newTicketBody = {};
 
   const onDismiss = () => {
@@ -55,9 +57,11 @@ function NewTicket() {
         } else {
           setAlertVisible(true)
           setAlertType("success")
-          setAlertMessage("ticket successfully created")
+          setAlertMessage("Ticket successfully created!")
           e.target.reset(); // TODO: change this so redirected instead of just form reset
           console.log("ticket created");
+          navigate('/alltickets/*')
+
         }
       })
 

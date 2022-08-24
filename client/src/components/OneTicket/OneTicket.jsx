@@ -41,7 +41,7 @@ function OneTicket(props) {
     'Review (Director)': "#487eb0",
     'On-Hold (Vendor)': "#ff6b81",
     'In Progress': "##079992",
-    'Completed': "#209486"
+    'Completed': "#6ab04c"
   }
   const notEditable = [
     "_id",

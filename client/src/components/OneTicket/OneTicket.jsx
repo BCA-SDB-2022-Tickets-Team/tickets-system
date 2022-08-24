@@ -35,12 +35,12 @@ function OneTicket(props) {
   const [ticketManager, setTicketManager] = useState('')
   const colorCodes = {
     'New Request': "#f7b731",
-    'Triage': "##1e90ff",
+    'Triage': "#227093",
     'Questionaire Sent': "#8CB5CE",
-    'Review (Requestor)': "#6EA0BB",
-    'Review (Director)': "#487eb0",
+    'Review (Requestor)': "#05c46b",
+    'Review (Director)': "#218c74",
     'On-Hold (Vendor)': "#ff6b81",
-    'In Progress': "##079992",
+    'In Progress': "#0fb9b1",
     'Completed': "#6ab04c"
   }
   const notEditable = [
@@ -249,7 +249,7 @@ function OneTicket(props) {
                     color="info"
                     className={readDisplay}
                     onClick={() => {
-                      updateStatus("In Progress", "assign");
+                      updateStatus("In Progress");
                     }}
                   >
                     Reopen Assessment
@@ -259,7 +259,7 @@ function OneTicket(props) {
                     color="info"
                     className={readDisplay}
                     onClick={() => {
-                      updateStatus("Review (Requestor)");
+                      updateStatus('Review (Requestor)');
                     }}
                   >
                     Submit to Client

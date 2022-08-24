@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
-=======
 import { Container, Row, Col, Form, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
->>>>>>> e25849f (Updates to ticket view styles)
 import "./newTicket.css";
 
 function NewTicket() {

@@ -166,6 +166,7 @@ function CreateUser() {
               let message = `The new user is missing the following fields ${error.missingFields}`
               setAlertMessage(message)
             } else {
+              console.log(error.status)
               setAlertMessage(error.status)
             }
           })

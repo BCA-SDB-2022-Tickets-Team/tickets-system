@@ -32,11 +32,24 @@ router
           });
           req.body.isAdmin ? (newUser.isAdmin = true) : null;
 
-          await newUser.save();
-          res.status(201).json({
-            status: "user created",
-            newUser,
-          });
+          try {
+            await newUser.save();
+            res.status(201).json({
+              status: "user created",
+              newUser,
+            });
+          } catch (error) {
+            if(error.errors){
+              const missingData = Object.keys(error.errors);
+              throw new Error(
+                `you are missing the following data: ${[...missingData]}`
+              );
+            } else if (error.code === 11000){
+              throw new Error(`A user with that e-mail already exists!`)
+            } else {
+              throw error
+            }
+          }
         }
       } catch (err) {
         // pass error to error-handling middleware at the bottom
@@ -133,10 +146,16 @@ router
               newUser,
             });
           } catch (error) {
-            const missingData = Object.keys(error.errors);
-            throw new Error(
-              `you are missing the following data: ${[...missingData]}`
-            );
+            if(error.errors){
+              const missingData = Object.keys(error.errors);
+              throw new Error(
+                `you are missing the following data: ${[...missingData]}`
+              );
+            } else if (error.code === 11000){
+              throw new Error(`A user with that e-mail already exists!`)
+            } else {
+              throw error
+            }
           }
         }
       } catch (err) {

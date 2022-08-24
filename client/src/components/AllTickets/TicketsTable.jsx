@@ -43,20 +43,51 @@ const TicketsTable = (props) => {
             res.json()
                 .then(data => {
                     return data.allTicketsData.map(ticket => {
-                        return {
-                            _id: ticket._id,
-                            'Ticket ID': ticket.ID,
-                            'Status': ticket.Status,
-                            'Vendor Name': ticket['Vendor Name'],
-                            'Created': ticket['Created At'],
-                            'Updated': ticket['Updated At'],
-                            'Assessor': !ticket.Assessor
-                                ? <em>Unassigned</em>
-                                : data.allUsers.map(user => {
-                                    if (ticket.Assessor === user._id) {
-                                        return `${user.firstName} ${user.lastName}`
-                                    }
-                                }),
+                        if (role === 4) {
+                            return {
+                                _id: ticket._id,
+                                'Ticket ID': ticket.ID,
+                                'Status': ticket.Status,
+                                'Vendor Name': ticket['Vendor Name'],
+                                'Assessor': !ticket.Assessor
+                                    ? <em>Unassigned</em>
+                                    : data.allUsers.map(user => {
+                                        if (ticket.Assessor === user._id) {
+                                            return `${user.firstName} ${user.lastName}`
+                                        }
+                                    }),
+                                'Requestor': !ticket.Requestor
+                                    ? <em>Unassigned</em>
+                                    : data.allUsers.map(user => {
+                                        if (ticket.Requestor === user._id) {
+                                            return `${user.firstName} ${user.lastName}`
+                                        }
+                                    }),
+                                'Created': ticket['Created At'],
+                                'Updated': ticket['Updated At'],
+                            }
+                        } else {
+                            return {
+                                _id: ticket._id,
+                                'Ticket ID': ticket.ID,
+                                'Status': ticket.Status,
+                                'Vendor Name': ticket['Vendor Name'],
+                                'Assessor': !ticket.Assessor
+                                    ? <em>Unassigned</em>
+                                    : data.allUsers.map(user => {
+                                        if (ticket.Assessor === user._id) {
+                                            return `${user.firstName} ${user.lastName}`
+                                        }
+                                    }),
+                                'Requestor': !ticket.Requestor
+                                    ? <em>Unassigned</em>
+                                    : data.allUsers.map(user => {
+                                        if (ticket.Requestor === user._id) {
+                                            return `${user.firstName} ${user.lastName}`
+                                        }
+                                    }),
+                                'Created': ticket['Created At'],
+                            }
                         }
                     }
                     )

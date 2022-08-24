@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Container, Form, Label, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
+=======
+import { Container, Row, Col, Form, Input, FormGroup, InputGroup, InputGroupText, Button, Alert } from "reactstrap"
+>>>>>>> e25849f (Updates to ticket view styles)
 import "./newTicket.css";
 
 function NewTicket() {
@@ -8,9 +12,6 @@ function NewTicket() {
   const [alertMessage, setAlertMessage] = useState(undefined)
   const [alertType, setAlertType] = useState("warning")
   let newTicketBody = {};
-
-
-
 
   const onDismiss = () => {
     setAlertVisible(false)
@@ -76,159 +77,165 @@ function NewTicket() {
       </Alert>
       <h4>Create a New Ticket</h4>
       <Form onSubmit={handleSubmit}>
-        {
-          allData.map((field) => {
-            if (field.name === "Project Description") {
-              return (
-                <FormGroup key={field.name}>
-                  <InputGroup>
-                    <InputGroupText>
-                      Description:
-                    </InputGroupText>
-                    <Input
+        <Row>
+          <Col xs="8" id="new-ticket-form">
+            {
+              allData.map((field) => {
+                if (field.name === "Project Description") {
+                  return (
+                    <FormGroup key={field.name}>
+                      <InputGroup>
+                        <InputGroupText>
+                          Description:
+                        </InputGroupText>
+                        <Input
 
-                      id="project-description-textarea"
-                      type="textarea"
-                      name={field.name}
-                      required
-                      onChange={(e) => {
-                        newTicketBody[field.name] = e.target.value
-                      }}
-                    />
-                  </InputGroup>
-                </FormGroup>
-              )
-            } else if (field.type === "Boolean") {
-              newTicketBody[field.name] = false
-              return (
-                <FormGroup
-                  key={field.name}
-                  check
-                  switch
-                  className="mb-3"
-                  style={{
-                    paddingLeft: "0"
-                  }}
-                >
-                  <InputGroup>
-                    <Input
-                      readOnly
-                      value={field.name}
+                          id="project-description-textarea"
+                          type="textarea"
+                          name={field.name}
+                          required
+                          onChange={(e) => {
+                            newTicketBody[field.name] = e.target.value
+                          }}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                  )
+                } else if (field.type === "Boolean") {
+                  newTicketBody[field.name] = false
+                  return (
+                    <FormGroup
+                      key={field.name}
+                      check
+                      switch
+                      className="mb-3"
                       style={{
-                        pointerEvents: "none"
-                      }}
-                    />
-                    <InputGroupText>
-                      <Input
-                        addon
-                        type="checkbox"
-                        name={field.name}
-                        onClick={() => {
-                          newTicketBody[field.name] = !newTicketBody[field.name]
-                        }}
-                      />
-                    </InputGroupText>
-                  </InputGroup>
-                </FormGroup>
-              )
-            } else if (!field.enum) {
-              if (field.type === "String") {
-                return (
-                  <FormGroup key={field.name}>
-                    <InputGroup>
-                      <InputGroupText>
-                        {field.name}
-                      </InputGroupText>
-                      <Input
-                        name={field.name}
-                        onChange={(e) => {
-                          newTicketBody[field.name] = e.target.value
-                        }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                )
-              } else if (field.type === "Number") {
-                return (
-                  <FormGroup key={field.name}>
-                    <InputGroup>
-                      <InputGroupText>
-                        {field.name}
-                      </InputGroupText>
-                      <Input
-                        name={field.name}
-                        placeholder="0"
-                        type="number"
-                        onChange={(e) => {
-                          newTicketBody[field.name] = e.target.value
-                        }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                )
-              } else if (field.type === "Date") {
-                return (
-                  <FormGroup key={field.name}>
-                    <InputGroup>
-                      <InputGroupText>
-                        {field.name}
-                      </InputGroupText>
-                      <Input
-                        name={field.name}
-                        placeholder={new Intl.DateTimeFormat('en-US').format(Date.now())}
-                        type="datetime"
-                        onChange={(e) => {
-                          newTicketBody[field.name] = new Date(e.target.value)
-                        }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                )
-              }
-            } else {
-              return (
-                <FormGroup>
-                  <InputGroup>
-                    <InputGroupText>
-                      {field.name}
-                    </InputGroupText>
-                    <Input
-                      addon
-                      type="select"
-                      required
-                      onChange={(e) => {
-                        newTicketBody[field.name] = e.target.value
-                      }}
-                      style={{
-                        flexGrow: 1,
+                        paddingLeft: "0"
                       }}
                     >
-                      {
-                        field.enum.map((item) => {
-                          return (
-                            <option
-                              key={item}
-                              value={item}
-                            >
-                              {item}
-                            </option>
-                          )
-                        })
-                      }
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              )
+                      <InputGroup>
+                        <Input
+                          readOnly
+                          value={field.name}
+                          style={{
+                            pointerEvents: "none"
+                          }}
+                        />
+                        <InputGroupText>
+                          <Input
+                            addon
+                            type="checkbox"
+                            name={field.name}
+                            onClick={() => {
+                              newTicketBody[field.name] = !newTicketBody[field.name]
+                            }}
+                          />
+                        </InputGroupText>
+                      </InputGroup>
+                    </FormGroup>
+                  )
+                } else if (!field.enum) {
+                  if (field.type === "String") {
+                    return (
+                      <FormGroup key={field.name}>
+                        <InputGroup>
+                          <InputGroupText>
+                            {field.name}
+                          </InputGroupText>
+                          <Input
+                            name={field.name}
+                            onChange={(e) => {
+                              newTicketBody[field.name] = e.target.value
+                            }}
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                    )
+                  } else if (field.type === "Number") {
+                    return (
+                      <FormGroup key={field.name}>
+                        <InputGroup>
+                          <InputGroupText>
+                            {field.name}
+                          </InputGroupText>
+                          <Input
+                            name={field.name}
+                            placeholder="0"
+                            type="number"
+                            onChange={(e) => {
+                              newTicketBody[field.name] = e.target.value
+                            }}
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                    )
+                  } else if (field.type === "Date") {
+                    return (
+                      <FormGroup key={field.name}>
+                        <InputGroup>
+                          <InputGroupText>
+                            {field.name}
+                          </InputGroupText>
+                          <Input
+                            name={field.name}
+                            placeholder={new Intl.DateTimeFormat('en-US').format(Date.now())}
+                            type="datetime"
+                            onChange={(e) => {
+                              newTicketBody[field.name] = new Date(e.target.value)
+                            }}
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                    )
+                  }
+                } else {
+                  return (
+                    <FormGroup>
+                      <InputGroup>
+                        <InputGroupText>
+                          {field.name}
+                        </InputGroupText>
+                        <Input
+                          addon
+                          type="select"
+                          required
+                          onChange={(e) => {
+                            newTicketBody[field.name] = e.target.value
+                          }}
+                          style={{
+                            flexGrow: 1,
+                          }}
+                        >
+                          {
+                            field.enum.map((item) => {
+                              return (
+                                <option
+                                  key={item}
+                                  value={item}
+                                >
+                                  {item}
+                                </option>
+                              )
+                            })
+                          }
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  )
+                }
+              })
             }
-          })
-        }
-        <FormGroup id="create-new-ticket-button">
-          <Button size="lg" type="submit" color="primary">
-            Submit Ticket
-          </Button>
-        </FormGroup>
+          </Col>
+          <Col xs="3">
+            <FormGroup id="create-new-ticket-button">
+              <Button size="lg" type="submit" color="primary">
+                Submit Ticket
+              </Button>
+            </FormGroup>
+          </Col>
+        </Row>
       </Form>
-    </Container>
+    </Container >
   );
 }
 

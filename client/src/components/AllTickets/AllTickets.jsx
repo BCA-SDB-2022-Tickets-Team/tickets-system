@@ -16,6 +16,7 @@ function AllTickets(props) {
     const [ticketId, setTicketId] = useState("");
 
     const [allStatus, setAllStatus] = useState(true)
+    const [completedStatus, setCompletedStatus] = useState(false)
 
     useEffect(() => {
 
@@ -33,6 +34,7 @@ function AllTickets(props) {
             setFilters([...filters, filters])
         } else if (e.target.value === "All") {
             setAllStatus(true)
+            setCompletedStatus(false)
         }
         const isChecked = e.target.checked
         if (isChecked) {
@@ -70,7 +72,8 @@ function AllTickets(props) {
                             <Input
                                 name="completed"
                                 value="Completed"
-                                onChange={onChange}
+                                checked={completedStatus}
+                                onChange={(e) => { { onChange(e) }; setCompletedStatus(!completedStatus) }}
                                 type="checkbox"
                             />
                             Completed

@@ -7,6 +7,15 @@
     margin: 2vh 0 4vh 0;
 }
 
+#new-ticket-form {
+    margin: 0;
+    padding: 2vw;
+    border-radius: 10px;
+    box-shadow: 10px 10px 30px -10px rgb(146, 145, 145);
+    max-height: 75vh;
+    overflow: auto;
+}
+
 #project-description-textarea {
     height: 30vh;
 }

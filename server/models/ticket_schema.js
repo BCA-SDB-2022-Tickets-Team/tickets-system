@@ -30,7 +30,8 @@ let reqTicket = new mongoose.Schema(
               'Review (Director)',
               'On-Hold (Vendor)',
               'In Progress',
-              'Completed'  
+              'Completed',
+              'n/a'  
             ]
     },
     Requestor: {

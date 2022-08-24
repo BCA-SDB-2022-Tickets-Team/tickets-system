@@ -202,7 +202,10 @@ function OneTicket(props) {
                                       hour: '2-digit',
                                       minute: '2-digit'
                                     })}`
-                                    : oneTicketData[field]
+                                    : (field === 'Submitted To Security' && new Date(oneTicketData[field]).toLocaleDateString() !== "Invalid Date"
+                                      ? new Date(oneTicketData[field]).toLocaleDateString()
+                                      : oneTicketData[field]
+                                    )
                                   )
                                 )
                               )
@@ -273,7 +276,7 @@ function OneTicket(props) {
                       </FormGroup>
                     );
                   } else {
-                    
+
                     return (
                       <FormGroup>
                         <InputGroup>
@@ -281,7 +284,7 @@ function OneTicket(props) {
                           <Input
                             addon
                             type="select"
-                            
+
                             onChange={(e) => {
                               updateObject[field] = e.target.value;
                             }}
@@ -291,7 +294,7 @@ function OneTicket(props) {
                           >
                             {modelData[field].enum.map((item) => {
                               return (
-                                <option selected={item===oneTicketData[field] ? true : false} key={item} value={item}>
+                                <option selected={item === oneTicketData[field] ? true : false} key={item} value={item}>
                                   {item}
                                 </option>
                               );
@@ -330,7 +333,10 @@ function OneTicket(props) {
                                         hour: '2-digit',
                                         minute: '2-digit'
                                       })}`
-                                      : oneTicketData[field]
+                                      : (field === 'Submitted To Security' && new Date(oneTicketData[field]).toLocaleDateString() !== "Invalid Date"
+                                        ? new Date(oneTicketData[field]).toLocaleDateString()
+                                        : oneTicketData[field]
+                                      )
                                     )
                                   )
                                 )

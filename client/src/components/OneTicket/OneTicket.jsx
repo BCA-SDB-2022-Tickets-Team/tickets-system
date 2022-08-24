@@ -166,7 +166,7 @@ function OneTicket(props) {
         padding: '1vw 0'
       }}>
         <div className="button-bar">
-          
+
           {userRole === "3" && !oneTicketData.Assessor ? (
             <Button
               color="info"
@@ -194,7 +194,7 @@ function OneTicket(props) {
                   nonEditableStatus.includes(oneTicketData["Status"]) &&
                     userRole === "3"
                     ? true
-                    : (oneTicketData['Status']==='Completed' ? true : false)
+                    : (oneTicketData['Status'] === 'Completed' ? true : false)
                 }
                 outline
               >
@@ -274,17 +274,17 @@ function OneTicket(props) {
               >
                 Delete Ticket
               </Button>}
-              {oneTicketData['Status']==='Review (Requestor)'
-          ? <Button
-            style={{backgroundColor: '#6ab04c', color: "white"}}
-            className={readDisplay}
-            onClick={()=>updateStatus('Completed')}
-            >Ticket Complete</Button>
-            : null
-          }
+              {oneTicketData['Status'] === 'Review (Requestor)'
+                ? <Button
+                  style={{ backgroundColor: '#6ab04c', color: "white" }}
+                  className={readDisplay}
+                  onClick={() => updateStatus('Completed')}
+                >Ticket Complete</Button>
+                : null
+              }
             </>
           ) : null}
-          
+
         </div>
         {(userRole === "4" || oneTicketData['Assessor'] === userId) && ["In Progress", "On-Hold (Vendor)"].includes(oneTicketData['Status'])
           ? <Form id="vendor-hold-form">
@@ -357,8 +357,15 @@ function OneTicket(props) {
                             ? ticketRequestor
                             : (field === 'Project Manager'
                               ? (oneTicketData[field] === 'n/a' ? 'N/A' : ticketManager)
-                              : oneTicketData[field]
-                            ))
+                              : (field === 'Created At' || field === 'Updated At'
+                                ? `${new Date(oneTicketData[field]).toLocaleDateString()}  -  ${new Date(oneTicketData[field]).toLocaleTimeString(navigator.language, {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}`
+                                : oneTicketData[field]
+                              )
+                            )
+                          )
                       )}
                     </td>
                   </tr>
@@ -482,8 +489,15 @@ function OneTicket(props) {
                               ? ticketRequestor
                               : (field === 'Project Manager'
                                 ? (oneTicketData[field] === 'n/a' ? 'N/A' : ticketManager)
-                                : oneTicketData[field]
-                              ))
+                                : (field === 'Created At' || field === 'Updated At'
+                                  ? `${new Date(oneTicketData[field]).toLocaleDateString()}  -  ${new Date(oneTicketData[field]).toLocaleTimeString(navigator.language, {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}`
+                                  : oneTicketData[field]
+                                )
+                              )
+                            )
                         )}
                         style={field === 'Status' ? {
                           pointerEvents: "none",

@@ -273,7 +273,7 @@ function OneTicket(props) {
                       </FormGroup>
                     );
                   } else {
-                    let currentValue=oneTicketData[field]
+                    
                     return (
                       <FormGroup>
                         <InputGroup>
@@ -281,9 +281,8 @@ function OneTicket(props) {
                           <Input
                             addon
                             type="select"
-                            value={currentValue}
+                            
                             onChange={(e) => {
-                              currentValue=e.target.value
                               updateObject[field] = e.target.value;
                             }}
                             style={{
@@ -292,7 +291,7 @@ function OneTicket(props) {
                           >
                             {modelData[field].enum.map((item) => {
                               return (
-                                <option key={item} value={item}>
+                                <option selected={item===oneTicketData[field] ? true : false} key={item} value={item}>
                                   {item}
                                 </option>
                               );

@@ -2,21 +2,25 @@ tbody {
     background-color: white;
 }
 
-.ticket-filters {
-    margin: 5vh 0 2vh 0;
+.ticket-container {
+    margin: 5vh;
 }
 
-.ticket-filters Input {
+.ticket-container Input {
     margin: .25em .5em 0 1.5em;
 }
 
-.ticket-filters Label {
+.ticket-container Label {
     font-size: 11pt;
 }
 
-.ticket-filters h4 {
+.ticket-container h4 {
     font-size: 15pt;
     margin-bottom: 1em;
+}
+
+.tickets-table-row {
+    margin-top: 2vh;
 }
 
 .all-tickets-data a {

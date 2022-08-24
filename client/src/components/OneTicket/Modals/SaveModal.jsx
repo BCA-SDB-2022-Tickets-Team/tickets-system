@@ -44,7 +44,7 @@ function SaveModal(props) {
           <Button variant="secondary" onClick={(e)=>{e.preventDefault(); handleModifyRequest()}}>
             Modify Ticket
           </Button>
-          <Button variant="primary" onClick={() => {window.location.reload(false)}}>
+          <Button variant="primary" onClick={() => {setTimeout(()=>window.location.reload(false), 2000)}}>
             Cancel
           </Button>
         </ModalFooter>

@@ -53,8 +53,8 @@ function AllTickets(props) {
                         <OneTicket ticketId={ticketId} sessionId={sessionId} />} />
             </Routes>
 
-            <Container>
-                <Row className="ticket-filters">
+            <Container className="ticket-container">
+                <Row>
                     <Col>
                         <Label>
                             <Input
@@ -64,8 +64,21 @@ function AllTickets(props) {
                                 onChange={onChange}
                                 type="checkbox"
                             />
-                            All Tickets
+                            All Tickets <em>(Excluding Completed)</em>
                         </Label>
+                        <Label>
+                            <Input
+                                name="completed"
+                                value="Completed"
+                                onChange={onChange}
+                                type="checkbox"
+                            />
+                            Completed
+                        </Label>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
                         <Label>
                             <Input
                                 name="new-request"
@@ -120,18 +133,9 @@ function AllTickets(props) {
                             />
                             Review (Requestor)
                         </Label>
-                        <Label>
-                            <Input
-                                name="completed"
-                                value="Completed"
-                                onChange={onChange}
-                                type="checkbox"
-                            />
-                            Completed
-                        </Label>
                     </Col>
                 </Row>
-                <Row>
+                <Row className="tickets-table-row">
                     <Col>
                         <TicketsTable filters={filters} setTicketId={setTicketId} />
                     </Col>

@@ -62,10 +62,9 @@ const TicketsTable = (props) => {
                     )
                 })
                 .then(mappedData => {
-                    console.log(props.filters)
                     if (props.filters.includes('All')) {
-                        setTicketData(mappedData)
-                        console.log(mappedData)
+                        let excludeCompleted = mappedData.filter(ticket => ticket.Status !== 'Completed')
+                        setTicketData(excludeCompleted)
                         return mappedData
                     } else {
                         function filterByStatus(ticket) {

@@ -511,7 +511,8 @@ function OneTicket(props) {
                       Reopen Assessment
                     </Button>
 
-                    <Button
+                    {oneTicketData['Status']==='Review (Director)'
+                   ?  <Button
                       color="success"
                       className={readDisplay}
                       onClick={() => {
@@ -520,6 +521,8 @@ function OneTicket(props) {
                     >
                       Submit to Client
                     </Button>
+                  : null  
+                  }
                   </>
                 ) : null}
                 {<Button

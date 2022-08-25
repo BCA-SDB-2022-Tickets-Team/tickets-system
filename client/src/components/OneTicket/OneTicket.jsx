@@ -260,6 +260,22 @@ function OneTicket(props) {
                         </InputGroup>
                       </FormGroup>
                     );
+                  } else if (modelData[field].type === "Date") {
+                    return (
+                      <FormGroup key={field}>
+                        <InputGroup>
+                          <InputGroupText>{field}</InputGroupText>
+                          <Input
+                            name={field}
+                            type="date"
+                            //value={new Date(oneTicketData[field])}
+                            onChange={(e) => {
+                              updateObject[field] = e.target.value;
+                            }}
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                    );
                   } else if (!modelData[field].enum) {
                     return (
                       <FormGroup key={field}>
@@ -276,7 +292,6 @@ function OneTicket(props) {
                       </FormGroup>
                     );
                   } else {
-
                     return (
                       <FormGroup>
                         <InputGroup>
@@ -333,10 +348,7 @@ function OneTicket(props) {
                                         hour: '2-digit',
                                         minute: '2-digit'
                                       })}`
-                                      : (field === 'Submitted To Security' && new Date(oneTicketData[field]).toLocaleDateString() !== "Invalid Date"
-                                        ? new Date(oneTicketData[field]).toLocaleDateString()
-                                        : oneTicketData[field]
-                                      )
+                                      : oneTicketData[field]
                                     )
                                   )
                                 )
@@ -511,18 +523,18 @@ function OneTicket(props) {
                       Reopen Assessment
                     </Button>
 
-                    {oneTicketData['Status']==='Review (Director)'
-                   ?  <Button
-                      color="success"
-                      className={readDisplay}
-                      onClick={() => {
-                        updateStatus('Review (Requestor)');
-                      }}
-                    >
-                      Submit to Client
-                    </Button>
-                  : null  
-                  }
+                    {oneTicketData['Status'] === 'Review (Director)'
+                      ? <Button
+                        color="success"
+                        className={readDisplay}
+                        onClick={() => {
+                          updateStatus('Review (Requestor)');
+                        }}
+                      >
+                        Submit to Client
+                      </Button>
+                      : null
+                    }
                   </>
                 ) : null}
                 {<Button

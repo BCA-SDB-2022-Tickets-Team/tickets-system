@@ -33,11 +33,11 @@ function SaveModal(props) {
         {
           
            <ModalHeader>
-           'Are you sure you want to modify a database entry?'
+           Are you sure you want to modify a database entry?
         </ModalHeader>
         }
         <ModalBody>
-          'This action cannot be undone.'
+          This action cannot be undone.
           
           </ModalBody>
         <ModalFooter>
